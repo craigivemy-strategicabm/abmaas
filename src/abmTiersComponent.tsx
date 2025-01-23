@@ -168,7 +168,7 @@ export default function ABMTiers() {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <div className="mx-auto relative">
+      <div className="max-w-6xl mx-auto relative">
         <header className="flex justify-between items-center p-6 mb-8">
           <h1 className="text-5xl font-bold">
             <span className="text-white">ABM</span>
