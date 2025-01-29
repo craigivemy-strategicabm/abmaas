@@ -6,22 +6,31 @@ const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
   "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
   "Insights Credits": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
-  "Personalized Content Credits": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs. *assumes strategic foundations are in place",
+  "Personalized Content Credits": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
   "Playbook Credits": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment.",
   "In-house ABM Training Credits": "Upskill your team with comprehensive ABM training and enablement"
 };
 
+const panelCaveats = {
+  "Foundations": "",
+  "Pricing Features": "",
+  "Insights Credits": "",
+  "Personalized Content Credits": "*requires existing cluster manifesto",
+  "Playbook Credits": "Excludes activation",
+  "In-house ABM Training Credits": ""
+}
+
 const itemGroups = {
   insights: [
-    { title: "Market Insights", credits: "10", customPrice: "11.5" },
+    { title: "Market Insights", credits: "8", customPrice: "9.5" },
     { title: "Account Insights", credits: "2", customPrice: "2.5" },
     { title: "Stakeholder Deepdive Insights", credits: "7", customPrice: "7.5" },
     { title: "Stakeholder Tactical Insights", credits: "2", customPrice: "2.5" }
   ],
   engagement: [
     { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
-    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
-    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Account Manifesto*", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Manifesto*", credits: "2", customPrice: "2.5" },
     { title: "Annotated Report", credits: "5.5", customPrice: "6" }
   ],
   revenue: [
@@ -64,16 +73,21 @@ const Panel = ({title, children}) => {
         <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-200 ${isExpanded ? '' : '-rotate-90'}`}/>
       </div>
       {isExpanded && (
-        <div className="p-4 mt-[1px]">
-          <p className="text-gray-400 text-sm mb-4">{panelDescriptions[title]}</p>
-          {children}
-        </div>
-      )}
+          <div className="p-4 mt-[1px]">
+            <p className="text-gray-400 text-sm mb-4">{panelDescriptions[title]}</p>
+            {children}
+            {panelCaveats[title] && (
+            <div className="p-4 mt-[1px]">
+              <p className="text-gray-400 text-sm mb-4">{panelCaveats[title]}</p>
+            </div>
+            )}
+          </div>
+        )}
     </div>
   );
 };
 
-const ComparisonRow = ({ feature, subtitle, values }) => (
+const ComparisonRow = ({feature, subtitle, values }) => (
   <div className="contents group">
     <div className="bg-gray-800/50">
       {feature && (
@@ -154,7 +168,7 @@ export default function ABMTiers() {
     { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
     { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
     { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
-    { title: "Synthetic Audiences", credits: "10", customPrice: "10.5" }
+    { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
   ];
 
   const mapItemToProps = item => ({
