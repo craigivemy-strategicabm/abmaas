@@ -4,9 +4,9 @@ import { ChevronDown, Check, Info } from 'lucide-react';
 
 const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
-  "Pricing Features": "Compare the key features and benefits across our ABM service tiers",
-  "Insights Credits": "Understand your target accounts with deep-dive research and analysis",
-  "Personalized Content Credits": "Create targeted content assets that resonate with your key accounts",
+  "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
+  "Insights Credits": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
+  "Personalized Content Credits": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs. *assumes strategic foundations are in place",
   "Playbook Credits": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment.",
   "In-house ABM Training Credits": "Upskill your team with comprehensive ABM training and enablement"
 };
