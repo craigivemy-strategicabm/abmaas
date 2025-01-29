@@ -43,7 +43,7 @@ const Panel = ({title, children}) => {
   return (
     <div className="bg-gray-900 rounded-lg mb-4">
       <div 
-        className="sticky top-[216px] p-4 bg-gray-900 border-b border-gray-800 flex justify-between items-center cursor-pointer z-10 rounded-t-lg"
+        className="sticky top-[150px] p-4 bg-gray-900 border-b border-gray-800 flex justify-between items-center cursor-pointer z-10 rounded-t-lg"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h3 className="text-lg tracking-wide">
