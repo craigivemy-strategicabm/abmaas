@@ -95,18 +95,19 @@ const itemGroups = {
   ]
 };
 
-const Panel = ({title, children}) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+const Panel = ({title, children, isExpanded, onToggle}) => {
   return (
     <div className="bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)]">
       <div 
-        className="sticky top-[150px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
-        onClick={() => setIsExpanded(!isExpanded)}
+        className="sticky top-[225px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
+        onClick={onToggle}
       >
-        <h3 className="text-lg tracking-wide">
-          {title}
-        </h3>
-        <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-300 ${isExpanded ? '' : '-rotate-90'}`}/>
+        <div className="flex items-center gap-4 cursor-pointer" onClick={onToggle}>
+          <h3 className="text-lg tracking-wide">
+            {title}
+          </h3>
+          <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-300 ${isExpanded ? '' : '-rotate-90'}`}/>
+        </div>
       </div>
       {isExpanded && (
           <div className="p-8 bg-gradient-to-b from-gray-900/95 to-gray-950">
@@ -220,6 +221,70 @@ const ContentSection = ({ title, items }) => (
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
+  const [expandedPanels, setExpandedPanels] = useState({
+    'pricing': true,
+    'foundations': true,
+    'insights': true,
+    'content': true,
+    'training': true
+  });
+
+  const toggleAllPanels = () => {
+    const areAllExpanded = Object.values(expandedPanels).every(v => v);
+    const newState = !areAllExpanded;
+    setExpandedPanels({
+      'pricing': newState,
+      'foundations': newState,
+      'insights': newState,
+      'content': newState,
+      'training': newState
+    });
+  };
+
+  const togglePanel = (panelId) => {
+    setExpandedPanels(prev => ({
+      ...prev,
+      [panelId]: !prev[panelId]
+    }));
+  };
+
+  const foundationItems = [
+    { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
+    { title: "Account Selection", credits: "3.5", customPrice: "4" },
+    { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
+    { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
+    { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
+    { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
+    { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
+  ];
+
+  const itemGroups = {
+    insights: [
+      { title: "Account Profiling", credits: "3.5", customPrice: "4" },
+      { title: "Buyer Journey Analysis", credits: "4.5", customPrice: "5" },
+      { title: "Content Audit", credits: "4", customPrice: "4.5" },
+      { title: "Competitor Analysis", credits: "5", customPrice: "5.5" },
+      { title: "Tech Stack Analysis", credits: "3", customPrice: "3.5" }
+    ],
+    engagement: [
+      { title: "Personalized Content Creation", credits: "6", customPrice: "6.5" },
+      { title: "Creative Asset Development", credits: "4", customPrice: "4.5" },
+      { title: "Landing Page Design", credits: "5", customPrice: "5.5" },
+      { title: "Email Campaign Design", credits: "3", customPrice: "3.5" },
+      { title: "Social Media Content", credits: "2", customPrice: "2.5" }
+    ],
+    revenue: [
+      { title: "Revenue Content Creation", credits: "6", customPrice: "6.5" },
+      { title: "Sales Enablement Assets", credits: "4", customPrice: "4.5" },
+      { title: "Case Study Development", credits: "5", customPrice: "5.5" },
+      { title: "ROI Calculator", credits: "4", customPrice: "4.5" }
+    ],
+    training: [
+      { title: "ABM Strategy Workshop", credits: "8", customPrice: "9" },
+      { title: "Content Creation Training", credits: "6", customPrice: "6.5" },
+      { title: "Platform Training", credits: "4", customPrice: "4.5" }
+    ]
+  };
 
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({ ...prev, [id]: value }));
@@ -232,14 +297,19 @@ export default function ABMTiers() {
         ...foundationItems,
         ...itemGroups.insights,
         ...itemGroups.engagement,
+        ...itemGroups.revenue,
         ...itemGroups.training
       ];
-      const item = allItems.find(item => item.id === id);
+      const item = allItems.find(item => {
+        const itemId = item.id || item.title.toLowerCase().replace(/\s+/g, '-');
+        return itemId === id;
+      });
       if (item && quantity) {
-        total += item.tacticalCredits * quantity;
+        const credits = parseFloat(item.credits || '0');
+        total += credits * quantity;
       }
     });
-    return total;
+    return Math.round(total * 10) / 10; // Round to 1 decimal place
   };
 
   const resetQuantities = () => {
@@ -267,15 +337,7 @@ export default function ABMTiers() {
     { subtitle: "Time to market", values: { custom: "weeks", tactical: "days", impact: "days", enterprise: "days" } }
   ];
 
-  const foundationItems = [
-    { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
-    { title: "Account Selection", credits: "3.5", customPrice: "4" },
-    { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
-    { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
-    { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
-    { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
-    { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
-  ];
+
 
   const mapItemToProps = item => ({
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
@@ -305,10 +367,26 @@ export default function ABMTiers() {
           </div>
         </header>
 
-        <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
+        <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-16">
           <div className="rounded-lg overflow-hidden">
             <div className="grid grid-cols-5">
-              <div className="col-span-1"></div>
+              <div className="col-span-1 bg-gray-800/30 p-4 flex flex-col justify-center items-center">
+                <div className="text-gray-400 text-xs uppercase tracking-wide">Total Credits</div>
+                <div className="text-3xl font-bold text-white mt-1">{totalCredits || 0}</div>
+                {totalCredits >= 30 && (
+                  <div className="text-xs font-medium mt-1" style={{ color: totalCredits >= 70 ? '#60A5FA' : totalCredits >= 50 ? '#34D399' : '#F59E0B' }}>
+                    {totalCredits >= 70 ? 'Enterprise' : totalCredits >= 50 ? 'Impact' : 'Tactical'} Tier
+                  </div>
+                )}
+                {totalCredits > 0 && (
+                  <button
+                    onClick={resetQuantities}
+                    className="mt-2 text-gray-400 hover:text-white text-xs bg-gray-700/50 hover:bg-gray-600/50 px-2 py-1 rounded transition-colors"
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
               <div className="col-span-4 grid grid-cols-4 text-center">
                 <div className="bg-gray-700 p-4 text-lg font-bold">Custom SOW</div>
                 {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
@@ -340,12 +418,25 @@ export default function ABMTiers() {
           </div>
         </div>
 
-        <div className="px-6 pt-4">
-          <Panel title={<>
-            <span className="text-white">Pricing model</span>{' '}
-            <span className="text-gray-500">comparisons</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+        <div className="flex justify-end px-6 pb-6 pt-2">
+          <button
+            onClick={toggleAllPanels}
+            className="px-4 py-2 text-sm bg-gray-800/50 hover:bg-gray-700/50 text-gray-400 hover:text-white rounded transition-colors flex items-center gap-2"
+          >
+            <ChevronDown className="w-4 h-4" />
+            {Object.values(expandedPanels).every(v => v) ? 'Collapse All' : 'Expand All'}
+          </button>
+        </div>
+
+        <div className="px-6">
+          <Panel 
+            title={<>
+              <span className="text-white">Pricing model</span>{' '}
+              <span className="text-gray-500">comparisons</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            isExpanded={expandedPanels['pricing']}
+            onToggle={() => togglePanel('pricing')}>
             <div className="space-y-8">
               <div>
                 <h3 className="text-orange-500 mb-3">Two ways to power your ABM strategy</h3>
@@ -367,11 +458,14 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title={<>
-            <span className="text-white">Foundations</span>{' '}
-            <span className="text-gray-500">features</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          <Panel 
+            title={<>
+              <span className="text-white">Foundations</span>{' '}
+              <span className="text-gray-500">features</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            isExpanded={expandedPanels['foundations']}
+            onToggle={() => togglePanel('foundations')}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>ABM Strategy Foundations</h4>
               {foundationItems.map((item, i) => (
@@ -380,11 +474,14 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title={<>
-            <span className="text-white">Insights</span>{' '}
-            <span className="text-gray-500">credits</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          <Panel 
+            title={<>
+              <span className="text-white">Insights</span>{' '}
+              <span className="text-gray-500">credits</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            isExpanded={expandedPanels['insights']}
+            onToggle={() => togglePanel('insights')}>
             <div className="bg-gray-900 p-4 rounded-lg">
               {itemGroups.insights.map((item, i) => (
                 <InsightItem
@@ -397,11 +494,14 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title={<>
-            <span className="text-white">Personalized content & creative</span>{' '}
-            <span className="text-gray-500">credits</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          <Panel 
+            title={<>
+              <span className="text-white">Personalized content & creative</span>{' '}
+              <span className="text-gray-500">credits</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            isExpanded={expandedPanels['content']}
+            onToggle={() => togglePanel('content')}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <ContentSection title="Engagement Content" 
                 items={itemGroups.engagement.map(item => mapItemToProps(item))} />
@@ -439,11 +539,14 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title={<>
-            <span className="text-white">In-house ABM Training</span>{' '}
-            <span className="text-gray-500">credits</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          <Panel 
+            title={<>
+              <span className="text-white">In-house ABM Training</span>{' '}
+              <span className="text-gray-500">credits</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            isExpanded={expandedPanels['training']}
+            onToggle={() => togglePanel('training')}>
             <div className="bg-gray-900 p-4 rounded-lg">
               {itemGroups.training.map((item, i) => (
                 <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
