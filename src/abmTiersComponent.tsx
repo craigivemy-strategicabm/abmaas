@@ -123,27 +123,16 @@ const Panel = ({title, children}) => {
   );
 };
 
-const ComparisonHeader = () => (
-  <div className="grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] py-4 mb-2 border-b border-gray-700/50">
-    <div className="text-sm text-gray-400 pl-6">Use case</div>
-    <div></div>
-    <div className="text-sm text-gray-400 text-right pr-8">Custom statements of work</div>
-    <div className="text-sm text-gray-400 text-center">For single priority outcomes</div>
-    <div className="text-sm text-gray-400 text-center">For single ABM buyer journeys</div>
-    <div className="text-sm text-gray-400 text-center">Multiple ABM buyer journeys for multiple regions</div>
-  </div>
-);
-
 const ComparisonRow = ({feature, subtitle, values }) => (
   <div className="contents group">
     <div className="w-full">
       {feature && (
-        <div className="font-medium text-sm text-white py-5 pl-6 bg-gray-800/80 border-t border-gray-700/50">
+        <div className="font-medium text-sm text-white py-3 pl-6 bg-gray-800/80">
           {feature}
         </div>
       )}
-      <div className={`grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center ${feature ? 'py-4 mt-2' : 'py-3'} ${!feature ? 'bg-gray-800/30 hover:bg-gray-800/40' : ''}`}>
-        <div className="text-sm text-gray-400 pl-6">{subtitle}</div>
+      <div className={`grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center py-3`}>
+        <div className="text-xs text-gray-400 pl-6">{subtitle}</div>
         <div></div>
         <div className="pr-8 flex justify-end">
           {typeof values.custom === 'string' ? (
@@ -368,11 +357,8 @@ export default function ABMTiers() {
                 </p>
               </div>
 
-              <div className="space-y-1">
-                <ComparisonHeader />
-                <div className="grid grid-cols-1 divide-y divide-gray-800/30">
-                  {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
-                </div>
+              <div className="grid grid-cols-1 divide-y divide-gray-800/30 bg-gray-900/30">
+                {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
               </div>
 
 
