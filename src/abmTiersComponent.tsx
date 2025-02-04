@@ -50,35 +50,23 @@ const itemGroups = {
 const Panel = ({title, children}) => {
   const [isExpanded, setIsExpanded] = useState(true);
   return (
-    <div className="bg-gray-900 rounded-lg mb-4">
+    <div className="bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)]">
       <div 
-        className="sticky top-[150px] p-4 bg-gray-900 border-b border-gray-800 flex justify-between items-center cursor-pointer z-10 rounded-t-lg"
+        className="sticky top-[150px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h3 className="text-lg tracking-wide">
-          {title === "Foundations" ? (
-            <><span className="text-white">Foundations</span><span style={{ color: '#e95a0c' }}>.</span></>
-          ) : (
-            title.split(' ').map((word, i, arr) => (
-              <span key={i}>
-                {i === arr.length - 1 ? (
-                  <><span className="text-gray-500">{word}</span><span style={{ color: '#e95a0c' }}>.</span></>
-                ) : (
-                  <><span className="text-gray-100">{word}</span>{' '}</>
-                )}
-              </span>
-            ))
-          )}
+          {title}
         </h3>
-        <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-200 ${isExpanded ? '' : '-rotate-90'}`}/>
+        <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-300 ${isExpanded ? '' : '-rotate-90'}`}/>
       </div>
       {isExpanded && (
-          <div className="p-4 mt-[1px]">
-            <p className="text-gray-400 text-sm mb-4">{panelDescriptions[title]}</p>
+          <div className="p-8 bg-gradient-to-b from-gray-900/95 to-gray-950">
+            <p className="text-gray-400 text-sm mb-8">{panelDescriptions[title]}</p>
             {children}
             {panelCaveats[title] && (
-            <div className="p-4 mt-[1px]">
-              <p className="text-gray-400 text-sm mb-4">{panelCaveats[title]}</p>
+            <div className="p-5 mt-6 bg-gray-900/80 rounded-lg border border-gray-800/80 shadow-[0_8px_30px_rgb(0,0,0,0.35)]">
+              <p className="text-gray-400 text-sm">{panelCaveats[title]}</p>
             </div>
             )}
           </div>
@@ -232,13 +220,37 @@ export default function ABMTiers() {
         </div>
 
         <div className="px-6 pt-4">
-          <Panel title="Pricing Features">
-            <div className="grid grid-cols-1 divide-y divide-gray-800/30">
-              {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
+          <Panel title={<>
+            <span className="text-white">Pricing model</span>{' '}
+            <span className="text-gray-500">comparisons</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
+            <div className="space-y-8">
+              <div>
+                <h3 className="text-orange-500 mb-3">Two ways to power your ABM strategy</h3>
+                <p className="text-gray-400 leading-relaxed">
+                  Choose between a traditional custom Statement of Work for structured, scoped projects or our ABM Credits Model—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
+                </p>
+                <p className="text-gray-400 mt-4">
+                  More agility, more control, more impact—designed to scale with your business as you grow.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 divide-y divide-gray-800/30">
+                {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
+              </div>
+
+
+
+
             </div>
           </Panel>
 
-          <Panel title="Foundations">
+          <Panel title={<>
+            <span className="text-white">Foundations</span>{' '}
+            <span className="text-gray-500">features</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>ABM Strategy Foundations</h4>
               {foundationItems.map((item, i) => (
@@ -247,7 +259,11 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title="Insights Credits">
+          <Panel title={<>
+            <span className="text-white">Insights</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               {itemGroups.insights.map((item, i) => (
                 <InsightItem key={i} {...mapItemToProps(item)} />
@@ -255,7 +271,11 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title="Personalized Content Credits">
+          <Panel title={<>
+            <span className="text-white">Personalized Content</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <ContentSection title="Engagement Content" 
                 items={itemGroups.engagement.map(item => mapItemToProps(item))} />
@@ -264,7 +284,11 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title="Playbook Credits">
+          <Panel title={<>
+            <span className="text-white">Playbook</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <ContentSection title="Engagement Playbooks" 
                 items={[{ 
@@ -289,7 +313,11 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title="In-house ABM Training Credits">
+          <Panel title={<>
+            <span className="text-white">In-house ABM Training</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               {itemGroups.training.map((item, i) => (
                 <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
