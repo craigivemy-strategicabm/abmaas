@@ -1,5 +1,53 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
+
+const TotalCreditsDisplay = ({ totalCredits }) => {
+  // Determine which tier based on total credits
+  const getTierInfo = () => {
+    if (totalCredits >= 70) return { name: 'Enterprise', color: '#60A5FA' };
+    if (totalCredits >= 50) return { name: 'Impact', color: '#34D399' };
+    if (totalCredits >= 30) return { name: 'Tactical', color: '#F59E0B' };
+    return { name: '', color: 'white' };
+  };
+
+  const tier = getTierInfo();
+
+  return totalCredits > 0 ? (
+    <div className="fixed top-4 left-4 bg-gray-900/95 backdrop-blur-sm p-4 rounded-lg border border-gray-800 shadow-lg z-50">
+      <div className="space-y-2">
+        <div className="text-gray-400 text-sm">Total Credits</div>
+        <div className="text-2xl font-semibold text-white">{totalCredits}</div>
+        {tier.name && (
+          <div className="text-sm" style={{ color: tier.color }}>
+            {tier.name} Tier
+          </div>
+        )}
+      </div>
+    </div>
+  ) : null;
+};
+
+const QuantitySelector = ({ value, onChange, max = 99 }) => {
+  return (
+    <div className="flex items-center space-x-2">
+      <button
+        onClick={() => onChange(Math.max(0, value - 1))}
+        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        disabled={value === 0}
+      >
+        -
+      </button>
+      <span className="w-8 text-center text-gray-300">{value}</span>
+      <button
+        onClick={() => onChange(Math.min(max, value + 1))}
+        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        disabled={value === max}
+      >
+        +
+      </button>
+    </div>
+  );
+};
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const panelDescriptions = {
@@ -75,46 +123,99 @@ const Panel = ({title, children}) => {
   );
 };
 
+const ComparisonHeader = () => (
+  <div className="grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] py-4 mb-2 border-b border-gray-700/50">
+    <div className="text-sm text-gray-400 pl-6">Use case</div>
+    <div></div>
+    <div className="text-sm text-gray-400 text-right pr-8">Custom statements of work</div>
+    <div className="text-sm text-gray-400 text-center">For single priority outcomes</div>
+    <div className="text-sm text-gray-400 text-center">For single ABM buyer journeys</div>
+    <div className="text-sm text-gray-400 text-center">Multiple ABM buyer journeys for multiple regions</div>
+  </div>
+);
+
 const ComparisonRow = ({feature, subtitle, values }) => (
   <div className="contents group">
-    <div className="bg-gray-800/50">
+    <div className="w-full">
       {feature && (
-        <div className="font-medium text-sm text-white border-b border-gray-700/50 p-3">
+        <div className="font-medium text-sm text-white py-5 pl-6 bg-gray-800/80 border-t border-gray-700/50">
           {feature}
         </div>
       )}
-      <div className="grid grid-cols-5 items-center">
-        <div className="text-sm text-gray-400 p-3 pl-6">{subtitle}</div>
-        <div className="col-span-4 grid grid-cols-4">
-          {['custom', 'tactical', 'impact', 'enterprise'].map((type) => (
-            <div key={type} className="bg-gray-800/30 flex items-center justify-center py-3">
-              {typeof values[type] === 'string' ? (
-                <div className="text-xs text-gray-400">{values[type]}</div>
-              ) : (
-                values[type] ? <Check className="w-4 h-4 text-green-500" /> : <div className="text-gray-400 text-lg">-</div>
-              )}
-            </div>
-          ))}
+      <div className={`grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center ${feature ? 'py-4 mt-2' : 'py-3'} ${!feature ? 'bg-gray-800/30 hover:bg-gray-800/40' : ''}`}>
+        <div className="text-sm text-gray-400 pl-6">{subtitle}</div>
+        <div></div>
+        <div className="pr-8 flex justify-end">
+          {typeof values.custom === 'string' ? (
+            <div className="text-xs text-gray-400">{values.custom}</div>
+          ) : (
+            values.custom ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <span className="text-gray-400 text-xs">-</span>
+            )
+          )}
+        </div>
+        <div className="flex justify-center">
+          {typeof values.tactical === 'string' ? (
+            <div className="text-xs text-gray-400">{values.tactical}</div>
+          ) : (
+            values.tactical ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <span className="text-gray-400 text-xs">-</span>
+            )
+          )}
+        </div>
+        <div className="flex justify-center">
+          {typeof values.impact === 'string' ? (
+            <div className="text-xs text-gray-400">{values.impact}</div>
+          ) : (
+            values.impact ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <span className="text-gray-400 text-xs">-</span>
+            )
+          )}
+        </div>
+        <div className="flex justify-center">
+          {typeof values.enterprise === 'string' ? (
+            <div className="text-xs text-gray-400">{values.enterprise}</div>
+          ) : (
+            values.enterprise ? (
+              <Check className="w-4 h-4 text-green-500" />
+            ) : (
+              <span className="text-gray-400 text-xs">-</span>
+            )
+          )}
         </div>
       </div>
     </div>
   </div>
 );
 
-const InsightItem = ({ title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true }) => (
+const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded p-4 mb-4 last:mb-0">
-    <div className="grid grid-cols-5 items-center">
-      <div className="text-gray-300 text-sm col-span-1">{title}</div>
-      <div className="col-span-4 grid grid-cols-4 text-sm">
-        <div className="flex flex-col justify-center items-center">
-          <div className="text-gray-400">£{customPrice}k</div>
-        </div>
-        {[tacticalCredits, impactCredits, enterpriseCredits].map((credits, i) => (
-          <div key={i} className="flex flex-col justify-center items-center">
-            <div className="text-green-500 text-sm">{credits} credits</div>
-            {showDelivery && <div className="text-gray-400">{i === 0 ? '96hrs' : '72hrs'}</div>}
-          </div>
-        ))}
+    <div className="grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center">
+      <div className="text-gray-300 text-sm">{title}</div>
+      <div className="px-4">
+        <QuantitySelector
+          value={quantity}
+          onChange={(value) => onQuantityChange?.(id, value)}
+        />
+      </div>
+      <div className="text-gray-400 text-sm text-right pr-8">£{customPrice}k</div>
+      <div className="text-center">
+        <div className="text-green-500 text-sm">{tacticalCredits} credits</div>
+        {showDelivery && <div className="text-gray-400 text-xs">96hrs</div>}
+      </div>
+      <div className="text-center">
+        <div className="text-green-500 text-sm">{impactCredits} credits</div>
+        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
+      </div>
+      <div className="text-center">
+        <div className="text-green-500 text-sm">{enterpriseCredits} credits</div>
+        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
       </div>
     </div>
   </div>
@@ -123,12 +224,40 @@ const InsightItem = ({ title, customPrice, tacticalCredits, impactCredits, enter
 const ContentSection = ({ title, items }) => (
   <div className="mb-8 last:mb-0">
     <h4 className="text-xl mb-4" style={{ color: '#e95a0c' }}>{title}</h4>
-    {items.map((item, i) => (<InsightItem key={i} {...item} />))}
+    {items.map((item, i) => <InsightItem key={i} {...item} />)}
   </div>
 );
 
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
+  const [quantities, setQuantities] = useState({});
+
+  const handleQuantityChange = (id, value) => {
+    setQuantities(prev => ({ ...prev, [id]: value }));
+  };
+
+  const calculateTotalCredits = () => {
+    let total = 0;
+    Object.entries(quantities).forEach(([id, quantity]) => {
+      const allItems = [
+        ...foundationItems,
+        ...itemGroups.insights,
+        ...itemGroups.engagement,
+        ...itemGroups.training
+      ];
+      const item = allItems.find(item => item.id === id);
+      if (item && quantity) {
+        total += item.tacticalCredits * quantity;
+      }
+    });
+    return total;
+  };
+
+  const resetQuantities = () => {
+    setQuantities({});
+  };
+
+  const totalCredits = calculateTotalCredits();
   
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
@@ -160,12 +289,15 @@ export default function ABMTiers() {
   ];
 
   const mapItemToProps = item => ({
+    id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
     title: item.title,
     customPrice: item.customPrice || "-",
     tacticalCredits: item.credits,
     impactCredits: item.credits,
     enterpriseCredits: item.credits,
-    showDelivery: true
+    showDelivery: true,
+    quantity: quantities[item.id || item.title.toLowerCase().replace(/\s+/g, '-')] || 0,
+    onQuantityChange: handleQuantityChange
   });
 
   return (
@@ -236,8 +368,11 @@ export default function ABMTiers() {
                 </p>
               </div>
 
-              <div className="grid grid-cols-1 divide-y divide-gray-800/30">
-                {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
+              <div className="space-y-1">
+                <ComparisonHeader />
+                <div className="grid grid-cols-1 divide-y divide-gray-800/30">
+                  {comparisonData.map((row, i) => (<ComparisonRow key={i} {...row} />))}
+                </div>
               </div>
 
 
@@ -266,13 +401,18 @@ export default function ABMTiers() {
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               {itemGroups.insights.map((item, i) => (
-                <InsightItem key={i} {...mapItemToProps(item)} />
+                <InsightItem
+                  key={i}
+                  {...mapItemToProps(item)}
+                  quantity={quantities[item.id] || 0}
+                  onQuantityChange={handleQuantityChange}
+                />
               ))}
             </div>
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">Personalized Content</span>{' '}
+            <span className="text-white">Personalized content & creative</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
