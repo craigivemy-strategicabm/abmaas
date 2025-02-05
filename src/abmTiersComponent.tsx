@@ -427,7 +427,7 @@ const ContentSection = ({ title, items }) => (
 const FOUNDATION_ITEMS = [
   { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
   { title: "Account Selection", credits: "3.5", customPrice: "4" },
-  { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
+  { title: "Account Segmentation/Prioritisation", credits: "3.5", customPrice: "4.5" },
   { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
   { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
   { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
@@ -511,7 +511,7 @@ export default function ABMTiers() {
   const { credits: grandTotal, cost: currencyTotal } = calculateTotals();
 
   const comparisonData = [
-    { feature: "ABMaaS tiers", subtitle: "Use case", values: {
+    { feature: "ABMaaS", subtitle: "Use case", values: {
       custom: "Custom statements of work",
       tactical: "For single priority outcomes",
       impact: "For single ABM buyer journeys",
@@ -547,7 +547,7 @@ export default function ABMTiers() {
         <header className="flex justify-between items-center p-6 mb-8">
           <h1 className="text-5xl font-bold">
             <span className="text-white">ABM</span>
-            <span className="text-gray-500">aaS tiers</span>
+            <span className="text-gray-500">aaS</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </h1>
           <div className="text-2xl">
