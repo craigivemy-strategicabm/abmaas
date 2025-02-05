@@ -171,8 +171,8 @@ const ComparisonRow = ({feature, subtitle, values }) => (
 
 const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
-    <div className="p-3 border-b border-gray-700/50">
-      <div className="text-gray-300 text-sm">{title}</div>
+    <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+      <div className="text-gray-300 text-sm font-bold">{title}</div>
     </div>
     <div className="p-3">
       <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
