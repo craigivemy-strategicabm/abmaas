@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
 
-const TotalCreditsDisplay = ({ totalCredits }) => {
-  // Determine which tier based on total credits
-  const getTierInfo = () => {
-    if (totalCredits >= 70) return { name: 'Enterprise', color: '#60A5FA' };
-    if (totalCredits >= 50) return { name: 'Impact', color: '#34D399' };
-    if (totalCredits >= 30) return { name: 'Tactical', color: '#F59E0B' };
-    return { name: '', color: 'white' };
-  };
-
-  const tier = getTierInfo();
-
-  return totalCredits > 0 ? (
-    <div className="fixed top-4 left-4 bg-gray-900/95 backdrop-blur-sm p-4 rounded-lg border border-gray-800 shadow-lg z-50">
-      <div className="space-y-2">
-        <div className="text-gray-400 text-sm">Total Credits</div>
-        <div className="text-2xl font-semibold text-white">{totalCredits}</div>
-        {tier.name && (
-          <div className="text-sm" style={{ color: tier.color }}>
-            {tier.name} Tier
-          </div>
-        )}
-      </div>
-    </div>
-  ) : null;
-};
 
 const QuantitySelector = ({ value, onChange, max = 99 }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="inline-flex items-center bg-gray-800/50 rounded-md">
       <button
         onClick={() => onChange(Math.max(0, value - 1))}
-        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-l"
         disabled={value === 0}
       >
         -
       </button>
-      <span className="w-8 text-center text-gray-300">{value}</span>
+      <input
+        type="number"
+        min="0"
+        max={max}
+        value={value}
+        onChange={(e) => {
+          const newValue = parseInt(e.target.value);
+          if (!isNaN(newValue) && newValue >= 0 && newValue <= max) {
+            onChange(newValue);
+          }
+        }}
+        className="w-8 bg-transparent text-center text-gray-300 text-xs focus:outline-none"
+      />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-r"
         disabled={value === max}
       >
         +
@@ -52,11 +39,11 @@ const QuantitySelector = ({ value, onChange, max = 99 }) => {
 
 const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
+  "Insights": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
+  "Content": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
+  "Training": "Upskill your team with comprehensive ABM training and enablement.",
   "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
-  "Insights Credits": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
-  "Personalized Content Credits": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
-  "Playbook Credits": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment.",
-  "In-house ABM Training Credits": "Upskill your team with comprehensive ABM training and enablement"
+  "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment."
 };
 
 const panelCaveats = {
@@ -95,19 +82,18 @@ const itemGroups = {
   ]
 };
 
-const Panel = ({title, children, isExpanded, onToggle}) => {
+const Panel = ({title, children}) => {
+  const [isExpanded, setIsExpanded] = useState(true);
   return (
     <div className="bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)]">
       <div 
-        className="sticky top-[225px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
-        onClick={onToggle}
+        className="sticky top-[150px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
+        onClick={() => setIsExpanded(!isExpanded)}
       >
-        <div className="flex items-center gap-4 cursor-pointer" onClick={onToggle}>
-          <h3 className="text-lg tracking-wide">
-            {title}
-          </h3>
-          <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-300 ${isExpanded ? '' : '-rotate-90'}`}/>
-        </div>
+        <h3 className="text-lg tracking-wide">
+          {title}
+        </h3>
+        <ChevronDown className={`w-6 h-6 text-gray-400 transform duration-300 ${isExpanded ? '' : '-rotate-90'}`}/>
       </div>
       {isExpanded && (
           <div className="p-8 bg-gradient-to-b from-gray-900/95 to-gray-950">
@@ -132,12 +118,11 @@ const ComparisonRow = ({feature, subtitle, values }) => (
           {feature}
         </div>
       )}
-      <div className={`grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center py-3`}>
+      <div className={`grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center py-3`}>
         <div className="text-xs text-gray-400 pl-6">{subtitle}</div>
-        <div></div>
-        <div className="pr-8 flex justify-end">
+        <div className="flex justify-center">
           {typeof values.custom === 'string' ? (
-            <div className="text-xs text-gray-400">{values.custom}</div>
+            <div className="text-xs text-gray-400 text-center">{values.custom}</div>
           ) : (
             values.custom ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -148,7 +133,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.tactical === 'string' ? (
-            <div className="text-xs text-gray-400">{values.tactical}</div>
+            <div className="text-xs text-gray-400 text-center">{values.tactical}</div>
           ) : (
             values.tactical ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -159,7 +144,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.impact === 'string' ? (
-            <div className="text-xs text-gray-400">{values.impact}</div>
+            <div className="text-xs text-gray-400 text-center">{values.impact}</div>
           ) : (
             values.impact ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -170,7 +155,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.enterprise === 'string' ? (
-            <div className="text-xs text-gray-400">{values.enterprise}</div>
+            <div className="text-xs text-gray-400 text-center">{values.enterprise}</div>
           ) : (
             values.enterprise ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -184,28 +169,232 @@ const ComparisonRow = ({feature, subtitle, values }) => (
   </div>
 );
 
-const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange }) => (
-  <div className="bg-gray-800/30 rounded p-4 mb-4 last:mb-0">
-    <div className="grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center">
-      <div className="text-gray-300 text-sm">{title}</div>
-      <div className="px-4">
-        <QuantitySelector
-          value={quantity}
-          onChange={(value) => onQuantityChange?.(id, value)}
+const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Foundations"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          showDelivery={false}
         />
+      ))}
+    </div>
+  );
+};
+
+const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityChange }) => {
+
+  const calculateTotal = (items) => {
+    return Object.entries(quantities).reduce((total, [id, quantity]) => {
+      const item = items.find(item => 
+        id === item.title.toLowerCase().replace(/\s+/g, '-')
+      );
+      return total + (item ? parseFloat(item.credits) * quantity : 0);
+    }, 0);
+  };
+
+  const totalCredits = calculateTotal([...engagementItems, ...revenueItems]);
+
+  const renderItems = (items, title) => (
+    <div className="mb-8">
+      <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>{title}</h4>
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+        />
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Content"]}</p>
+      <TotalCredits total={totalCredits} />
+      {renderItems(engagementItems, "Engagement Content")}
+      {renderItems(revenueItems, "Revenue Content")}
+    </div>
+  );
+};
+
+const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Training"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          showDelivery={false}
+        />
+      ))}
+    </div>
+  );
+};
+
+const TotalCredits = ({ total }) => (
+  <div className="flex justify-end mb-6 p-3 bg-gray-800/50 rounded-lg">
+    <div className="text-gray-300 text-lg">
+      Total Credits: <span className="text-green-500 font-bold">{total}</span>
+    </div>
+  </div>
+);
+
+const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
+
+  const items = [
+    { 
+      title: "Engagement Playbook", 
+      customPrice: "27",
+      credits: "25",
+      showDelivery: false
+    },
+    { 
+      title: "Revenue Playbook", 
+      customPrice: "8",
+      credits: "7",
+      showDelivery: false
+    }
+  ];
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === 'engagement-playbook' ? item.title === 'Engagement Playbook' : item.title === 'Revenue Playbook'
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Playbooks"]}</p>
+      <div className="space-y-8">
+        <TotalCredits total={totalCredits} />
+        <div>
+          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Engagement Playbooks</h4>
+          <InsightItem
+            id="engagement-playbook"
+            title={items[0].title}
+            customPrice={items[0].customPrice}
+            credits={items[0].credits}
+            quantity={quantities['engagement-playbook'] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+          />
+        </div>
+        <div>
+          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Revenue Playbooks</h4>
+          <InsightItem
+            id="revenue-playbook"
+            title={items[1].title}
+            customPrice={items[1].customPrice}
+            credits={items[1].credits}
+            quantity={quantities['revenue-playbook'] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+          />
+        </div>
       </div>
-      <div className="text-gray-400 text-sm text-right pr-8">£{customPrice}k</div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{tacticalCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">96hrs</div>}
-      </div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{impactCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
-      </div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{enterpriseCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
+    </div>
+  );
+};
+
+const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Insights"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+        />
+      ))}
+    </div>
+  );
+};
+
+const GrandTotal = ({ total }) => (
+  <div className="fixed top-6 left-6 p-4 bg-gray-800/90 rounded-lg shadow-lg z-50 border border-gray-700">
+    <div className="text-gray-300 text-xl">
+      Total Credits Required: <span className="text-green-500 font-bold">{total.toFixed(1)}</span>
+    </div>
+  </div>
+);
+
+const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
+  <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
+    <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+      <div className="text-gray-300 text-sm font-bold">{title}</div>
+    </div>
+    <div className="p-3">
+      <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+        <div className="flex justify-start pl-4">
+          <QuantitySelector
+            value={quantity}
+            onChange={(value) => onQuantityChange?.(id, value)}
+          />
+        </div>
+        <div className="text-gray-400 text-xs text-center">£{customPrice}k</div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
       </div>
     </div>
   </div>
@@ -218,106 +407,69 @@ const ContentSection = ({ title, items }) => (
   </div>
 );
 
+// Define static data first
+const FOUNDATION_ITEMS = [
+  { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
+  { title: "Account Selection", credits: "3.5", customPrice: "4" },
+  { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
+  { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
+  { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
+  { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
+  { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
+];
+
+const ITEM_GROUPS = {
+  insights: [
+    { title: "Market Insights", credits: "8", customPrice: "9.5" },
+    { title: "Account Insights", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Deepdive Insights", credits: "7", customPrice: "7.5" },
+    { title: "Stakeholder Tactical Insights", credits: "2", customPrice: "2.5" }
+  ],
+  engagement: [
+    { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
+    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Annotated Report", credits: "5.5", customPrice: "6" }
+  ],
+  revenue: [
+    { title: "Account Roadmap", credits: "6.5", customPrice: "7.5" },
+    { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
+  ],
+  training: [
+    { title: "AI Enabled ABM journey bootcamp", credits: "5", customPrice: "£-k" },
+    { title: "Learn to how to scale personalisation with consistent outputs", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to deliver hyper-personalised content in days, not weeks or months", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to implement AI models in-house", credits: "4", customPrice: "£-k" },
+    { title: "Learn how to build the foundations for scale and speed", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to deliver deep market, account and stakeholder insights", credits: "3", customPrice: "£-k" }
+  ]
+};
+
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
-  const [expandedPanels, setExpandedPanels] = useState({
-    'pricing': true,
-    'foundations': true,
-    'insights': true,
-    'content': true,
-    'training': true
-  });
-
-  const toggleAllPanels = () => {
-    const areAllExpanded = Object.values(expandedPanels).every(v => v);
-    const newState = !areAllExpanded;
-    setExpandedPanels({
-      'pricing': newState,
-      'foundations': newState,
-      'insights': newState,
-      'content': newState,
-      'training': newState
-    });
-  };
-
-  const togglePanel = (panelId) => {
-    setExpandedPanels(prev => ({
-      ...prev,
-      [panelId]: !prev[panelId]
-    }));
-  };
-
-  const foundationItems = [
-    { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
-    { title: "Account Selection", credits: "3.5", customPrice: "4" },
-    { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
-    { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
-    { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
-    { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
-    { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
-  ];
-
-  const itemGroups = {
-    insights: [
-      { title: "Account Profiling", credits: "3.5", customPrice: "4" },
-      { title: "Buyer Journey Analysis", credits: "4.5", customPrice: "5" },
-      { title: "Content Audit", credits: "4", customPrice: "4.5" },
-      { title: "Competitor Analysis", credits: "5", customPrice: "5.5" },
-      { title: "Tech Stack Analysis", credits: "3", customPrice: "3.5" }
-    ],
-    engagement: [
-      { title: "Personalized Content Creation", credits: "6", customPrice: "6.5" },
-      { title: "Creative Asset Development", credits: "4", customPrice: "4.5" },
-      { title: "Landing Page Design", credits: "5", customPrice: "5.5" },
-      { title: "Email Campaign Design", credits: "3", customPrice: "3.5" },
-      { title: "Social Media Content", credits: "2", customPrice: "2.5" }
-    ],
-    revenue: [
-      { title: "Revenue Content Creation", credits: "6", customPrice: "6.5" },
-      { title: "Sales Enablement Assets", credits: "4", customPrice: "4.5" },
-      { title: "Case Study Development", credits: "5", customPrice: "5.5" },
-      { title: "ROI Calculator", credits: "4", customPrice: "4.5" }
-    ],
-    training: [
-      { title: "ABM Strategy Workshop", credits: "8", customPrice: "9" },
-      { title: "Content Creation Training", credits: "6", customPrice: "6.5" },
-      { title: "Platform Training", credits: "4", customPrice: "4.5" }
-    ]
-  };
 
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({ ...prev, [id]: value }));
   };
 
-  const calculateTotalCredits = () => {
-    let total = 0;
-    Object.entries(quantities).forEach(([id, quantity]) => {
-      const allItems = [
-        ...foundationItems,
-        ...itemGroups.insights,
-        ...itemGroups.engagement,
-        ...itemGroups.revenue,
-        ...itemGroups.training
-      ];
-      const item = allItems.find(item => {
-        const itemId = item.id || item.title.toLowerCase().replace(/\s+/g, '-');
-        return itemId === id;
-      });
-      if (item && quantity) {
-        const credits = parseFloat(item.credits || '0');
-        total += credits * quantity;
-      }
-    });
-    return Math.round(total * 10) / 10; // Round to 1 decimal place
+  const calculatePanelTotal = (items, quantities) => {
+    return Object.entries(quantities).reduce((total, [id, quantity]) => {
+      const item = items.find(item => 
+        id === (typeof item === 'string' ? item : item.title).toLowerCase().replace(/\s+/g, '-')
+      );
+      return total + (item ? parseFloat(item.credits || item.customPrice) * quantity : 0);
+    }, 0);
   };
 
-  const resetQuantities = () => {
-    setQuantities({});
-  };
+  const grandTotal = (
+    calculatePanelTotal(FOUNDATION_ITEMS, quantities) +
+    calculatePanelTotal(ITEM_GROUPS.insights, quantities) +
+    calculatePanelTotal([...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue], quantities) +
+    calculatePanelTotal(['Engagement Playbook', 'Revenue Playbook'], quantities) +
+    calculatePanelTotal(ITEM_GROUPS.training, quantities)
+  );
 
-  const totalCredits = calculateTotalCredits();
-  
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
       custom: "Custom statements of work",
@@ -343,16 +495,15 @@ export default function ABMTiers() {
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
     title: item.title,
     customPrice: item.customPrice || "-",
-    tacticalCredits: item.credits,
-    impactCredits: item.credits,
-    enterpriseCredits: item.credits,
+    credits: item.credits,
     showDelivery: true,
     quantity: quantities[item.id || item.title.toLowerCase().replace(/\s+/g, '-')] || 0,
-    onQuantityChange: handleQuantityChange
+    onQuantityChange: onQuantityChange
   });
 
   return (
     <div className="bg-black text-white min-h-screen">
+      <GrandTotal total={grandTotal} />
       <div className="max-w-6xl mx-auto relative">
         <header className="flex justify-between items-center p-6 mb-8">
           <h1 className="text-5xl font-bold">
@@ -367,76 +518,43 @@ export default function ABMTiers() {
           </div>
         </header>
 
-        <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-16">
+        <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
           <div className="rounded-lg overflow-hidden">
-            <div className="grid grid-cols-5">
-              <div className="col-span-1 bg-gray-800/30 p-4 flex flex-col justify-center items-center">
-                <div className="text-gray-400 text-xs uppercase tracking-wide">Total Credits</div>
-                <div className="text-3xl font-bold text-white mt-1">{totalCredits || 0}</div>
-                {totalCredits >= 30 && (
-                  <div className="text-xs font-medium mt-1" style={{ color: totalCredits >= 70 ? '#60A5FA' : totalCredits >= 50 ? '#34D399' : '#F59E0B' }}>
-                    {totalCredits >= 70 ? 'Enterprise' : totalCredits >= 50 ? 'Impact' : 'Tactical'} Tier
-                  </div>
-                )}
-                {totalCredits > 0 && (
-                  <button
-                    onClick={resetQuantities}
-                    className="mt-2 text-gray-400 hover:text-white text-xs bg-gray-700/50 hover:bg-gray-600/50 px-2 py-1 rounded transition-colors"
-                  >
-                    Reset
-                  </button>
-                )}
-              </div>
-              <div className="col-span-4 grid grid-cols-4 text-center">
-                <div className="bg-gray-700 p-4 text-lg font-bold">Custom SOW</div>
-                {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
-                  <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
-                    className={`p-4 text-lg font-bold ${index > 0 ? 'border-l border-orange-700' : ''}`}>
-                    {tier} ABM
-                  </div>
-                ))}
-              </div>
+            <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+              <div></div>
+              <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
+              {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
+                <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
+                  className={`p-4 text-lg font-bold text-center ${index > 0 ? 'border-l border-orange-700' : ''}`}>
+                  {tier} ABM
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-5 bg-gray-900">
-              <div className="col-span-1"></div>
-              <div className="col-span-4 grid grid-cols-4 text-center">
-                <div className="p-4 flex flex-col justify-end">
-                  <div className="text-gray-400">
-                    <input type="text" value={customPrice} onChange={(e) => setCustomPrice(e.target.value)}
-                      className="w-24 bg-transparent border-b border-gray-700 text-center focus:outline-none focus:border-gray-500"/>
-                  </div>
+            <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900">
+              <div></div>
+              <div className="p-4 flex flex-col items-center">
+                <div className="text-gray-400">
+                  <input type="text" value={customPrice} onChange={(e) => setCustomPrice(e.target.value)}
+                    className="w-24 bg-transparent border-b border-gray-700 text-center focus:outline-none focus:border-gray-500"/>
                 </div>
-                {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
-                  <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
-                    <div className="text-green-500 text-base mb-1">{c} credits</div>
-                    <div className="text-gray-400 text-xs">£{p}k+ per qtr</div>
-                  </div>
-                ))}
               </div>
+              {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
+                <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
+                  <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
+                  <div className="text-gray-400 text-xs text-center">£{p}k+ per qtr</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="flex justify-end px-6 pb-6 pt-2">
-          <button
-            onClick={toggleAllPanels}
-            className="px-4 py-2 text-sm bg-gray-800/50 hover:bg-gray-700/50 text-gray-400 hover:text-white rounded transition-colors flex items-center gap-2"
-          >
-            <ChevronDown className="w-4 h-4" />
-            {Object.values(expandedPanels).every(v => v) ? 'Collapse All' : 'Expand All'}
-          </button>
-        </div>
-
-        <div className="px-6">
-          <Panel 
-            title={<>
-              <span className="text-white">Pricing model</span>{' '}
-              <span className="text-gray-500">comparisons</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </>}
-            isExpanded={expandedPanels['pricing']}
-            onToggle={() => togglePanel('pricing')}>
+        <div className="px-6 pt-4">
+          <Panel title={<>
+            <span className="text-white">Pricing model</span>{' '}
+            <span className="text-gray-500">comparisons</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="space-y-8">
               <div>
                 <h3 className="text-orange-500 mb-3">Two ways to power your ABM strategy</h3>
@@ -458,55 +576,49 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel 
-            title={<>
-              <span className="text-white">Foundations</span>{' '}
-              <span className="text-gray-500">features</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </>}
-            isExpanded={expandedPanels['foundations']}
-            onToggle={() => togglePanel('foundations')}>
+          <Panel title={<>
+            <span className="text-white">Foundations</span>{' '}
+            <span className="text-gray-500">features</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>ABM Strategy Foundations</h4>
-              {foundationItems.map((item, i) => (
-                <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
-              ))}
+              <FoundationsPanel 
+                items={FOUNDATION_ITEMS} 
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
-          <Panel 
-            title={<>
-              <span className="text-white">Insights</span>{' '}
-              <span className="text-gray-500">credits</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </>}
-            isExpanded={expandedPanels['insights']}
-            onToggle={() => togglePanel('insights')}>
+          <Panel title={<>
+            <span className="text-white">Insights</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              {itemGroups.insights.map((item, i) => (
-                <InsightItem
-                  key={i}
-                  {...mapItemToProps(item)}
-                  quantity={quantities[item.id] || 0}
-                  onQuantityChange={handleQuantityChange}
-                />
-              ))}
+
+              <InsightsPanel 
+                items={ITEM_GROUPS.insights}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
-          <Panel 
-            title={<>
-              <span className="text-white">Personalized content & creative</span>{' '}
-              <span className="text-gray-500">credits</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </>}
-            isExpanded={expandedPanels['content']}
-            onToggle={() => togglePanel('content')}>
+          <Panel title={<>
+            <span className="text-white">Personalized content & creative</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              <ContentSection title="Engagement Content" 
-                items={itemGroups.engagement.map(item => mapItemToProps(item))} />
-              <ContentSection title="Revenue Content" 
-                items={itemGroups.revenue.map(item => mapItemToProps(item))} />
+
+              <ContentPanel 
+                engagementItems={ITEM_GROUPS.engagement}
+                revenueItems={ITEM_GROUPS.revenue}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
@@ -516,41 +628,25 @@ export default function ABMTiers() {
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              <ContentSection title="Engagement Playbooks" 
-                items={[{ 
-                  title: "Engagement Playbook", 
-                  customPrice: "27",
-                  tacticalCredits: "25",
-                  impactCredits: "25",
-                  enterpriseCredits: "25",
-                  showDelivery: false
-                }]} 
-              />
-              <ContentSection title="Revenue Playbooks" 
-                items={[{ 
-                  title: "Revenue Playbook", 
-                  customPrice: "7-9",
-                  tacticalCredits: "6.5-8",
-                  impactCredits: "6.5-8",
-                  enterpriseCredits: "6.5-8",
-                  showDelivery: false
-                }]} 
+
+              <PlaybooksPanel 
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
               />
             </div>
           </Panel>
 
-          <Panel 
-            title={<>
-              <span className="text-white">In-house ABM Training</span>{' '}
-              <span className="text-gray-500">credits</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </>}
-            isExpanded={expandedPanels['training']}
-            onToggle={() => togglePanel('training')}>
+          <Panel title={<>
+            <span className="text-white">In-house ABM Training</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              {itemGroups.training.map((item, i) => (
-                <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
-              ))}
+              <TrainingPanel 
+                items={ITEM_GROUPS.training}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
