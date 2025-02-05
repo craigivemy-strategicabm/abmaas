@@ -7,7 +7,7 @@ const QuantitySelector = ({ value, onChange, max = 99 }) => {
     <div className="inline-flex items-center bg-gray-800/50 rounded-md">
       <button
         onClick={() => onChange(Math.max(0, value - 1))}
-        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-l"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-l bg-gray-800/50 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={value === 0}
       >
         -
@@ -23,11 +23,11 @@ const QuantitySelector = ({ value, onChange, max = 99 }) => {
             onChange(newValue);
           }
         }}
-        className="w-8 bg-transparent text-center text-gray-300 text-xs focus:outline-none"
+        className="w-8 bg-transparent text-center text-gray-300 text-xs focus:outline-none focus:ring-0 focus:border-none"
       />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-r"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-r bg-gray-800/50 disabled:opacity-50 disabled:cursor-not-allowed"
         disabled={value === max}
       >
         +
@@ -41,7 +41,7 @@ const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
   "Insights": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
   "Content": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
-  "Training": "Upskill your team with comprehensive ABM training and enablement.",
+  "Training": "Comprehensive ABM training modules covering the full spectrum of account-based marketing—from foundational concepts to advanced optimization techniques. Each module combines strategic frameworks with practical implementation guidance.",
   "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
   "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment."
 };
@@ -83,7 +83,7 @@ const itemGroups = {
 };
 
 const Panel = ({title, children}) => {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <div className="bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)]">
       <div 
@@ -180,8 +180,7 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Foundations"]}</p>
-      <TotalCredits total={totalCredits} />
+      <TotalCredits total={totalCredits} description={panelDescriptions["Foundations"]} />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -230,8 +229,7 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
 
   return (
     <div>
-      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Content"]}</p>
-      <TotalCredits total={totalCredits} />
+      <TotalCredits total={totalCredits} description={panelDescriptions["Content"]} />
       {renderItems(engagementItems, "Engagement Content")}
       {renderItems(revenueItems, "Revenue Content")}
     </div>
@@ -249,8 +247,7 @@ const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Training"]}</p>
-      <TotalCredits total={totalCredits} />
+      <TotalCredits total={totalCredits} description={panelDescriptions["Training"]} />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -267,10 +264,15 @@ const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
   );
 };
 
-const TotalCredits = ({ total }) => (
-  <div className="flex justify-end mb-6 p-3 bg-gray-800/50 rounded-lg">
-    <div className="text-gray-300 text-lg">
-      Total Credits: <span className="text-green-500 font-bold">{total}</span>
+const TotalCredits = ({ total, description }) => (
+  <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] mb-6">
+    <div className="col-span-4">
+      <p className="text-gray-400 text-sm pr-4">{description}</p>
+    </div>
+    <div className="p-3 bg-gray-800/50 rounded-lg">
+      <div className="text-gray-300 text-sm text-center">
+        Total Credits: <span className="text-green-500 font-bold">{total}</span>
+      </div>
     </div>
   </div>
 );
@@ -279,13 +281,13 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
 
   const items = [
     { 
-      title: "Engagement Playbook", 
+      title: "Engagement Playbooks", 
       customPrice: "27",
       credits: "25",
       showDelivery: false
     },
     { 
-      title: "Revenue Playbook", 
+      title: "Revenue Playbooks", 
       customPrice: "8",
       credits: "7",
       showDelivery: false
@@ -294,19 +296,17 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
-      (id === 'engagement-playbook' && item.title === 'Engagement Playbook') ||
-      (id === 'revenue-playbook' && item.title === 'Revenue Playbook')
+      (id === 'engagement-playbook' && item.title === 'Engagement Playbooks') ||
+      (id === 'revenue-playbook' && item.title === 'Revenue Playbooks')
     );
     return total + (item ? parseFloat(item.credits) * quantity : 0);
   }, 0);
 
   return (
     <div>
-      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Playbooks"]}</p>
       <div className="space-y-8">
-        <TotalCredits total={totalCredits} />
+        <TotalCredits total={totalCredits} description={panelDescriptions["Playbooks"]} />
         <div>
-          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Engagement Playbooks</h4>
           <InsightItem
             id="engagement-playbook"
             title={items[0].title}
@@ -318,7 +318,6 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
           />
         </div>
         <div>
-          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Revenue Playbooks</h4>
           <InsightItem
             id="revenue-playbook"
             title={items[1].title}
@@ -345,8 +344,7 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Insights"]}</p>
-      <TotalCredits total={totalCredits} />
+      <TotalCredits total={totalCredits} description={panelDescriptions["Insights"]} />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -371,7 +369,14 @@ const GrandTotal = ({ total }) => (
 const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
-      <div className="text-gray-300 text-sm font-bold">{title}</div>
+      <div className="text-gray-300 text-sm">
+        {title.split(' (')[0]}
+        {title.includes('(') && (
+          <div className="text-gray-400 text-xs mt-1">
+            {title.split('(')[1].replace(')', '')}
+          </div>
+        )}
+      </div>
     </div>
     <div className="p-3">
       <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
@@ -435,12 +440,10 @@ const ITEM_GROUPS = {
     { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
   ],
   training: [
-    { title: "AI Enabled ABM journey bootcamp", credits: "5", customPrice: "£-k" },
-    { title: "Learn to how to scale personalisation with consistent outputs", credits: "3", customPrice: "£-k" },
-    { title: "Learn how to deliver hyper-personalised content in days, not weeks or months", credits: "3", customPrice: "£-k" },
-    { title: "Learn how to implement AI models in-house", credits: "4", customPrice: "£-k" },
-    { title: "Learn how to build the foundations for scale and speed", credits: "3", customPrice: "£-k" },
-    { title: "Learn how to deliver deep market, account and stakeholder insights", credits: "3", customPrice: "£-k" }
+    { title: "ABM Fundamentals (ICP, Account Selection, Segmentation)", credits: "3", customPrice: "4" },
+    { title: "Strategy & Playbooks (Campaign Planning, Sales Alignment)", credits: "3", customPrice: "4" },
+    { title: "Execution & Activation (Content Personalization, Multi-Channel Engagement)", credits: "3", customPrice: "4" },
+    { title: "Measurement & Optimization (ROI, Attribution, Tech Stack)", credits: "3", customPrice: "4" }
   ]
 };
 
@@ -570,9 +573,9 @@ export default function ABMTiers() {
           </>}>
             <div className="space-y-8">
               <div>
-                <h3 className="text-orange-500 mb-3">Two ways to power your ABM strategy</h3>
+                <h3 className="text-orange-500 mb-3 text-2xl font-medium">Two ways to power your ABM strategy</h3>
                 <p className="text-gray-400 leading-relaxed">
-                  Choose between a traditional custom Statement of Work for structured, scoped projects or our ABM Credits Model—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
+                  Choose between a traditional <span className="text-green-500">custom Statement of Work</span> for structured, scoped projects or our <span className="text-green-500">ABM Credits Model</span>—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
                 </p>
                 <p className="text-gray-400 mt-4">
                   More agility, more control, more impact—designed to scale with your business as you grow.
@@ -590,8 +593,8 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">Foundations</span>{' '}
-            <span className="text-gray-500">features</span>
+            <span className="text-white">ABM foundations</span>{' '}
+            <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
@@ -650,7 +653,7 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">In-house ABM Training</span>{' '}
+            <span className="text-white">ABM Training</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
