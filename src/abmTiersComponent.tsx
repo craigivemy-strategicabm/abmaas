@@ -39,11 +39,11 @@ const QuantitySelector = ({ value, onChange, max = 99 }) => {
 
 const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
+  "Insights": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
+  "Content": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
+  "Training": "Upskill your team with comprehensive ABM training and enablement.",
   "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
-  "Insights Credits": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
-  "Personalized Content Credits": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
-  "Playbook Credits": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment.",
-  "In-house ABM Training Credits": "Upskill your team with comprehensive ABM training and enablement"
+  "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment."
 };
 
 const panelCaveats = {
@@ -169,6 +169,206 @@ const ComparisonRow = ({feature, subtitle, values }) => (
   </div>
 );
 
+const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Foundations"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          showDelivery={false}
+        />
+      ))}
+    </div>
+  );
+};
+
+const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityChange }) => {
+
+  const calculateTotal = (items) => {
+    return Object.entries(quantities).reduce((total, [id, quantity]) => {
+      const item = items.find(item => 
+        id === item.title.toLowerCase().replace(/\s+/g, '-')
+      );
+      return total + (item ? parseFloat(item.credits) * quantity : 0);
+    }, 0);
+  };
+
+  const totalCredits = calculateTotal([...engagementItems, ...revenueItems]);
+
+  const renderItems = (items, title) => (
+    <div className="mb-8">
+      <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>{title}</h4>
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+        />
+      ))}
+    </div>
+  );
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Content"]}</p>
+      <TotalCredits total={totalCredits} />
+      {renderItems(engagementItems, "Engagement Content")}
+      {renderItems(revenueItems, "Revenue Content")}
+    </div>
+  );
+};
+
+const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Training"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          showDelivery={false}
+        />
+      ))}
+    </div>
+  );
+};
+
+const TotalCredits = ({ total }) => (
+  <div className="flex justify-end mb-6 p-3 bg-gray-800/50 rounded-lg">
+    <div className="text-gray-300 text-lg">
+      Total Credits: <span className="text-green-500 font-bold">{total}</span>
+    </div>
+  </div>
+);
+
+const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
+
+  const items = [
+    { 
+      title: "Engagement Playbook", 
+      customPrice: "27",
+      credits: "25",
+      showDelivery: false
+    },
+    { 
+      title: "Revenue Playbook", 
+      customPrice: "8",
+      credits: "7",
+      showDelivery: false
+    }
+  ];
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === 'engagement-playbook' ? item.title === 'Engagement Playbook' : item.title === 'Revenue Playbook'
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Playbooks"]}</p>
+      <div className="space-y-8">
+        <TotalCredits total={totalCredits} />
+        <div>
+          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Engagement Playbooks</h4>
+          <InsightItem
+            id="engagement-playbook"
+            title={items[0].title}
+            customPrice={items[0].customPrice}
+            credits={items[0].credits}
+            quantity={quantities['engagement-playbook'] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+          />
+        </div>
+        <div>
+          <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>Revenue Playbooks</h4>
+          <InsightItem
+            id="revenue-playbook"
+            title={items[1].title}
+            customPrice={items[1].customPrice}
+            credits={items[1].credits}
+            quantity={quantities['revenue-playbook'] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+          />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <p className="text-gray-400 text-sm mb-8">{panelDescriptions["Insights"]}</p>
+      <TotalCredits total={totalCredits} />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+        />
+      ))}
+    </div>
+  );
+};
+
+const GrandTotal = ({ total }) => (
+  <div className="fixed top-6 left-6 p-4 bg-gray-800/90 rounded-lg shadow-lg z-50 border border-gray-700">
+    <div className="text-gray-300 text-xl">
+      Total Credits Required: <span className="text-green-500 font-bold">{total.toFixed(1)}</span>
+    </div>
+  </div>
+);
+
 const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
@@ -207,6 +407,44 @@ const ContentSection = ({ title, items }) => (
   </div>
 );
 
+// Define static data first
+const FOUNDATION_ITEMS = [
+  { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
+  { title: "Account Selection", credits: "3.5", customPrice: "4" },
+  { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
+  { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
+  { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
+  { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
+  { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
+];
+
+const ITEM_GROUPS = {
+  insights: [
+    { title: "Market Insights", credits: "8", customPrice: "9.5" },
+    { title: "Account Insights", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Deepdive Insights", credits: "7", customPrice: "7.5" },
+    { title: "Stakeholder Tactical Insights", credits: "2", customPrice: "2.5" }
+  ],
+  engagement: [
+    { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
+    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Annotated Report", credits: "5.5", customPrice: "6" }
+  ],
+  revenue: [
+    { title: "Account Roadmap", credits: "6.5", customPrice: "7.5" },
+    { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
+  ],
+  training: [
+    { title: "AI Enabled ABM journey bootcamp", credits: "5", customPrice: "£-k" },
+    { title: "Learn to how to scale personalisation with consistent outputs", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to deliver hyper-personalised content in days, not weeks or months", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to implement AI models in-house", credits: "4", customPrice: "£-k" },
+    { title: "Learn how to build the foundations for scale and speed", credits: "3", customPrice: "£-k" },
+    { title: "Learn how to deliver deep market, account and stakeholder insights", credits: "3", customPrice: "£-k" }
+  ]
+};
+
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
@@ -214,7 +452,24 @@ export default function ABMTiers() {
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({ ...prev, [id]: value }));
   };
-  
+
+  const calculatePanelTotal = (items, quantities) => {
+    return Object.entries(quantities).reduce((total, [id, quantity]) => {
+      const item = items.find(item => 
+        id === (typeof item === 'string' ? item : item.title).toLowerCase().replace(/\s+/g, '-')
+      );
+      return total + (item ? parseFloat(item.credits || item.customPrice) * quantity : 0);
+    }, 0);
+  };
+
+  const grandTotal = (
+    calculatePanelTotal(FOUNDATION_ITEMS, quantities) +
+    calculatePanelTotal(ITEM_GROUPS.insights, quantities) +
+    calculatePanelTotal([...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue], quantities) +
+    calculatePanelTotal(['Engagement Playbook', 'Revenue Playbook'], quantities) +
+    calculatePanelTotal(ITEM_GROUPS.training, quantities)
+  );
+
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
       custom: "Custom statements of work",
@@ -234,15 +489,7 @@ export default function ABMTiers() {
     { subtitle: "Time to market", values: { custom: "weeks", tactical: "days", impact: "days", enterprise: "days" } }
   ];
 
-  const foundationItems = [
-    { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
-    { title: "Account Selection", credits: "3.5", customPrice: "4" },
-    { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
-    { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
-    { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
-    { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
-    { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
-  ];
+
 
   const mapItemToProps = item => ({
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
@@ -251,11 +498,12 @@ export default function ABMTiers() {
     credits: item.credits,
     showDelivery: true,
     quantity: quantities[item.id || item.title.toLowerCase().replace(/\s+/g, '-')] || 0,
-    onQuantityChange: handleQuantityChange
+    onQuantityChange: onQuantityChange
   });
 
   return (
     <div className="bg-black text-white min-h-screen">
+      <GrandTotal total={grandTotal} />
       <div className="max-w-6xl mx-auto relative">
         <header className="flex justify-between items-center p-6 mb-8">
           <h1 className="text-5xl font-bold">
@@ -335,9 +583,11 @@ export default function ABMTiers() {
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>ABM Strategy Foundations</h4>
-              {foundationItems.map((item, i) => (
-                <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
-              ))}
+              <FoundationsPanel 
+                items={FOUNDATION_ITEMS} 
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
@@ -347,14 +597,12 @@ export default function ABMTiers() {
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              {itemGroups.insights.map((item, i) => (
-                <InsightItem
-                  key={i}
-                  {...mapItemToProps(item)}
-                  quantity={quantities[item.id] || 0}
-                  onQuantityChange={handleQuantityChange}
-                />
-              ))}
+
+              <InsightsPanel 
+                items={ITEM_GROUPS.insights}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
@@ -364,10 +612,13 @@ export default function ABMTiers() {
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              <ContentSection title="Engagement Content" 
-                items={itemGroups.engagement.map(item => mapItemToProps(item))} />
-              <ContentSection title="Revenue Content" 
-                items={itemGroups.revenue.map(item => mapItemToProps(item))} />
+
+              <ContentPanel 
+                engagementItems={ITEM_GROUPS.engagement}
+                revenueItems={ITEM_GROUPS.revenue}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
@@ -377,25 +628,10 @@ export default function ABMTiers() {
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              <ContentSection title="Engagement Playbooks" 
-                items={[{ 
-                  title: "Engagement Playbook", 
-                  customPrice: "27",
-                  tacticalCredits: "25",
-                  impactCredits: "25",
-                  enterpriseCredits: "25",
-                  showDelivery: false
-                }]} 
-              />
-              <ContentSection title="Revenue Playbooks" 
-                items={[{ 
-                  title: "Revenue Playbook", 
-                  customPrice: "7-9",
-                  tacticalCredits: "6.5-8",
-                  impactCredits: "6.5-8",
-                  enterpriseCredits: "6.5-8",
-                  showDelivery: false
-                }]} 
+
+              <PlaybooksPanel 
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
               />
             </div>
           </Panel>
@@ -406,9 +642,11 @@ export default function ABMTiers() {
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              {itemGroups.training.map((item, i) => (
-                <InsightItem key={i} {...mapItemToProps(item)} showDelivery={false} />
-              ))}
+              <TrainingPanel 
+                items={ITEM_GROUPS.training}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+              />
             </div>
           </Panel>
 
