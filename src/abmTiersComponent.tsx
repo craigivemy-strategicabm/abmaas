@@ -607,7 +607,7 @@ export default function ABMTiers() {
               <div>
                 <h3 className="text-orange-500 mb-3 text-2xl font-medium">Two ways to power your ABM strategy</h3>
                 <p className="text-gray-400 leading-relaxed">
-                  Choose between a traditional <span className="text-green-500">custom Statement of Work</span> for structured, scoped projects or our <span className="text-green-500">ABM Credits Model</span>—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
+                  Choose between a traditional custom Statement of Work for structured, scoped projects or our ABM Credits Model—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
                 </p>
                 <p className="text-gray-400 mt-4">
                   More agility, more control, more impact—designed to scale with your business as you grow.
