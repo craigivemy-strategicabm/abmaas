@@ -1,46 +1,33 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
 
-const TotalCreditsDisplay = ({ totalCredits }) => {
-  // Determine which tier based on total credits
-  const getTierInfo = () => {
-    if (totalCredits >= 70) return { name: 'Enterprise', color: '#60A5FA' };
-    if (totalCredits >= 50) return { name: 'Impact', color: '#34D399' };
-    if (totalCredits >= 30) return { name: 'Tactical', color: '#F59E0B' };
-    return { name: '', color: 'white' };
-  };
-
-  const tier = getTierInfo();
-
-  return totalCredits > 0 ? (
-    <div className="fixed top-4 left-4 bg-gray-900/95 backdrop-blur-sm p-4 rounded-lg border border-gray-800 shadow-lg z-50">
-      <div className="space-y-2">
-        <div className="text-gray-400 text-sm">Total Credits</div>
-        <div className="text-2xl font-semibold text-white">{totalCredits}</div>
-        {tier.name && (
-          <div className="text-sm" style={{ color: tier.color }}>
-            {tier.name} Tier
-          </div>
-        )}
-      </div>
-    </div>
-  ) : null;
-};
 
 const QuantitySelector = ({ value, onChange, max = 99 }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className="inline-flex items-center bg-gray-800/50 rounded-md">
       <button
         onClick={() => onChange(Math.max(0, value - 1))}
-        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-l"
         disabled={value === 0}
       >
         -
       </button>
-      <span className="w-8 text-center text-gray-300">{value}</span>
+      <input
+        type="number"
+        min="0"
+        max={max}
+        value={value}
+        onChange={(e) => {
+          const newValue = parseInt(e.target.value);
+          if (!isNaN(newValue) && newValue >= 0 && newValue <= max) {
+            onChange(newValue);
+          }
+        }}
+        className="w-8 bg-transparent text-center text-gray-300 text-xs focus:outline-none"
+      />
       <button
         onClick={() => onChange(Math.min(max, value + 1))}
-        className="px-2 py-1 bg-gray-800 hover:bg-gray-700 text-gray-300 rounded"
+        className="px-1.5 py-0.5 hover:bg-gray-700/50 text-gray-400 text-xs rounded-r"
         disabled={value === max}
       >
         +
@@ -131,12 +118,11 @@ const ComparisonRow = ({feature, subtitle, values }) => (
           {feature}
         </div>
       )}
-      <div className={`grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center py-3`}>
+      <div className={`grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center py-3`}>
         <div className="text-xs text-gray-400 pl-6">{subtitle}</div>
-        <div></div>
-        <div className="pr-8 flex justify-end">
+        <div className="flex justify-center">
           {typeof values.custom === 'string' ? (
-            <div className="text-xs text-gray-400">{values.custom}</div>
+            <div className="text-xs text-gray-400 text-center">{values.custom}</div>
           ) : (
             values.custom ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -147,7 +133,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.tactical === 'string' ? (
-            <div className="text-xs text-gray-400">{values.tactical}</div>
+            <div className="text-xs text-gray-400 text-center">{values.tactical}</div>
           ) : (
             values.tactical ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -158,7 +144,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.impact === 'string' ? (
-            <div className="text-xs text-gray-400">{values.impact}</div>
+            <div className="text-xs text-gray-400 text-center">{values.impact}</div>
           ) : (
             values.impact ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -169,7 +155,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
         </div>
         <div className="flex justify-center">
           {typeof values.enterprise === 'string' ? (
-            <div className="text-xs text-gray-400">{values.enterprise}</div>
+            <div className="text-xs text-gray-400 text-center">{values.enterprise}</div>
           ) : (
             values.enterprise ? (
               <Check className="w-4 h-4 text-green-500" />
@@ -183,28 +169,32 @@ const ComparisonRow = ({feature, subtitle, values }) => (
   </div>
 );
 
-const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange }) => (
-  <div className="bg-gray-800/30 rounded p-4 mb-4 last:mb-0">
-    <div className="grid grid-cols-[minmax(200px,1fr)_auto_120px_1fr_1fr_1fr] items-center">
+const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
+  <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
+    <div className="p-3 border-b border-gray-700/50">
       <div className="text-gray-300 text-sm">{title}</div>
-      <div className="px-4">
-        <QuantitySelector
-          value={quantity}
-          onChange={(value) => onQuantityChange?.(id, value)}
-        />
-      </div>
-      <div className="text-gray-400 text-sm text-right pr-8">£{customPrice}k</div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{tacticalCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">96hrs</div>}
-      </div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{impactCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
-      </div>
-      <div className="text-center">
-        <div className="text-green-500 text-sm">{enterpriseCredits} credits</div>
-        {showDelivery && <div className="text-gray-400 text-xs">72hrs</div>}
+    </div>
+    <div className="p-3">
+      <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+        <div className="flex justify-start pl-4">
+          <QuantitySelector
+            value={quantity}
+            onChange={(value) => onQuantityChange?.(id, value)}
+          />
+        </div>
+        <div className="text-gray-400 text-xs text-center">£{customPrice}k</div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
+        <div className="text-center">
+          <div className="text-green-500 text-sm text-center">{credits} credits</div>
+          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+        </div>
       </div>
     </div>
   </div>
@@ -224,29 +214,6 @@ export default function ABMTiers() {
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({ ...prev, [id]: value }));
   };
-
-  const calculateTotalCredits = () => {
-    let total = 0;
-    Object.entries(quantities).forEach(([id, quantity]) => {
-      const allItems = [
-        ...foundationItems,
-        ...itemGroups.insights,
-        ...itemGroups.engagement,
-        ...itemGroups.training
-      ];
-      const item = allItems.find(item => item.id === id);
-      if (item && quantity) {
-        total += item.tacticalCredits * quantity;
-      }
-    });
-    return total;
-  };
-
-  const resetQuantities = () => {
-    setQuantities({});
-  };
-
-  const totalCredits = calculateTotalCredits();
   
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
@@ -281,9 +248,7 @@ export default function ABMTiers() {
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
     title: item.title,
     customPrice: item.customPrice || "-",
-    tacticalCredits: item.credits,
-    impactCredits: item.credits,
-    enterpriseCredits: item.credits,
+    credits: item.credits,
     showDelivery: true,
     quantity: quantities[item.id || item.title.toLowerCase().replace(/\s+/g, '-')] || 0,
     onQuantityChange: handleQuantityChange
@@ -307,35 +272,31 @@ export default function ABMTiers() {
 
         <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
           <div className="rounded-lg overflow-hidden">
-            <div className="grid grid-cols-5">
-              <div className="col-span-1"></div>
-              <div className="col-span-4 grid grid-cols-4 text-center">
-                <div className="bg-gray-700 p-4 text-lg font-bold">Custom SOW</div>
-                {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
-                  <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
-                    className={`p-4 text-lg font-bold ${index > 0 ? 'border-l border-orange-700' : ''}`}>
-                    {tier} ABM
-                  </div>
-                ))}
-              </div>
+            <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+              <div></div>
+              <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
+              {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
+                <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
+                  className={`p-4 text-lg font-bold text-center ${index > 0 ? 'border-l border-orange-700' : ''}`}>
+                  {tier} ABM
+                </div>
+              ))}
             </div>
 
-            <div className="grid grid-cols-5 bg-gray-900">
-              <div className="col-span-1"></div>
-              <div className="col-span-4 grid grid-cols-4 text-center">
-                <div className="p-4 flex flex-col justify-end">
-                  <div className="text-gray-400">
-                    <input type="text" value={customPrice} onChange={(e) => setCustomPrice(e.target.value)}
-                      className="w-24 bg-transparent border-b border-gray-700 text-center focus:outline-none focus:border-gray-500"/>
-                  </div>
+            <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900">
+              <div></div>
+              <div className="p-4 flex flex-col items-center">
+                <div className="text-gray-400">
+                  <input type="text" value={customPrice} onChange={(e) => setCustomPrice(e.target.value)}
+                    className="w-24 bg-transparent border-b border-gray-700 text-center focus:outline-none focus:border-gray-500"/>
                 </div>
-                {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
-                  <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
-                    <div className="text-green-500 text-base mb-1">{c} credits</div>
-                    <div className="text-gray-400 text-xs">£{p}k+ per qtr</div>
-                  </div>
-                ))}
               </div>
+              {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
+                <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
+                  <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
+                  <div className="text-gray-400 text-xs text-center">£{p}k+ per qtr</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
