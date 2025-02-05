@@ -280,6 +280,12 @@ const TotalCredits = ({ total, description }) => (
 const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
 
   const items = [
+    {
+      title: "Custom Playbook Design",
+      customPrice: "12",
+      credits: "10",
+      showDelivery: false
+    },
     { 
       title: "Engagement Playbooks", 
       customPrice: "27",
@@ -296,6 +302,7 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
+      (id === 'custom-playbook-design' && item.title === 'Custom Playbook Design') ||
       (id === 'engagement-playbook' && item.title === 'Engagement Playbooks') ||
       (id === 'revenue-playbook' && item.title === 'Revenue Playbooks')
     );
@@ -308,10 +315,21 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
         <TotalCredits total={totalCredits} description={panelDescriptions["Playbooks"]} />
         <div>
           <InsightItem
-            id="engagement-playbook"
+            id="custom-playbook-design"
             title={items[0].title}
             customPrice={items[0].customPrice}
             credits={items[0].credits}
+            quantity={quantities['custom-playbook-design'] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+          />
+        </div>
+        <div>
+          <InsightItem
+            id="engagement-playbook"
+            title={items[1].title}
+            customPrice={items[1].customPrice}
+            credits={items[1].credits}
             quantity={quantities['engagement-playbook'] || 0}
             onQuantityChange={onQuantityChange}
             showDelivery={false}
@@ -320,9 +338,9 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
         <div>
           <InsightItem
             id="revenue-playbook"
-            title={items[1].title}
-            customPrice={items[1].customPrice}
-            credits={items[1].credits}
+            title={items[2].title}
+            customPrice={items[2].customPrice}
+            credits={items[2].credits}
             quantity={quantities['revenue-playbook'] || 0}
             onQuantityChange={onQuantityChange}
             showDelivery={false}
@@ -359,12 +377,6 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
     </div>
   );
 };
-
-const GrandTotal = ({ total }) => (
-  <div className="text-gray-300 text-base">
-    Total Credits: <span className="text-green-500 font-bold">{total.toFixed(1)}</span>
-  </div>
-);
 
 const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
@@ -418,7 +430,6 @@ const FOUNDATION_ITEMS = [
   { title: "Account Segmentation/Prioritisation", credits: "2", customPrice: "2.5" },
   { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
   { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
-  { title: "Custom Playbook Design", credits: "10", customPrice: "12" },
   { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
 ];
 
@@ -464,8 +475,9 @@ export default function ABMTiers() {
     }, 0);
   };
 
-  const calculateTotal = () => {
-    let total = 0;
+  const calculateTotals = () => {
+    let credits = 0;
+    let cost = 0;
     
     // Add up quantities * credits for each panel
     Object.entries(quantities).forEach(([id, quantity]) => {
@@ -476,19 +488,27 @@ export default function ABMTiers() {
       if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       
       // Special handling for playbooks
-      if (id === 'engagement-playbook') {
-        total += 25 * quantity; // Engagement Playbook credits
+      if (id === 'custom-playbook-design') {
+        credits += 10 * quantity; // Custom Playbook Design credits
+        cost += 12 * quantity; // Custom Playbook Design cost
+      } else if (id === 'engagement-playbook') {
+        credits += 25 * quantity; // Engagement Playbook credits
+        cost += 27 * quantity; // Engagement Playbook cost
       } else if (id === 'revenue-playbook') {
-        total += 7 * quantity; // Revenue Playbook credits
+        credits += 7 * quantity; // Revenue Playbook credits
+        cost += 8 * quantity; // Revenue Playbook cost
       } else if (item) {
-        total += parseFloat(item.credits) * quantity;
+        credits += parseFloat(item.credits) * quantity;
+        if (item.customPrice !== '£-k') {
+          cost += parseFloat(item.customPrice) * quantity;
+        }
       }
     });
     
-    return total;
+    return { credits, cost };
   };
 
-  const grandTotal = calculateTotal();
+  const { credits: grandTotal, cost: currencyTotal } = calculateTotals();
 
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
@@ -551,10 +571,22 @@ export default function ABMTiers() {
             </div>
 
             <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900">
-              <div className="p-4">
-                <GrandTotal total={grandTotal} />
+              <div className="p-4 flex items-center gap-6">
+                <div className="text-gray-300 text-sm flex items-center gap-1">
+                  Total Credits: <span className="text-green-500 font-medium">{grandTotal.toFixed(1)}</span>
+                </div>
+                <button 
+                  onClick={() => setQuantities({})}
+                  className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-200 bg-gray-800 hover:bg-gray-700 rounded transition-colors"
+                >
+                  Reset All
+                </button>
               </div>
-              <div className="p-4"></div>
+              <div className="p-4">
+                <div className="text-gray-300 text-sm flex items-center gap-1">
+                  Total Cost: <span className="text-green-500 font-medium">£{currencyTotal.toFixed(1)}k</span>
+                </div>
+              </div>
               {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
                 <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
                   <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
