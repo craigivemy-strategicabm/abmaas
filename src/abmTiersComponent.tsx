@@ -294,7 +294,8 @@ const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
-      id === 'engagement-playbook' ? item.title === 'Engagement Playbook' : item.title === 'Revenue Playbook'
+      (id === 'engagement-playbook' && item.title === 'Engagement Playbook') ||
+      (id === 'revenue-playbook' && item.title === 'Revenue Playbook')
     );
     return total + (item ? parseFloat(item.credits) * quantity : 0);
   }, 0);
@@ -362,10 +363,8 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
 };
 
 const GrandTotal = ({ total }) => (
-  <div className="fixed top-6 left-6 p-4 bg-gray-800/90 rounded-lg shadow-lg z-50 border border-gray-700">
-    <div className="text-gray-300 text-xl">
-      Total Credits Required: <span className="text-green-500 font-bold">{total.toFixed(1)}</span>
-    </div>
+  <div className="text-gray-300 text-base">
+    Total Credits: <span className="text-green-500 font-bold">{total.toFixed(1)}</span>
   </div>
 );
 
@@ -462,13 +461,31 @@ export default function ABMTiers() {
     }, 0);
   };
 
-  const grandTotal = (
-    calculatePanelTotal(FOUNDATION_ITEMS, quantities) +
-    calculatePanelTotal(ITEM_GROUPS.insights, quantities) +
-    calculatePanelTotal([...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue], quantities) +
-    calculatePanelTotal(['Engagement Playbook', 'Revenue Playbook'], quantities) +
-    calculatePanelTotal(ITEM_GROUPS.training, quantities)
-  );
+  const calculateTotal = () => {
+    let total = 0;
+    
+    // Add up quantities * credits for each panel
+    Object.entries(quantities).forEach(([id, quantity]) => {
+      // Find matching item across all item groups
+      let item = FOUNDATION_ITEMS.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = ITEM_GROUPS.insights.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = [...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      
+      // Special handling for playbooks
+      if (id === 'engagement-playbook') {
+        total += 25 * quantity; // Engagement Playbook credits
+      } else if (id === 'revenue-playbook') {
+        total += 7 * quantity; // Revenue Playbook credits
+      } else if (item) {
+        total += parseFloat(item.credits) * quantity;
+      }
+    });
+    
+    return total;
+  };
+
+  const grandTotal = calculateTotal();
 
   const comparisonData = [
     { feature: "ABMaaS tiers", subtitle: "Use case", values: {
@@ -503,7 +520,6 @@ export default function ABMTiers() {
 
   return (
     <div className="bg-black text-white min-h-screen">
-      <GrandTotal total={grandTotal} />
       <div className="max-w-6xl mx-auto relative">
         <header className="flex justify-between items-center p-6 mb-8">
           <h1 className="text-5xl font-bold">
@@ -532,13 +548,10 @@ export default function ABMTiers() {
             </div>
 
             <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900">
-              <div></div>
-              <div className="p-4 flex flex-col items-center">
-                <div className="text-gray-400">
-                  <input type="text" value={customPrice} onChange={(e) => setCustomPrice(e.target.value)}
-                    className="w-24 bg-transparent border-b border-gray-700 text-center focus:outline-none focus:border-gray-500"/>
-                </div>
+              <div className="p-4">
+                <GrandTotal total={grandTotal} />
               </div>
+              <div className="p-4"></div>
               {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
                 <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
                   <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
