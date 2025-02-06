@@ -82,12 +82,13 @@ const itemGroups = {
   ]
 };
 
-const Panel = ({title, children}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
+const Panel = ({title, children, defaultExpanded = false}) => {
+  const isCreditsPanel = title.toString().toLowerCase().includes('credits');
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   return (
-    <div className="bg-gradient-to-b from-gray-900 to-gray-950 backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)]">
+    <div className={`backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)] ${isCreditsPanel ? 'bg-gradient-to-b from-gray-900/70 to-gray-950/70' : 'bg-gradient-to-b from-gray-900 to-gray-950'}`}>
       <div 
-        className="sticky top-[150px] px-6 py-5 bg-gradient-to-r from-gray-900 to-gray-950 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)]"
+        className={`sticky top-[150px] px-6 py-5 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)] ${isCreditsPanel ? 'bg-gradient-to-r from-gray-900/70 to-gray-950/70' : 'bg-gradient-to-r from-gray-900 to-gray-950'}`}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h3 className="text-lg tracking-wide">
@@ -544,16 +545,23 @@ export default function ABMTiers() {
   return (
     <div className="bg-black text-white min-h-screen">
       <div className="max-w-6xl mx-auto relative">
-        <header className="flex justify-between items-center p-6 mb-8">
-          <h1 className="text-5xl font-bold">
-            <span className="text-white">ABM</span>
-            <span className="text-gray-500">aaS</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </h1>
-          <div className="text-2xl">
-            <span className="text-gray-500">strategic</span>
-            <span className="text-white">abm</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
+        <header className="p-6 mb-8">
+          <div className="flex justify-between items-start">
+            <div>
+              <h1 className="text-5xl font-bold mb-2">
+                <span className="text-white">ABM</span>
+                <span className="text-gray-500"> as a Service</span>
+                <span style={{ color: '#e95a0c' }}>.</span>
+              </h1>
+              <p className="text-xl text-gray-500 mb-2">Simplifying ABM<span style={{ color: '#e95a0c' }}>.</span></p>
+              <p className="text-base text-gray-400">Delivering measurable impact, faster outcomes, and scalable, agile ABM solutions.</p>
+            </div>
+            <div className="text-2xl pt-2">
+              <span className="text-gray-500 text-base">by </span>
+              <span className="text-gray-500">strategic</span>
+              <span className="text-white">abm</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </div>
           </div>
         </header>
 
@@ -598,14 +606,29 @@ export default function ABMTiers() {
         </div>
 
         <div className="px-6 pt-4">
+          <Panel 
+            title={<>
+              <span className="text-white">Discover ABM</span>{' '}
+              <span className="text-gray-500">as a Service</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+            defaultExpanded={true}>
+            <div className="aspect-video relative bg-gray-950 mb-6 rounded-lg overflow-hidden border border-gray-800/80">
+              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-950 text-gray-600">
+                <span>Video placeholder - Add your video URL here</span>
+              </div>
+            </div>
+            <p className="text-gray-400 mb-4">Watch our 60-second overview of how our ABMaaS model delivers measurable impact and faster outcomes for your business.</p>
+          </Panel>
+
           <Panel title={<>
             <span className="text-white">Pricing model</span>{' '}
             <span className="text-gray-500">comparisons</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="space-y-8">
-              <div>
-                <h3 className="text-orange-500 mb-3 text-2xl font-medium">Two ways to power your ABM strategy</h3>
+              <div className="mt-1">
+                <h3 className="text-gray-300 mb-3 text-2xl font-medium">Two ways to power your ABM strategy</h3>
                 <p className="text-gray-400 leading-relaxed">
                   Choose between a traditional custom Statement of Work for structured, scoped projects or our ABM Credits Model—a flexible, on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
                 </p>
