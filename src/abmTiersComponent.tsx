@@ -84,11 +84,18 @@ const itemGroups = {
 
 const Panel = ({title, children, defaultExpanded = false}) => {
   const isCreditsPanel = title.toString().toLowerCase().includes('credits');
+  const isVideoPanel = title.toString().toLowerCase().includes('discover abm');
+  
+  const getPanelBackground = () => {
+    if (isVideoPanel) return 'bg-gradient-to-b from-gray-900 to-gray-950';
+    if (isCreditsPanel) return 'bg-gradient-to-b from-gray-900/70 to-gray-950/70';
+    return 'bg-gradient-to-b from-gray-900/40 to-gray-950/40';
+  };
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
   return (
-    <div className={`backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)] ${isCreditsPanel ? 'bg-gradient-to-b from-gray-900/70 to-gray-950/70' : 'bg-gradient-to-b from-gray-900 to-gray-950'}`}>
+    <div className={`backdrop-blur-sm rounded-lg mb-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.9)] border-t-2 border-t-orange-600/20 border border-gray-800/80 hover:border-orange-600/30 transition-all duration-300 hover:shadow-[0_25px_65px_-5px_rgba(233,90,12,0.25)] ${getPanelBackground()}`}>
       <div 
-        className={`sticky top-[150px] px-6 py-5 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)] ${isCreditsPanel ? 'bg-gradient-to-r from-gray-900/70 to-gray-950/70' : 'bg-gradient-to-r from-gray-900 to-gray-950'}`}
+        className={`sticky top-[150px] px-6 py-5 backdrop-blur-sm border-b border-gray-800/80 flex justify-between items-center cursor-pointer z-10 rounded-t-lg shadow-[0_10px_20px_-5px_rgba(0,0,0,0.7)] ${getPanelBackground().replace('to-b', 'to-r')}`}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <h3 className="text-lg tracking-wide">
@@ -646,6 +653,15 @@ export default function ABMTiers() {
 
             </div>
           </Panel>
+
+          <div className="mb-8">
+            <h2 className="text-2xl font-medium mb-2">
+              <span className="text-white">Choose your</span>{' '}
+              <span className="text-gray-500">credits</span>
+              <span style={{ color: '#e95a0c' }}>.</span>
+            </h2>
+            <p className="text-gray-400">Select from our range of strategic ABM services and build your custom package.</p>
+          </div>
 
           <Panel title={<>
             <span className="text-white">ABM foundations</span>{' '}
