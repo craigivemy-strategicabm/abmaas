@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { videoConfig } from './config/video';
 import { ChevronDown, Check, Info } from 'lucide-react';
 
 
@@ -386,6 +387,87 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
   );
 };
 
+const VideoEmbed = ({ embedCode = '' }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    // Only load script if we have embed code
+    if (!embedCode) return;
+
+    const script = document.createElement('script');
+    script.src = 'https://play.vidyard.com/embed/v4.js';
+    script.async = true;
+    script.type = 'text/javascript';
+
+    // Add event listener to know when script is loaded
+    script.onload = () => {
+      // Force Vidyard to scan for players
+      if (window.VidyardV4?.api?.renderDOMPlayers) {
+        window.VidyardV4.api.renderDOMPlayers();
+      }
+    };
+
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, [embedCode]);
+
+  return (
+    <div 
+      ref={containerRef}
+      className="aspect-video relative bg-gray-950 mb-6 rounded-lg overflow-hidden border border-gray-800/80"
+      style={{ minHeight: '400px' }}
+    >
+      {embedCode ? (
+        <div className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
+          <div 
+            className="w-full h-full"
+            style={{ pointerEvents: 'auto' }}
+            dangerouslySetInnerHTML={{ __html: embedCode }} 
+          />
+        </div>
+      ) : (
+        <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-950 text-gray-600">
+          <span>Add your Vidyard embed code here</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Item descriptions mapping
+const itemDescriptions = {
+  // Foundations
+  "ICP Development": "Define your ideal customer profile through data-driven analysis and market research.",
+  "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
+  "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
+  "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
+  "ABM Readiness Workshops": "Interactive sessions to assess and enhance your organization's ABM readiness.",
+  "Synthetic Audiences": "Build custom audience profiles for precise targeting and personalization.",
+  
+  // Insights
+  "Market Insights": "Deep-dive analysis of market trends, competitive landscape, and industry dynamics.",
+  "Account Insights": "Detailed account profiling including business challenges, tech stack, and buying patterns.",
+  "Stakeholder Deepdive Insights": "Comprehensive analysis of key decision-makers and their priorities.",
+  "Stakeholder Tactical Insights": "Actionable insights on stakeholder engagement preferences and triggers.",
+  
+  // Content & Creative
+  "Cluster Manifesto": "Strategic content framework for targeting similar account segments.",
+  "Account Manifesto": "Account-specific messaging and content strategy blueprint.",
+  "Stakeholder Manifesto": "Personalized content approaches for different stakeholder personas.",
+  "Annotated Report": "Detailed analysis with expert annotations and recommendations.",
+  "Account Roadmap": "Strategic engagement plan mapping key touchpoints and milestones.",
+  "Executive Briefing": "Customized presentation for C-level stakeholder engagement.",
+  
+  // Training
+  "ABM Fundamentals (ICP, Account Selection, Segmentation)": "Master the core principles of effective ABM strategy.",
+  "Strategy & Playbooks (Campaign Planning, Sales Alignment)": "Learn to develop and execute winning ABM campaigns.",
+  "Execution & Activation (Content Personalization, Multi-Channel Engagement)": "Hands-on training for personalized content creation and delivery.",
+  "Measurement & Optimization (ROI, Attribution, Tech Stack)": "Understand how to measure, report, and optimize ABM performance."
+};
+
 const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
@@ -396,6 +478,9 @@ const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, qua
             {title.split('(')[1].replace(')', '')}
           </div>
         )}
+        <div className="text-gray-400 text-xs mt-2">
+          {itemDescriptions[title.split(' (')[0]]}
+        </div>
       </div>
     </div>
     <div className="p-3">
@@ -620,11 +705,7 @@ export default function ABMTiers() {
               <span style={{ color: '#e95a0c' }}>.</span>
             </>}
             defaultExpanded={true}>
-            <div className="aspect-video relative bg-gray-950 mb-6 rounded-lg overflow-hidden border border-gray-800/80">
-              <div className="absolute inset-0 w-full h-full flex items-center justify-center bg-gray-950 text-gray-600">
-                <span>Video placeholder - Add your video URL here</span>
-              </div>
-            </div>
+            <VideoEmbed embedCode={videoConfig.abmaasOverviewEmbed} />
             <p className="text-gray-400 mb-4">Watch our 60-second overview of how our ABMaaS model delivers measurable impact and faster outcomes for your business.</p>
           </Panel>
 
@@ -654,22 +735,13 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-medium mb-2">
-              <span className="text-white">Choose your</span>{' '}
-              <span className="text-gray-500">credits</span>
-              <span style={{ color: '#e95a0c' }}>.</span>
-            </h2>
-            <p className="text-gray-400">Select from our range of strategic ABM services and build your custom package.</p>
-          </div>
 
           <Panel title={<>
-            <span className="text-white">ABM foundations</span>{' '}
+            <span style={{ color: '#e95a0c' }}>1.</span>{' '}<span className="text-white">ABM foundations</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-              <h4 className="text-lg mb-4" style={{ color: '#e95a0c' }}>ABM Strategy Foundations</h4>
               <FoundationsPanel 
                 items={FOUNDATION_ITEMS} 
                 quantities={quantities}
@@ -679,12 +751,11 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">Insights</span>{' '}
+            <span style={{ color: '#e95a0c' }}>2.</span>{' '}<span className="text-white">Insights</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-
               <InsightsPanel 
                 items={ITEM_GROUPS.insights}
                 quantities={quantities}
@@ -694,12 +765,11 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">Personalized content & creative</span>{' '}
+            <span style={{ color: '#e95a0c' }}>3.</span>{' '}<span className="text-white">Personalized content & creative</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-
               <ContentPanel 
                 engagementItems={ITEM_GROUPS.engagement}
                 revenueItems={ITEM_GROUPS.revenue}
@@ -710,12 +780,11 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">Playbook</span>{' '}
+            <span style={{ color: '#e95a0c' }}>4.</span>{' '}<span className="text-white">Playbook</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
-
               <PlaybooksPanel 
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
@@ -724,7 +793,7 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span className="text-white">ABM Training</span>{' '}
+            <span style={{ color: '#e95a0c' }}>5.</span>{' '}<span className="text-white">ABM Training</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
