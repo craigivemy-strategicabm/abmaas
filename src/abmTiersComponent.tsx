@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { videoConfig } from './config/video';
 import { ChevronDown, Check, Info } from 'lucide-react';
 
+//import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const QuantitySelector = ({ value, onChange, max = 99 }) => {
   return (
@@ -36,7 +36,6 @@ const QuantitySelector = ({ value, onChange, max = 99 }) => {
     </div>
   );
 };
-//import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const panelDescriptions = {
   "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
@@ -700,20 +699,11 @@ export default function ABMTiers() {
         <div className="px-6 pt-4">
           <Panel 
             title={<>
-              <span className="text-white">Discover ABM</span>{' '}
-              <span className="text-gray-500">as a Service</span>
+              <span className="text-white">Pricing model</span>{' '}
+              <span className="text-gray-500">comparisons</span>
               <span style={{ color: '#e95a0c' }}>.</span>
             </>}
-            defaultExpanded={true}>
-            <VideoEmbed embedCode={videoConfig.abmaasOverviewEmbed} />
-            <p className="text-gray-400 mb-4">Watch our 60-second overview of how our ABMaaS model delivers measurable impact and faster outcomes for your business.</p>
-          </Panel>
-
-          <Panel title={<>
-            <span className="text-white">Pricing model</span>{' '}
-            <span className="text-gray-500">comparisons</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          >
             <div className="space-y-8">
               <div className="mt-1">
                 <h3 className="text-gray-300 mb-3 text-2xl font-medium">Two ways to power your ABM strategy</h3>
