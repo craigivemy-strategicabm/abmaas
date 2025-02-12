@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
+import { useCurrency } from './config/currency';
+import { CurrencySelector } from './components/CurrencySelector';
 
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -553,6 +555,24 @@ const ITEM_GROUPS = {
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
+  const { selectedCurrency, handleCurrencyChange, formatPrice } = useCurrency();
+
+  const tiers = ['Custom SOW', 'Tactical ABM', 'Impact ABM', 'Enterprise ABM'];
+  
+  // Calculate totals for each tier
+  const tierTotals = {
+    'Custom SOW': 0,
+    'Tactical ABM': 30,
+    'Impact ABM': 45,
+    'Enterprise ABM': 60
+  };
+
+  const tierCredits = {
+    'Custom SOW': 'Custom',
+    'Tactical ABM': '30',
+    'Impact ABM': '50',
+    'Enterprise ABM': '70'
+  };
 
   const handleQuantityChange = (id, value) => {
     setQuantities(prev => ({ ...prev, [id]: value }));
@@ -657,7 +677,18 @@ export default function ABMTiers() {
         <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
           <div className="rounded-lg overflow-hidden">
             <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
-              <div></div>
+              <div className="p-4 flex items-center justify-end gap-2">
+                <button
+                  onClick={() => setQuantities({})}
+                  className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-200 bg-gray-800 hover:bg-gray-700 rounded transition-colors mr-2"
+                >
+                  Reset
+                </button>
+                <CurrencySelector
+                  selectedCurrency={selectedCurrency}
+                  onCurrencyChange={handleCurrencyChange}
+                />
+              </div>
               <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
               {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
                 <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
@@ -667,30 +698,26 @@ export default function ABMTiers() {
               ))}
             </div>
 
-            <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900">
-              <div className="p-4 flex items-center gap-6">
-                <div className="text-gray-300 text-sm flex items-center gap-1">
-                  Total Credits: <span className="text-green-500 font-medium">{grandTotal.toFixed(1)}</span>
+            <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
+              <div className="p-4 flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <div className="text-gray-300 text-sm flex items-center gap-1">
+                    Total Credits: <span className="text-green-500 font-medium">{grandTotal.toFixed(1)}</span>
+                  </div>
+                  <div className="text-gray-300 text-sm flex items-center gap-1">
+                    Total Cost: <span className="text-green-500 font-medium">{formatPrice(Math.round(grandTotal * 1000), selectedCurrency)}</span>
+                  </div>
                 </div>
-                <button 
-                  onClick={() => setQuantities({})}
-                  className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-200 bg-gray-800 hover:bg-gray-700 rounded transition-colors"
-                >
-                  Reset All
-                </button>
+
               </div>
-              <div className="p-4">
-                <div className="text-gray-300 text-sm flex items-center gap-1">
-                  Total Cost: <span className="text-green-500 font-medium">£{currencyTotal.toFixed(1)}k</span>
-                </div>
-              </div>
-              {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
-                <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
-                  <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
-                  <div className="text-gray-400 text-xs text-center">£{p}k+ per quarter</div>
+              {tiers.map((tier, index) => (
+                <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800">
+                  {formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)}+
+                  <div className="text-xs text-gray-500 mt-1">{tierCredits[tier]} credits</div>
                 </div>
               ))}
             </div>
+
           </div>
         </div>
 
