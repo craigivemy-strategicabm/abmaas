@@ -644,11 +644,9 @@ export default function ABMTiers() {
                 <span className="text-gray-500"> as a Service</span>
                 <span style={{ color: '#e95a0c' }}>.</span>
               </h1>
-              <p className="text-xl text-gray-500 mb-2">Simplifying ABM<span style={{ color: '#e95a0c' }}>.</span></p>
-              <p className="text-base text-gray-400">Delivering measurable impact, faster outcomes, and scalable, agile ABM solutions.</p>
+              <p className="text-xl text-gray-500">A simpler, outcome-driven approach to ABM</p>
             </div>
             <div className="text-2xl pt-2">
-              <span className="text-gray-500 text-base">by </span>
               <span className="text-gray-500">strategic</span>
               <span className="text-white">abm</span>
               <span style={{ color: '#e95a0c' }}>.</span>
@@ -689,7 +687,7 @@ export default function ABMTiers() {
               {[{c:30,p:30}, {c:50,p:45}, {c:70,p:60}].map(({c,p}, i) => (
                 <div key={i} className={`p-4 ${i > 0 ? 'border-l border-gray-800' : ''}`}>
                   <div className="text-green-500 text-base mb-1 text-center">{c} credits</div>
-                  <div className="text-gray-400 text-xs text-center">£{p}k+ per qtr</div>
+                  <div className="text-gray-400 text-xs text-center">£{p}k+ per quarter</div>
                 </div>
               ))}
             </div>
