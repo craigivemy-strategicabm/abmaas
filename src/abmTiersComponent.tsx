@@ -568,7 +568,7 @@ export default function ABMTiers() {
   };
 
   const tierCredits = {
-    'Custom SOW': 'Custom',
+    'Custom SOW': '',
     'Tactical ABM': '30',
     'Impact ABM': '50',
     'Enterprise ABM': '70'
@@ -704,16 +704,13 @@ export default function ABMTiers() {
                   <div className="text-gray-300 text-sm flex items-center gap-1">
                     Total Credits: <span className="text-green-500 font-medium">{grandTotal.toFixed(1)}</span>
                   </div>
-                  <div className="text-gray-300 text-sm flex items-center gap-1">
-                    Total Cost: <span className="text-green-500 font-medium">{formatPrice(Math.round(grandTotal * 1000), selectedCurrency)}</span>
-                  </div>
                 </div>
 
               </div>
               {tiers.map((tier, index) => (
                 <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800">
-                  {formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)}+
-                  <div className="text-xs text-gray-500 mt-1">{tierCredits[tier]} credits</div>
+                  <span className="text-green-500 text-base">{tier === 'Custom SOW' ? formatPrice(Math.round(grandTotal * 1000), selectedCurrency) : formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)}{tier !== 'Custom SOW' && '+'}</span>
+                  <div className="text-xs text-gray-500 mt-1">{tierCredits[tier]}{tier !== 'Custom SOW' ? ' credits' : ''}</div>
                 </div>
               ))}
             </div>
