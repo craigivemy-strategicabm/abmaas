@@ -606,6 +606,11 @@ export default function ABMTiers() {
     'Enterprise ABM': 60
   };
 
+  const getTierDisplayValue = (tier) => {
+    if (tier === 'Custom SOW') return 0;
+    return tier === 'Tactical ABM' ? 30 : tier === 'Impact ABM' ? 45 : 60;
+  };
+
   const tierCredits = {
     'Custom SOW': '',
     'Tactical ABM': '30',
@@ -768,7 +773,7 @@ export default function ABMTiers() {
                   </div>
                   <div className="flex items-baseline gap-2">
                     <span className="text-gray-500 text-xs">Total Credits Cost:</span>
-                    <span className="text-green-500 font-medium text-lg">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="text-green-500 font-medium text-lg">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k</span>
                   </div>
                 </div>
 
@@ -782,13 +787,12 @@ export default function ABMTiers() {
                       </>
                     ) : (
                       <>
-                        {symbol}{(tierTotals[tier] * getCostPerCredit(tierTotals[tier]) * CURRENCY_CONFIG[selectedCurrency].rate)
-                          .toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k
+                        {symbol}{getTierDisplayValue(tier)}k+
                       </>
                     )}
                   </span>
                   <div className="text-xs text-gray-500 mt-1">
-                    {tier === 'Custom SOW' ? 'SOW' : `${tierCredits[tier]} credits`}
+                    {tier === 'Custom SOW' ? 'SOW' : `${tierCredits[tier]} credits per quarter`}
                   </div>
                 </div>
               ))}
