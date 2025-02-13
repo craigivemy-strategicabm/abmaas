@@ -185,7 +185,7 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrenc
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
-    return total + (item ? parseFloat(item.credits) * quantity : 0);
+    return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
   }, 0);
 
   return (
@@ -202,7 +202,9 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrenc
           id={item.title.toLowerCase().replace(/\s+/g, '-')}
           title={item.title}
           customPrice={item.customPrice}
-          credits={item.credits}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           showDelivery={false}
@@ -221,7 +223,7 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
       const item = items.find(item => 
         id === item.title.toLowerCase().replace(/\s+/g, '-')
       );
-      return total + (item ? parseFloat(item.credits) * quantity : 0);
+      return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
     }, 0);
   };
 
@@ -236,7 +238,9 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
           id={item.title.toLowerCase().replace(/\s+/g, '-')}
           title={item.title}
           customPrice={item.customPrice}
-          credits={item.credits}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           selectedCurrency={selectedCurrency}
@@ -266,7 +270,7 @@ const TrainingPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
-    return total + (item ? parseFloat(item.credits) * quantity : 0);
+    return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
   }, 0);
 
   return (
@@ -283,7 +287,9 @@ const TrainingPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
           id={item.title.toLowerCase().replace(/\s+/g, '-')}
           title={item.title}
           customPrice={item.customPrice}
-          credits={item.credits}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           showDelivery={false}
@@ -313,18 +319,24 @@ const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, curren
   const items = [
     {
       title: "Custom Playbook Design",
-      credits: "10",
-      customPrice: "12.0"
+      tacticalCredits: "12",
+      impactCredits: "12",
+      enterpriseCredits: "11",
+      customPrice: "12"
     },
     { 
       title: "Engagement Playbooks", 
-      credits: "25",
-      customPrice: "27.0"
+      tacticalCredits: "27",
+      impactCredits: "27",
+      enterpriseCredits: "26",
+      customPrice: "27"
     },
     { 
       title: "Revenue Playbooks", 
-      credits: "7",
-      customPrice: "8.0"
+      tacticalCredits: "8",
+      impactCredits: "8",
+      enterpriseCredits: "7",
+      customPrice: "8"
     }
   ];
 
@@ -332,7 +344,7 @@ const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, curren
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
-    return total + (item ? parseFloat(item.credits) * quantity : 0);
+    return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
   }, 0);
 
   return (
@@ -349,7 +361,9 @@ const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, curren
           id={item.title.toLowerCase().replace(/\s+/g, '-')}
           title={item.title}
           customPrice={item.customPrice}
-          credits={item.credits}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           showDelivery={false}
@@ -367,7 +381,7 @@ const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
-    return total + (item ? parseFloat(item.credits) * quantity : 0);
+    return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
   }, 0);
 
   return (
@@ -384,7 +398,9 @@ const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
           id={item.title.toLowerCase().replace(/\s+/g, '-')}
           title={item.title}
           customPrice={item.customPrice}
-          credits={item.credits}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           selectedCurrency={selectedCurrency}
@@ -476,7 +492,7 @@ const itemDescriptions = {
   "Measurement & Optimization (ROI, Attribution, Tech Stack)": "Understand how to measure, report, and optimize ABM performance."
 };
 
-const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
+const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
       <div className="text-gray-300 text-sm">
@@ -502,47 +518,25 @@ const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, qua
         <div className="text-gray-400 text-xs text-center">
           {customPrice === '£-k' ? customPrice :
             (() => {
-              console.log('Debug InsightItem:', {
-                title,
-                originalPrice: customPrice,
-                selectedCurrency,
-                currencyRate
-              });
-              
-              // Try parsing as a direct number first
               let price = parseFloat(customPrice);
-              console.log('First parse attempt:', price);
-              
               if (isNaN(price)) {
-                // If that fails, try removing currency symbol and 'k' suffix
-                const cleaned = customPrice.replace('£', '').replace('k', '');
-                price = parseFloat(cleaned);
-                console.log('Second parse attempt:', { cleaned, price });
-              }
-              
-              if (isNaN(price)) {
-                console.log('Failed to parse price');
                 return '£-k';
               }
               
               const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
               const final = `${symbol}${(price * currencyRate).toFixed(1)}k`;
-              console.log('Final price:', final);
               return final;
             })()
           }
         </div>
         <div className="text-center">
-          <div className="text-green-500 text-sm text-center">{credits} credits</div>
-          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+          <div className="text-green-500 text-sm text-center">{tacticalCredits} credits</div>
         </div>
         <div className="text-center">
-          <div className="text-green-500 text-sm text-center">{credits} credits</div>
-          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+          <div className="text-green-500 text-sm text-center">{impactCredits} credits</div>
         </div>
         <div className="text-center">
-          <div className="text-green-500 text-sm text-center">{credits} credits</div>
-          {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
+          <div className="text-green-500 text-sm text-center">{enterpriseCredits} credits</div>
         </div>
       </div>
     </div>
@@ -558,42 +552,43 @@ const ContentSection = ({ title, items }) => (
 
 // Define static data first
 const FOUNDATION_ITEMS = [
-  { title: "ICP Development", credits: "3.5", customPrice: "3.5" },
-  { title: "Account Selection", credits: "3.5", customPrice: "4" },
-  { title: "Account Segmentation/Prioritisation", credits: "3.5", customPrice: "4.5" },
-  { title: "ABM Value Proposition Development", credits: "12", customPrice: "13" },
-  { title: "ABM Readiness Workshops", credits: "8", customPrice: "8.5" },
-  { title: "Synthetic Audiences", credits: "19", customPrice: "21.5" }
+  { title: "ICP Development", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
+  { title: "Account Selection", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
+  { title: "Account Segmentation/Prioritisation", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
+  { title: "ABM Value Proposition Development", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
+  { title: "ABM Readiness Workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
+  { title: "Synthetic Audiences", tacticalCredits: "21", impactCredits: "21", enterpriseCredits: "20", customPrice: "21" }
 ];
 
 const ITEM_GROUPS = {
   insights: [
-    { title: "Market Insights", credits: "8", customPrice: "9.5" },
-    { title: "Account Insights", credits: "2", customPrice: "2.5" },
-    { title: "Stakeholder Deepdive Insights", credits: "7", customPrice: "7.5" },
-    { title: "Stakeholder Tactical Insights", credits: "2", customPrice: "2.5" }
+    { title: "Market Insights", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
+    { title: "Account Insights", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
+    { title: "Stakeholder Deepdive Insights", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "Stakeholder Tactical Insights", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" }
   ],
   engagement: [
-    { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
-    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
-    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
-    { title: "Annotated Report", credits: "5.5", customPrice: "6" }
+    { title: "Cluster Manifesto", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "Account Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
+    { title: "Stakeholder Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
+    { title: "Annotated Report", tacticalCredits: "5.5", impactCredits: "5.5", enterpriseCredits: "4.5", customPrice: "5.5" }
   ],
   revenue: [
-    { title: "Account Roadmap", credits: "6.5", customPrice: "7.5" },
-    { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
+    { title: "Account Roadmap", tacticalCredits: "6.5", impactCredits: "6.5", enterpriseCredits: "5.5", customPrice: "6.5" },
+    { title: "Executive Briefing", tacticalCredits: "6.5", impactCredits: "6.5", enterpriseCredits: "5.5", customPrice: "6.5" }
   ],
   training: [
-    { title: "ABM Fundamentals (ICP, Account Selection, Segmentation)", credits: "3", customPrice: "4" },
-    { title: "Strategy & Playbooks (Campaign Planning, Sales Alignment)", credits: "3", customPrice: "4" },
-    { title: "Execution & Activation (Content Personalization, Multi-Channel Engagement)", credits: "3", customPrice: "4" },
-    { title: "Measurement & Optimization (ROI, Attribution, Tech Stack)", credits: "3", customPrice: "4" }
+    { title: "ABM Fundamentals (ICP, Account Selection, Segmentation)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
+    { title: "Strategy & Playbooks (Campaign Planning, Sales Alignment)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
+    { title: "Execution & Activation (Content Personalization, Multi-Channel Engagement)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
+    { title: "Measurement & Optimization (ROI, Attribution, Tech Stack)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" }
   ]
 };
 
 export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
+  const [selectedTier, setSelectedTier] = useState('Tactical ABM');
   const { selectedCurrency, handleCurrencyChange, formatPrice } = useCurrency();
 
   const tiers = ['Custom SOW', 'Tactical ABM', 'Impact ABM', 'Enterprise ABM'];
@@ -613,9 +608,9 @@ export default function ABMTiers() {
 
   const tierCredits = {
     'Custom SOW': '',
-    'Tactical ABM': '30',
-    'Impact ABM': '50',
-    'Enterprise ABM': '70'
+    'Tactical ABM': '30+',
+    'Impact ABM': '50+',
+    'Enterprise ABM': '70+'
   };
 
   const handleQuantityChange = (id, value) => {
@@ -651,23 +646,28 @@ export default function ABMTiers() {
       
       // Special handling for playbooks
       if (id === 'custom-playbook-design') {
-        credits += 10 * quantity; // Custom Playbook Design credits
+        credits += 12 * quantity; // Custom Playbook Design credits
         cost += 12 * quantity; // Custom Playbook Design cost
-      } else if (id === 'engagement-playbook') {
-        credits += 25 * quantity; // Engagement Playbook credits
+      } else if (id === 'engagement-playbooks') {
+        credits += 27 * quantity; // Engagement Playbook credits
         cost += 27 * quantity; // Engagement Playbook cost
-      } else if (id === 'revenue-playbook') {
-        credits += 7 * quantity; // Revenue Playbook credits
+      } else if (id === 'revenue-playbooks') {
+        credits += 8 * quantity; // Revenue Playbook credits
         cost += 8 * quantity; // Revenue Playbook cost
       } else if (item) {
-        const itemCredits = parseFloat(item.credits) * quantity;
-        credits += itemCredits;
-        
-        if (item.customPrice !== '£-k') {
-          const itemCost = parseFloat(item.customPrice) * quantity;
-          cost += itemCost;
-          console.log(`Adding credits: ${itemCredits}, cost: ${itemCost} for ${item.title}`);
+        let itemCredits;
+        if (selectedTier === 'Enterprise ABM') {
+          itemCredits = parseFloat(item.enterpriseCredits || item.tacticalCredits) * quantity;
+        } else if (selectedTier === 'Impact ABM') {
+          itemCredits = parseFloat(item.impactCredits || item.tacticalCredits) * quantity;
+        } else {
+          itemCredits = parseFloat(item.tacticalCredits || item.customPrice) * quantity;
         }
+        
+        credits += itemCredits;
+        const itemCost = parseFloat(item.customPrice) * quantity;
+        cost += itemCost;
+        console.log(`Adding credits: ${itemCredits}, cost: ${itemCost} for ${item.title}`);
       }
     });
     
@@ -681,6 +681,7 @@ export default function ABMTiers() {
   const getCostPerCredit = (totalCredits) => {
     if (totalCredits >= 70) return 0.86;
     if (totalCredits >= 50) return 0.90;
+    if (totalCredits >= 30) return 0.95;
     return 1.0;
   };
 
@@ -713,7 +714,9 @@ export default function ABMTiers() {
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
     title: item.title,
     customPrice: item.customPrice || "-",
-    credits: item.credits,
+    tacticalCredits: item.tacticalCredits,
+    impactCredits: item.impactCredits,
+    enterpriseCredits: item.enterpriseCredits,
     showDelivery: true,
     quantity: quantities[item.id || item.title.toLowerCase().replace(/\s+/g, '-')] || 0,
     onQuantityChange: onQuantityChange
@@ -757,8 +760,10 @@ export default function ABMTiers() {
               </div>
               <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
               {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
-                <div key={tier} style={{ backgroundColor: '#e95a0c' }} 
-                  className={`p-4 text-lg font-bold text-center ${index > 0 ? 'border-l border-orange-700' : ''}`}>
+                <div key={tier} 
+                  onClick={() => setSelectedTier(`${tier} ABM`)}
+                  style={{ backgroundColor: selectedTier === `${tier} ABM` ? '#e95a0c' : '#d84d01' }} 
+                  className={`p-4 text-lg font-bold text-center ${index > 0 ? 'border-l border-orange-700' : ''} cursor-pointer hover:bg-orange-600 transition-colors`}>
                   {tier} ABM
                 </div>
               ))}
@@ -768,12 +773,12 @@ export default function ABMTiers() {
               <div className="p-4 flex items-center justify-between">
                 <div className="flex flex-col space-y-1">
                   <div className="flex items-baseline gap-2">
-                    <span className="text-gray-500 text-xs">Total Credits:</span>
-                    <span className="text-green-500 font-medium text-lg">{grandTotal.toFixed(1)}</span>
+                    <span className="text-gray-500 text-xs">Total Credits Cost:</span>
+                    <span className="text-green-500 font-medium text-base">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}</span>
                   </div>
                   <div className="flex items-baseline gap-2">
-                    <span className="text-gray-500 text-xs">Total Credits Cost:</span>
-                    <span className="text-green-500 font-medium text-lg">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k</span>
+                    <span className="text-gray-500 text-xs">Total Credits:</span>
+                    <span className="text-green-500 font-medium text-base">{grandTotal.toFixed(1)}</span>
                   </div>
                 </div>
 
@@ -783,16 +788,16 @@ export default function ABMTiers() {
                   <span className="text-green-500 text-lg">
                     {tier === 'Custom SOW' ? (
                       <>
-                        {symbol}{currencyTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k
+                        {symbol}{currencyTotal.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}
                       </>
                     ) : (
                       <>
-                        {symbol}{getTierDisplayValue(tier)}k+
+                        {symbol}{(getTierDisplayValue(tier) * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}
                       </>
                     )}
                   </span>
                   <div className="text-xs text-gray-500 mt-1">
-                    {tier === 'Custom SOW' ? 'SOW' : `${tierCredits[tier]} credits per quarter`}
+                    {tier === 'Custom SOW' ? 'SOW' : `${tierCredits[tier]} credits`}
                   </div>
                 </div>
               ))}
