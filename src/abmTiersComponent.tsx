@@ -589,6 +589,7 @@ export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
   const [selectedTier, setSelectedTier] = useState('Tactical ABM');
+
   const { selectedCurrency, handleCurrencyChange, formatPrice } = useCurrency();
 
   const tiers = ['Custom SOW', 'Tactical ABM', 'Impact ABM', 'Enterprise ABM'];
@@ -784,7 +785,30 @@ export default function ABMTiers() {
 
               </div>
               {tiers.map((tier, index) => (
-                <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800">
+                <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800 relative">
+                  {/* Hand-drawn circle SVG - only show for active tier */}
+                  {tier !== 'Custom SOW' && (
+                    (tier === 'Tactical ABM' && grandTotal >= 30 && grandTotal < 50) ||
+                    (tier === 'Impact ABM' && grandTotal >= 50 && grandTotal < 70) ||
+                    (tier === 'Enterprise ABM' && grandTotal >= 70) ? (
+                      <svg
+                        className="absolute inset-0 w-full h-full"
+                        viewBox="0 0 300 120"
+                        style={{ transform: 'scale(1.25)' }}
+                      >
+                        <path
+                          d="M 150,20 C 50,20 10,35 10,60 C 10,85 50,100 150,100 C 250,100 290,85 290,60 C 290,35 250,20 150,20"
+                          fill="none"
+                          stroke="#e95a0c"
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                          style={{
+                            opacity: 0.9
+                          }}
+                        />
+                      </svg>
+                    ) : null
+                  )}
                   <span className="text-green-500 text-lg">
                     {tier === 'Custom SOW' ? (
                       <>
