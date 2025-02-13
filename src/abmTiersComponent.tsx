@@ -788,7 +788,7 @@ export default function ABMTiers() {
                   <span className="text-green-500 text-lg">
                     {tier === 'Custom SOW' ? (
                       <>
-                        {symbol}{currencyTotal.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}
+                        {symbol}{(currencyTotal * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}
                       </>
                     ) : (
                       <>
