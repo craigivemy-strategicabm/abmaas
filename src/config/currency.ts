@@ -14,7 +14,7 @@ export interface ExchangeRates {
   timestamp: number;
 }
 
-const CURRENCY_CONFIG: Record<CurrencyCode, CurrencyConfig> = {
+export const CURRENCY_CONFIG: Record<CurrencyCode, CurrencyConfig> = {
   GBP: {
     symbol: '£',
     rate: 1,

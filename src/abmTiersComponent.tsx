@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
-import { useCurrency } from './config/currency';
+import { useCurrency, CURRENCY_CONFIG } from './config/currency';
 import { CurrencySelector } from './components/CurrencySelector';
 
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -179,7 +179,7 @@ const ComparisonRow = ({feature, subtitle, values }) => (
   </div>
 );
 
-const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
+const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
@@ -190,7 +190,12 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <TotalCredits total={totalCredits} description={panelDescriptions["Foundations"]} />
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Foundations"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -201,13 +206,15 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange }) => {
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           showDelivery={false}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
         />
       ))}
     </div>
   );
 };
 
-const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityChange }) => {
+const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const calculateTotal = (items) => {
     return Object.entries(quantities).reduce((total, [id, quantity]) => {
@@ -232,6 +239,8 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
           credits={item.credits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
         />
       ))}
     </div>
@@ -239,14 +248,19 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
 
   return (
     <div>
-      <TotalCredits total={totalCredits} description={panelDescriptions["Content"]} />
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Content"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
       {renderItems(engagementItems, "Engagement Content")}
       {renderItems(revenueItems, "Revenue Content")}
     </div>
   );
 };
 
-const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
+const TrainingPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
@@ -257,7 +271,12 @@ const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <TotalCredits total={totalCredits} description={panelDescriptions["Training"]} />
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Training"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -268,6 +287,8 @@ const TrainingPanel = ({ items, quantities, onQuantityChange }) => {
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
           showDelivery={false}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
         />
       ))}
     </div>
@@ -287,81 +308,25 @@ const TotalCredits = ({ total, description }) => (
   </div>
 );
 
-const PlaybooksPanel = ({ quantities, onQuantityChange }) => {
+const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const items = [
     {
       title: "Custom Playbook Design",
-      customPrice: "12",
       credits: "10",
-      showDelivery: false
+      customPrice: "12.0"
     },
     { 
       title: "Engagement Playbooks", 
-      customPrice: "27",
       credits: "25",
-      showDelivery: false
+      customPrice: "27.0"
     },
     { 
       title: "Revenue Playbooks", 
-      customPrice: "8",
       credits: "7",
-      showDelivery: false
+      customPrice: "8.0"
     }
   ];
-
-  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
-    const item = items.find(item => 
-      (id === 'custom-playbook-design' && item.title === 'Custom Playbook Design') ||
-      (id === 'engagement-playbook' && item.title === 'Engagement Playbooks') ||
-      (id === 'revenue-playbook' && item.title === 'Revenue Playbooks')
-    );
-    return total + (item ? parseFloat(item.credits) * quantity : 0);
-  }, 0);
-
-  return (
-    <div>
-      <div className="space-y-8">
-        <TotalCredits total={totalCredits} description={panelDescriptions["Playbooks"]} />
-        <div>
-          <InsightItem
-            id="custom-playbook-design"
-            title={items[0].title}
-            customPrice={items[0].customPrice}
-            credits={items[0].credits}
-            quantity={quantities['custom-playbook-design'] || 0}
-            onQuantityChange={onQuantityChange}
-            showDelivery={false}
-          />
-        </div>
-        <div>
-          <InsightItem
-            id="engagement-playbook"
-            title={items[1].title}
-            customPrice={items[1].customPrice}
-            credits={items[1].credits}
-            quantity={quantities['engagement-playbook'] || 0}
-            onQuantityChange={onQuantityChange}
-            showDelivery={false}
-          />
-        </div>
-        <div>
-          <InsightItem
-            id="revenue-playbook"
-            title={items[2].title}
-            customPrice={items[2].customPrice}
-            credits={items[2].credits}
-            quantity={quantities['revenue-playbook'] || 0}
-            onQuantityChange={onQuantityChange}
-            showDelivery={false}
-          />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
@@ -372,7 +337,12 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
 
   return (
     <div>
-      <TotalCredits total={totalCredits} description={panelDescriptions["Insights"]} />
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Playbooks"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
       {items.map((item, i) => (
         <InsightItem
           key={i}
@@ -382,6 +352,43 @@ const InsightsPanel = ({ items, quantities, onQuantityChange }) => {
           credits={item.credits}
           quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
           onQuantityChange={onQuantityChange}
+          showDelivery={false}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
+        />
+      ))}
+    </div>
+  );
+};
+
+const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
+
+  const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    const item = items.find(item => 
+      id === item.title.toLowerCase().replace(/\s+/g, '-')
+    );
+    return total + (item ? parseFloat(item.credits) * quantity : 0);
+  }, 0);
+
+  return (
+    <div>
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Insights"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          credits={item.credits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
         />
       ))}
     </div>
@@ -469,7 +476,7 @@ const itemDescriptions = {
   "Measurement & Optimization (ROI, Attribution, Tech Stack)": "Understand how to measure, report, and optimize ABM performance."
 };
 
-const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange }) => (
+const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
       <div className="text-gray-300 text-sm">
@@ -492,7 +499,39 @@ const InsightItem = ({ id, title, customPrice, credits, showDelivery = true, qua
             onChange={(value) => onQuantityChange?.(id, value)}
           />
         </div>
-        <div className="text-gray-400 text-xs text-center">£{customPrice}k</div>
+        <div className="text-gray-400 text-xs text-center">
+          {customPrice === '£-k' ? customPrice :
+            (() => {
+              console.log('Debug InsightItem:', {
+                title,
+                originalPrice: customPrice,
+                selectedCurrency,
+                currencyRate
+              });
+              
+              // Try parsing as a direct number first
+              let price = parseFloat(customPrice);
+              console.log('First parse attempt:', price);
+              
+              if (isNaN(price)) {
+                // If that fails, try removing currency symbol and 'k' suffix
+                const cleaned = customPrice.replace('£', '').replace('k', '');
+                price = parseFloat(cleaned);
+                console.log('Second parse attempt:', { cleaned, price });
+              }
+              
+              if (isNaN(price)) {
+                console.log('Failed to parse price');
+                return '£-k';
+              }
+              
+              const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+              const final = `${symbol}${(price * currencyRate).toFixed(1)}k`;
+              console.log('Final price:', final);
+              return final;
+            })()
+          }
+        </div>
         <div className="text-center">
           <div className="text-green-500 text-sm text-center">{credits} credits</div>
           {showDelivery && <div className="text-gray-400 text-xs text-center">72hrs</div>}
@@ -633,6 +672,17 @@ export default function ABMTiers() {
 
   const { credits: grandTotal, cost: currencyTotal } = calculateTotals();
 
+  // Calculate total credits cost based on tier
+  const getCostPerCredit = (totalCredits) => {
+    if (totalCredits >= 60) return 0.86;
+    if (totalCredits >= 45) return 0.90;
+    return 1.0;
+  };
+
+  const totalCostGBP = grandTotal * getCostPerCredit(grandTotal);
+  const totalCostInCurrency = totalCostGBP * CURRENCY_CONFIG[selectedCurrency].rate;
+  const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+
   const comparisonData = [
     { feature: "ABMaaS", subtitle: "Use case", values: {
       custom: "Custom statements of work",
@@ -711,26 +761,35 @@ export default function ABMTiers() {
 
             <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
               <div className="p-4 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="text-gray-300 text-sm flex items-center gap-1">
-                    Total Credits: <span className="text-green-500 font-medium">{grandTotal.toFixed(1)}</span>
+                <div className="flex flex-col space-y-1">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-gray-500 text-xs">Total Credits:</span>
+                    <span className="text-green-500 font-medium text-lg">{grandTotal.toFixed(1)}</span>
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-gray-500 text-xs">Total Credits Cost:</span>
+                    <span className="text-green-500 font-medium text-lg">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 </div>
 
               </div>
               {tiers.map((tier, index) => (
                 <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800">
-                  <span className="text-green-500 text-base">
+                  <span className="text-green-500 text-lg">
                     {tier === 'Custom SOW' ? (
                       <>
-                        {console.log('Custom SOW display values:', { currencyTotal, formatted: formatPrice(Math.round(currencyTotal * 1000), selectedCurrency) })}
-                        {`£${currencyTotal.toFixed(1)}k`}
+                        {symbol}{currencyTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k
                       </>
                     ) : (
-                      formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)
-                    )}{tier !== 'Custom SOW' && '+'}
+                      <>
+                        {symbol}{(tierTotals[tier] * getCostPerCredit(tierTotals[tier]) * CURRENCY_CONFIG[selectedCurrency].rate)
+                          .toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}k
+                      </>
+                    )}
                   </span>
-                  <div className="text-xs text-gray-500 mt-1">{tierCredits[tier]}{tier !== 'Custom SOW' ? ' credits' : ''}</div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {tier === 'Custom SOW' ? 'SOW' : `${tierCredits[tier]} credits`}
+                  </div>
                 </div>
               ))}
             </div>
@@ -778,6 +837,8 @@ export default function ABMTiers() {
                 items={FOUNDATION_ITEMS} 
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
               />
             </div>
           </Panel>
@@ -792,6 +853,8 @@ export default function ABMTiers() {
                 items={ITEM_GROUPS.insights}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
               />
             </div>
           </Panel>
@@ -807,6 +870,8 @@ export default function ABMTiers() {
                 revenueItems={ITEM_GROUPS.revenue}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
               />
             </div>
           </Panel>
@@ -820,6 +885,8 @@ export default function ABMTiers() {
               <PlaybooksPanel 
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
               />
             </div>
           </Panel>
@@ -834,6 +901,8 @@ export default function ABMTiers() {
                 items={ITEM_GROUPS.training}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
               />
             </div>
           </Panel>
