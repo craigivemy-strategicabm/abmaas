@@ -591,13 +591,19 @@ export default function ABMTiers() {
     let credits = 0;
     let cost = 0;
     
+    console.log('Starting calculations with quantities:', quantities);
+    
     // Add up quantities * credits for each panel
     Object.entries(quantities).forEach(([id, quantity]) => {
+      console.log('\nCalculating for item:', id, 'quantity:', quantity);
+      
       // Find matching item across all item groups
       let item = FOUNDATION_ITEMS.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = ITEM_GROUPS.insights.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = [...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      
+      console.log('Found item:', item);
       
       // Special handling for playbooks
       if (id === 'custom-playbook-design') {
@@ -610,13 +616,18 @@ export default function ABMTiers() {
         credits += 7 * quantity; // Revenue Playbook credits
         cost += 8 * quantity; // Revenue Playbook cost
       } else if (item) {
-        credits += parseFloat(item.credits) * quantity;
+        const itemCredits = parseFloat(item.credits) * quantity;
+        credits += itemCredits;
+        
         if (item.customPrice !== '£-k') {
-          cost += parseFloat(item.customPrice) * quantity;
+          const itemCost = parseFloat(item.customPrice) * quantity;
+          cost += itemCost;
+          console.log(`Adding credits: ${itemCredits}, cost: ${itemCost} for ${item.title}`);
         }
       }
     });
     
+    console.log('\nFinal totals:', { credits, cost });
     return { credits, cost };
   };
 
@@ -709,7 +720,16 @@ export default function ABMTiers() {
               </div>
               {tiers.map((tier, index) => (
                 <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800">
-                  <span className="text-green-500 text-base">{tier === 'Custom SOW' ? formatPrice(Math.round(grandTotal * 1000), selectedCurrency) : formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)}{tier !== 'Custom SOW' && '+'}</span>
+                  <span className="text-green-500 text-base">
+                    {tier === 'Custom SOW' ? (
+                      <>
+                        {console.log('Custom SOW display values:', { currencyTotal, formatted: formatPrice(Math.round(currencyTotal * 1000), selectedCurrency) })}
+                        {`£${currencyTotal.toFixed(1)}k`}
+                      </>
+                    ) : (
+                      formatPrice(Math.round(tierTotals[tier] * 1000), selectedCurrency)
+                    )}{tier !== 'Custom SOW' && '+'}
+                  </span>
                   <div className="text-xs text-gray-500 mt-1">{tierCredits[tier]}{tier !== 'Custom SOW' ? ' credits' : ''}</div>
                 </div>
               ))}
