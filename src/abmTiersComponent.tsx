@@ -679,8 +679,8 @@ export default function ABMTiers() {
 
   // Calculate total credits cost based on tier
   const getCostPerCredit = (totalCredits) => {
-    if (totalCredits >= 60) return 0.86;
-    if (totalCredits >= 45) return 0.90;
+    if (totalCredits >= 70) return 0.86;
+    if (totalCredits >= 50) return 0.90;
     return 1.0;
   };
 
