@@ -8,6 +8,9 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    rollupOptions: {
+      external: ['jspdf', 'html2canvas'],
+    },
   },
   server: {
     port: 4173,
