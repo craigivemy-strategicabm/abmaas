@@ -97,7 +97,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           <div className="p-6 invoice-content">
         <div className="mb-8">
           <h2 className="text-3xl font-light text-white mb-3 print:text-black">Draft SOW</h2>
-          <p className="text-xl text-[#e95a0c] font-light">{selectedTier}</p>
+          <p className="text-xl text-[#e95a0c] font-light">{selectedTier} tier</p>
         </div>
 
         <div className="space-y-8 my-6">
