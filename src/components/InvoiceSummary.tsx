@@ -1,4 +1,6 @@
 import React from 'react';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface InvoiceItem {
   id: string;
@@ -34,10 +36,31 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   creditsCost,
   currencySymbol
 }) => {
-  const handlePrint = () => {
-    window.print();
-  };
+  const handlePrint = async () => {
+    try {
+      const element = document.querySelector('.invoice-content');
+      if (!element) return;
 
+      const canvas = await html2canvas(element);
+      const imgData = canvas.toDataURL('image/png');
+
+      // Create PDF in A4 format
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('draft-sow.pdf');
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+    }
+  };
 
   return (
     <div 
@@ -71,7 +94,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
 
         {/* Content */}
         <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} print:block print:h-auto print:overflow-visible print:opacity-100`}>
-          <div className="p-6">
+          <div className="p-6 invoice-content">
         <div className="mb-8">
           <h2 className="text-3xl font-light text-white mb-3 print:text-black">Draft SOW</h2>
           <p className="text-xl text-[#e95a0c] font-light">{selectedTier}</p>

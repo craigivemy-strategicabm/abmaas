@@ -569,7 +569,7 @@ export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
   const [selectedTier, setSelectedTier] = useState('Tactical ABM');
-  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(true);
 
   const { selectedCurrency, handleCurrencyChange, formatPrice } = useCurrency();
 
@@ -590,9 +590,9 @@ export default function ABMTiers() {
 
   const tierCredits = {
     'Custom SOW': '',
-    'Tactical ABM': '30+',
-    'Impact ABM': '50+',
-    'Enterprise ABM': '70+'
+    'Tactical ABM': '30',
+    'Impact ABM': '50',
+    'Enterprise ABM': '70'
   };
 
   const handleQuantityChange = (id, value) => {
@@ -725,6 +725,25 @@ export default function ABMTiers() {
         <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
           <div className="rounded-lg overflow-hidden">
             <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+              <div className="p-4"></div>
+              <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
+              {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
+                <div key={tier} 
+                  onClick={() => setSelectedTier(`${tier} ABM`)}
+                  style={{ backgroundColor: selectedTier === `${tier} ABM` ? '#e95a0c' : '#d84d01' }} 
+                  className={`p-4 text-lg font-bold text-center relative ${index > 0 ? 'border-l border-orange-700' : ''} cursor-pointer hover:bg-orange-600 transition-colors`}>
+                  {tier} ABM
+                  {/* White underline for active tier */}
+                  {((tier === 'Tactical' && grandTotal >= 30 && grandTotal < 50) ||
+                    (tier === 'Impact' && grandTotal >= 50 && grandTotal < 70) ||
+                    (tier === 'Enterprise' && grandTotal >= 70)) && (
+                    <div className="absolute bottom-2 left-1/4 right-1/4 h-1 bg-white opacity-50"></div>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
               <div className="p-4 flex items-center justify-end gap-3">
                 <button
                   onClick={() => setQuantities({})}
@@ -737,57 +756,10 @@ export default function ABMTiers() {
                   onCurrencyChange={handleCurrencyChange}
                 />
               </div>
-              <div className="bg-gray-700 p-4 text-lg font-bold text-center">Custom SOW</div>
-              {['Tactical', 'Impact', 'Enterprise'].map((tier, index) => (
-                <div key={tier} 
-                  onClick={() => setSelectedTier(`${tier} ABM`)}
-                  style={{ backgroundColor: selectedTier === `${tier} ABM` ? '#e95a0c' : '#d84d01' }} 
-                  className={`p-4 text-lg font-bold text-center ${index > 0 ? 'border-l border-orange-700' : ''} cursor-pointer hover:bg-orange-600 transition-colors`}>
-                  {tier} ABM
-                </div>
-              ))}
-            </div>
-
-            <div className="sticky top-0 z-10 grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center bg-gray-900/95 backdrop-blur-sm border-b border-gray-800">
-              <div className="p-4 flex items-center justify-between">
-                <div className="flex flex-col space-y-1">
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-gray-500 text-xs">Total Credits Cost:</span>
-                    <span className="text-green-500 font-medium text-base">{symbol}{totalCostInCurrency.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}</span>
-                  </div>
-                  <div className="flex items-baseline gap-2">
-                    <span className="text-gray-500 text-xs">Total Credits:</span>
-                    <span className="text-green-500 font-medium text-base">{grandTotal.toFixed(1)}</span>
-                  </div>
-                </div>
-
-              </div>
               {tiers.map((tier, index) => (
                 <div key={tier} className="p-4 text-center text-gray-300 text-sm border-l border-gray-800 relative">
-                  {/* Hand-drawn circle SVG - only show for active tier */}
-                  {tier !== 'Custom SOW' && (
-                    (tier === 'Tactical ABM' && grandTotal >= 30 && grandTotal < 50) ||
-                    (tier === 'Impact ABM' && grandTotal >= 50 && grandTotal < 70) ||
-                    (tier === 'Enterprise ABM' && grandTotal >= 70) ? (
-                      <svg
-                        className="absolute inset-0 w-full h-full"
-                        viewBox="0 0 300 120"
-                        style={{ transform: 'scale(1.25)' }}
-                      >
-                        <path
-                          d="M 150,20 C 50,20 10,35 10,60 C 10,85 50,100 150,100 C 250,100 290,85 290,60 C 290,35 250,20 150,20"
-                          fill="none"
-                          stroke="#e95a0c"
-                          strokeWidth="3"
-                          strokeLinecap="round"
-                          style={{
-                            opacity: 0.9
-                          }}
-                        />
-                      </svg>
-                    ) : null
-                  )}
-                  <span className="text-green-500 text-lg">
+
+                  <span className={`${tier === 'Custom SOW' ? 'text-green-500' : 'text-gray-300'} text-lg`}>
                     {tier === 'Custom SOW' ? (
                       <>
                         {symbol}{(currencyTotal * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}

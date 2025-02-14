@@ -1,118 +1,88 @@
 @media print {
-  /* First, hide everything */
-  body > * {
+  /* First, hide everything except the invoice */
+  body > *:not(.invoice-summary) {
     display: none !important;
   }
 
-  /* Then show only the invoice summary and its parents */
-  .invoice-summary,
-  .invoice-summary * {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* Reset invoice summary styles for printing */
+  /* Show the invoice summary */
   .invoice-summary {
     position: absolute !important;
     left: 0 !important;
     top: 0 !important;
     width: 100% !important;
     height: auto !important;
-    min-height: 100% !important;
-    overflow: visible !important;
-    background: red !important;
-    color: black !important;
-    padding: 2cm !important;
+    background-color: rgb(17, 24, 39) !important;
+    color: inherit !important;
+    padding: 1.5rem !important;
     margin: 0 !important;
     transform: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    z-index: 9999 !important;
+  }
+
+  /* Preserve all original colors */
+  .text-white {
+    color: white !important;
+  }
+
+  .text-gray-400 {
+    color: rgb(156, 163, 175) !important;
+  }
+
+  .text-gray-500 {
+    color: rgb(107, 114, 128) !important;
+  }
+
+  .text-green-500 {
+    color: rgb(34, 197, 94) !important;
+  }
+
+  .text-[#e95a0c] {
+    color: #e95a0c !important;
   }
 
   /* Preserve flex layouts */
-  .invoice-summary .flex {
+  .flex {
     display: flex !important;
-    justify-content: space-between !important;
+  }
+
+  .items-baseline {
     align-items: baseline !important;
-    width: 100% !important;
-    margin-bottom: 0.3cm !important;
+  }
+
+  .justify-between {
+    justify-content: space-between !important;
+  }
+
+  /* Preserve spacing */
+  .space-y-4 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  .space-y-8 > * + * {
+    margin-top: 2rem !important;
+  }
+
+  .mb-8 {
+    margin-bottom: 2rem !important;
+  }
+
+  .mb-3 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  /* Preserve borders */
+  .border-t {
+    border-top-width: 1px !important;
+    border-color: rgb(31, 41, 55) !important;
+  }
+
+  /* Preserve font weights */
+  .font-light {
+    font-weight: 300 !important;
   }
 
   /* Hide UI elements */
-  .invoice-summary button,
-  .invoice-summary [role='button'] {
+  button {
     display: none !important;
-  }
-
-  /* Typography */
-  .invoice-summary h2 {
-    font-size: 24pt !important;
-    color: black !important;
-    margin-bottom: 1cm !important;
-  }
-
-  .invoice-summary h3 {
-    font-size: 18pt !important;
-    color: black !important;
-    margin: 1cm 0 0.5cm !important;
-  }
-
-  /* Content styling */
-  .invoice-summary p,
-  .invoice-summary span {
-    color: black !important;
-    font-size: 12pt !important;
-    display: inline-block !important;
-  }
-
-  /* Borders */
-  .invoice-summary .border-t {
-    border-top: 1px solid #ccc !important;
-    padding-top: 0.5cm !important;
-    margin-top: 0.5cm !important;
-  }
-
-  /* Colors */
-  .invoice-summary .text-green-500,
-  .invoice-summary .text-gray-500,
-  .invoice-summary .text-gray-400,
-  .invoice-summary .text-white {
-    color: black !important;
-  }
-
-  .invoice-summary .text-green-500 {
-    color: #059669 !important;
-  }
-
-  /* Spacing */
-  .invoice-summary .space-y-4 > * + *,
-  .invoice-summary .space-y-5 > * + *,
-  .invoice-summary .space-y-8 > * + * {
-    margin-top: 0.5cm !important;
-  }
-
-  /* Page breaks */
-  .invoice-summary .border-t {
-    page-break-inside: avoid !important;
-  }
-
-  /* Font weights */
-  .invoice-summary .font-light {
-    font-weight: normal !important;
-  }
-
-  /* Specific elements */
-  .invoice-summary .text-[#e95a0c] {
-    color: black !important;
-    font-weight: bold !important;
-  }
-
-  /* Remove any animations/transitions */
-  .invoice-summary * {
-    transition: none !important;
-    animation: none !important;
   }
 
   /* Paper settings */
@@ -121,17 +91,9 @@
     size: A4 portrait;
   }
 
-  /* Ensure content is visible */
-  .invoice-summary > div {
-    display: block !important;
-    visibility: visible !important;
-    opacity: 1 !important;
-  }
-
-  /* Fix any potential overflow issues */
+  /* Ensure proper overflow handling */
   html, body {
     height: auto !important;
     overflow: visible !important;
-    background: white !important;
   }
 }
