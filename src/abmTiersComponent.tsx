@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
 import { useCurrency, CURRENCY_CONFIG } from './config/currency';
 import { CurrencySelector } from './components/CurrencySelector';
+import { InvoiceSummary } from './components/InvoiceSummary';
+import './styles/invoice-print.css';
 
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -315,30 +317,7 @@ const TotalCredits = ({ total, description }) => (
 );
 
 const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
-
-  const items = [
-    {
-      title: "Custom Playbook Design",
-      tacticalCredits: "12",
-      impactCredits: "12",
-      enterpriseCredits: "11",
-      customPrice: "12"
-    },
-    { 
-      title: "Engagement Playbooks", 
-      tacticalCredits: "27",
-      impactCredits: "27",
-      enterpriseCredits: "26",
-      customPrice: "27"
-    },
-    { 
-      title: "Revenue Playbooks", 
-      tacticalCredits: "8",
-      impactCredits: "8",
-      enterpriseCredits: "7",
-      customPrice: "8"
-    }
-  ];
+  const items = ITEM_GROUPS.revenue;
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
     const item = items.find(item => 
@@ -574,8 +553,9 @@ const ITEM_GROUPS = {
     { title: "Annotated Report", tacticalCredits: "5.5", impactCredits: "5.5", enterpriseCredits: "4.5", customPrice: "5.5" }
   ],
   revenue: [
-    { title: "Account Roadmap", tacticalCredits: "6.5", impactCredits: "6.5", enterpriseCredits: "5.5", customPrice: "6.5" },
-    { title: "Executive Briefing", tacticalCredits: "6.5", impactCredits: "6.5", enterpriseCredits: "5.5", customPrice: "6.5" }
+    { title: "Custom Playbook Design", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
+    { title: "Engagement Playbooks", tacticalCredits: "27", impactCredits: "27", enterpriseCredits: "26", customPrice: "27" },
+    { title: "Revenue Playbooks", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" }
   ],
   training: [
     { title: "ABM Fundamentals (ICP, Account Selection, Segmentation)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
@@ -589,6 +569,7 @@ export default function ABMTiers() {
   const [customPrice, setCustomPrice] = useState('Custom');
   const [quantities, setQuantities] = useState({});
   const [selectedTier, setSelectedTier] = useState('Tactical ABM');
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   const { selectedCurrency, handleCurrencyChange, formatPrice } = useCurrency();
 
@@ -645,17 +626,7 @@ export default function ABMTiers() {
       
       console.log('Found item:', item);
       
-      // Special handling for playbooks
-      if (id === 'custom-playbook-design') {
-        credits += 12 * quantity; // Custom Playbook Design credits
-        cost += 12 * quantity; // Custom Playbook Design cost
-      } else if (id === 'engagement-playbooks') {
-        credits += 27 * quantity; // Engagement Playbook credits
-        cost += 27 * quantity; // Engagement Playbook cost
-      } else if (id === 'revenue-playbooks') {
-        credits += 8 * quantity; // Revenue Playbook credits
-        cost += 8 * quantity; // Revenue Playbook cost
-      } else if (item) {
+      if (item) {
         let itemCredits;
         if (selectedTier === 'Enterprise ABM') {
           itemCredits = parseFloat(item.enterpriseCredits || item.tacticalCredits) * quantity;
@@ -724,8 +695,15 @@ export default function ABMTiers() {
   });
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className={`bg-black text-white min-h-screen transition-all duration-300 ${isInvoiceOpen ? 'lg:pl-[400px]' : 'lg:pl-[50px]'}`}>
       <div className="max-w-6xl mx-auto relative">
+        {/* Overlay when panel is open on mobile */}
+        {isInvoiceOpen && (
+          <div 
+            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            onClick={() => setIsInvoiceOpen(false)}
+          />
+        )}
         <header className="p-6 mb-8">
           <div className="flex justify-between items-start">
             <div>
@@ -747,12 +725,12 @@ export default function ABMTiers() {
         <div className="sticky top-0 bg-black/95 backdrop-blur-sm z-20 px-6 pb-4">
           <div className="rounded-lg overflow-hidden">
             <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
-              <div className="p-4 flex items-center justify-end gap-2">
+              <div className="p-4 flex items-center justify-end gap-3">
                 <button
                   onClick={() => setQuantities({})}
-                  className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-200 bg-gray-800 hover:bg-gray-700 rounded transition-colors mr-2"
+                  className="px-3 py-1.5 text-xs text-gray-400 hover:text-gray-200 bg-gray-800 hover:bg-gray-700 rounded transition-colors"
                 >
-                  Reset
+                  Reset All
                 </button>
                 <CurrencySelector
                   selectedCurrency={selectedCurrency}
@@ -945,6 +923,47 @@ export default function ABMTiers() {
           </div>
         </div>
       </div>
+
+      {/* Invoice Summary Modal */}
+      <InvoiceSummary
+        isOpen={isInvoiceOpen}
+        onClose={(newState) => setIsInvoiceOpen(newState)}
+        selectedTier={grandTotal >= 70 ? 'Enterprise ABM' : grandTotal >= 50 ? 'Impact ABM' : grandTotal >= 30 ? 'Tactical ABM' : 'Custom SOW'}
+        items={Object.entries(quantities)
+          .filter(([_, quantity]) => quantity > 0)
+          .map(([id, quantity]) => {
+            // Order matches the numbered panels on the page
+            const categoryOrder = [
+              'ABM foundations',      // 1.
+              'Insights',             // 2.
+              'Personalized content & creative', // 3.
+              'Playbook credits',     // 4.
+              'ABM Training'          // 5.
+            ];
+            const allItems = [
+              // Order matches the numbered panels on the page
+              ...FOUNDATION_ITEMS.map(i => ({ ...i, category: 'ABM foundations', order: 1 })),
+              ...ITEM_GROUPS.insights.map(i => ({ ...i, category: 'Insights', order: 2 })),
+              ...ITEM_GROUPS.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
+              ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
+              ...ITEM_GROUPS.training.map(i => ({ ...i, category: 'ABM Training', order: 5 }))
+            ];
+            const item = allItems.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+            if (!item) return null;
+            const credits = parseFloat(item.tacticalCredits || item.customPrice) * quantity;
+            return {
+              id,
+              title: item.title,
+              credits,
+              category: item.category,
+              amount: `${symbol}${(credits * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`
+            };
+          }).filter(Boolean)}
+        totalCredits={grandTotal}
+        customSowCost={`${symbol}${(currencyTotal * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`}
+        creditsCost={`${symbol}${(totalCostInCurrency).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`}
+        currencySymbol={symbol}
+      />
     </div>
   );
 }

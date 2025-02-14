@@ -1,0 +1,30 @@
+@media print {
+  /* Hide everything except the invoice content */
+  body > *:not(.invoice-print) {
+    display: none !important;
+  }
+
+  .invoice-print {
+    position: static !important;
+    background: white !important;
+    color: black !important;
+    padding: 20px !important;
+  }
+
+  .invoice-print button {
+    display: none !important;
+  }
+
+  .invoice-print * {
+    color: black !important;
+  }
+
+  .invoice-print .text-green-500 {
+    color: #059669 !important;
+  }
+
+  /* Add page breaks where needed */
+  .invoice-print {
+    page-break-inside: avoid;
+  }
+}
