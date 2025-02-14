@@ -1,5 +1,4 @@
 import React from 'react';
-import html2canvas from 'html2canvas';
 
 declare const html2canvas: any;
 declare const jsPDF: any;
