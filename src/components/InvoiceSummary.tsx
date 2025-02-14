@@ -20,6 +20,10 @@ interface InvoiceSummaryProps {
   currencySymbol: string;
 }
 
+
+
+
+
 export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   isOpen,
   onClose,
@@ -34,23 +38,15 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
     window.print();
   };
 
-  const handleDownload = () => {
-    // TODO: Implement PDF download
-    console.log('Download PDF');
-  };
-
-  const handleEmail = () => {
-    // TODO: Implement email functionality
-    console.log('Email summary');
-  };
 
   return (
     <div 
-      className={`fixed left-0 top-0 h-screen bg-gray-900 border-r border-gray-800 transition-all duration-300 z-50
-        ${isOpen ? 'lg:w-[400px] w-[85vw]' : 'w-[50px]'}
-        translate-x-0
-        shadow-xl
-      `}
+        className={`invoice-summary fixed left-0 top-0 h-screen bg-gray-900 border-r border-gray-800 transition-all duration-300 z-50
+          ${isOpen ? 'lg:w-[400px] w-[85vw]' : 'w-[50px]'}
+          translate-x-0
+          shadow-xl
+          print:relative print:w-full print:h-auto print:bg-white print:text-black print:p-8 print:m-0 print:border-none print:shadow-none print:left-0 print:top-0
+        `}
     >
       <div className="relative h-full">
         {/* Expand/Collapse Toggle */}
@@ -74,10 +70,10 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
         </button>
 
         {/* Content */}
-        <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} print:block print:h-auto print:overflow-visible print:opacity-100`}>
           <div className="p-6">
         <div className="mb-8">
-          <h2 className="text-3xl font-light text-white mb-3">Draft SOW</h2>
+          <h2 className="text-3xl font-light text-white mb-3 print:text-black">Draft SOW</h2>
           <p className="text-xl text-[#e95a0c] font-light">{selectedTier}</p>
         </div>
 
@@ -96,7 +92,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           .map(([category, categoryItems]) => (
             <div key={category}>
               <h3 className="text-xl mb-6">
-                <span className="text-white font-light">{category}</span>
+                <span className="text-white font-light print:text-black">{category}</span>
                 <span className="text-gray-500 font-light"> credits</span>
                 <span className="text-orange-500">.</span>
               </h3>
@@ -104,12 +100,12 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
                 {categoryItems.map(item => (
                   <div key={item.id} className="flex justify-between">
                     <div>
-                      <p className="text-gray-300 text-sm font-light">{item.title}</p>
-                      <p className="text-xs text-gray-500 font-light">
+                      <p className="text-gray-300 text-sm font-light print:text-black">{item.title}</p>
+                      <p className="text-xs text-gray-500 font-light print:text-black">
                         {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
                       </p>
                     </div>
-                    <p className="text-green-500 text-sm font-light">{item.amount}</p>
+                    <p className="text-green-500 text-sm font-light print:text-black">{item.amount}</p>
                   </div>
                 ))}
               </div>
@@ -119,22 +115,22 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
 
         <div className="border-t border-gray-800 mt-10 pt-8 space-y-5">
           <div className="flex justify-between items-baseline">
-            <span className="text-sm text-gray-400 font-light">Custom SOW Cost</span>
-            <span className="text-base font-light text-gray-500">{customSowCost}</span>
+            <span className="text-sm text-gray-400 font-light print:text-black">Custom SOW Cost</span>
+            <span className="text-base font-light text-gray-500 print:text-black">{customSowCost}</span>
           </div>
           <div className="border-t border-gray-800 mt-5 pt-5 space-y-5">
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-gray-400 font-light">Total Credits</span>
-              <span className="text-base font-light text-white">{totalCredits}</span>
+              <span className="text-sm text-gray-400 font-light print:text-black">Total Credits</span>
+              <span className="text-base font-light text-white print:text-black">{totalCredits}</span>
             </div>
             <div className="flex justify-between items-baseline">
-              <span className="text-sm text-gray-400 font-light">Credits Cost</span>
-              <span className="text-base font-light text-green-500">{creditsCost}</span>
+              <span className="text-sm text-gray-400 font-light print:text-black">Credits Cost</span>
+              <span className="text-base font-light text-green-500 print:text-black">{creditsCost}</span>
             </div>
           </div>
           <div className="flex justify-between items-baseline border-t border-gray-800 pt-6 mt-6">
-            <span className="text-sm text-gray-400 font-light">Total Savings</span>
-            <span className="text-base font-light font-medium text-green-500">{(() => {
+            <span className="text-sm text-gray-400 font-light print:text-black">Total Savings</span>
+            <span className="text-base font-light font-medium text-green-500 print:text-black">{(() => {
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
               const savings = sowCost - credCost;
@@ -149,18 +145,6 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
             className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-white"
           >
             Print
-          </button>
-          <button 
-            onClick={handleDownload}
-            className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-white"
-          >
-            Download PDF
-          </button>
-          <button 
-            onClick={handleEmail}
-            className="bg-gray-800 hover:bg-gray-700 px-4 py-2 rounded text-white"
-          >
-            Email
           </button>
         </div>
           </div>
