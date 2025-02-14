@@ -10,7 +10,20 @@ export default defineConfig({
     emptyOutDir: true,
     rollupOptions: {
       external: ['jspdf', 'html2canvas'],
+      output: {
+        globals: {
+          'jspdf': 'jspdf',
+          'html2canvas': 'html2canvas'
+        }
+      }
     },
+    commonjsOptions: {
+      include: [/node_modules/],
+      transformMixedEsModules: true
+    }
+  },
+  resolve: {
+    mainFields: ['module', 'jsnext:main', 'jsnext', 'main']
   },
   server: {
     port: 4173,
