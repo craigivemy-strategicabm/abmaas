@@ -1,4 +1,5 @@
 import React from 'react';
+import { formatPrice, CurrencyCode } from '../config/currency';
 import { InvoiceItem } from './InvoiceSummary';
 
 interface PrintableInvoiceProps {
@@ -8,6 +9,7 @@ interface PrintableInvoiceProps {
   customSowCost: string;
   creditsCost: string;
   currencySymbol: string;
+  selectedCurrency: CurrencyCode;
 }
 
 export const PrintableInvoice: React.FC<PrintableInvoiceProps> = ({
@@ -17,6 +19,7 @@ export const PrintableInvoice: React.FC<PrintableInvoiceProps> = ({
   customSowCost,
   creditsCost,
   currencySymbol,
+  selectedCurrency,
 }) => {
   // Group items by category
   const printableItems = Object.entries(items.reduce((acc, item) => {
@@ -71,7 +74,7 @@ export const PrintableInvoice: React.FC<PrintableInvoiceProps> = ({
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
               const savings = sowCost - credCost;
-              return `${currencySymbol}${savings.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`;
+              return formatPrice(savings, selectedCurrency);
             })()}</span>
           </div>
         </div>

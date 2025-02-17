@@ -935,6 +935,7 @@ export default function ABMTiers() {
         customSowCost={`${symbol}${(currencyTotal * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`}
         creditsCost={`${symbol}${(totalCostInCurrency).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`}
         currencySymbol={symbol}
+        selectedCurrency={selectedCurrency}
       />
     </div>
   );

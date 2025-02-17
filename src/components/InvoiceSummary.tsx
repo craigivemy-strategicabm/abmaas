@@ -1,7 +1,7 @@
 import React from 'react';
-
-declare const html2canvas: any;
-declare const jsPDF: any;
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
+import { formatPrice, CurrencyCode } from '../config/currency';
 
 interface InvoiceItem {
   id: string;
@@ -21,6 +21,7 @@ interface InvoiceSummaryProps {
   customSowCost: string;
   creditsCost: string;
   currencySymbol: string;
+  selectedCurrency: CurrencyCode;
 }
 
 
@@ -35,7 +36,8 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   totalCredits,
   customSowCost,
   creditsCost,
-  currencySymbol
+  currencySymbol,
+  selectedCurrency
 }) => {
   const handlePrint = async () => {
     try {
@@ -158,7 +160,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
               const savings = sowCost - credCost;
-              return `${currencySymbol}${savings.toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`;
+              return formatPrice(savings, selectedCurrency);
             })()}</span>
           </div>
         </div>
