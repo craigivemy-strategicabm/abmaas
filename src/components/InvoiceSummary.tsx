@@ -3,6 +3,7 @@ import InvoicePDF from './InvoicePDF';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { formatPrice, CurrencyCode } from '../config/currency';
+import { ChevronRightIcon, ArrowsPointingInIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 
 interface InvoiceItem {
   id: string;
@@ -41,6 +42,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   selectedCurrency
 }) => {
   const [showPDF, setShowPDF] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const handlePrint = () => {
     setShowPDF(true);
@@ -191,32 +193,41 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   return (
     <div 
         className={`invoice-summary fixed left-0 top-0 h-screen bg-gray-900 border-r border-gray-800 transition-all duration-300 z-50
-          ${isOpen ? 'lg:w-[400px] w-[85vw]' : 'w-[50px]'}
+          ${!isOpen ? 'w-[50px]' : isExpanded ? 'w-[50vw]' : 'lg:w-[400px] w-[85vw]'}
           translate-x-0
           shadow-xl
           print:static print:w-full print:h-auto print:bg-white print:text-black print:border-none print:shadow-none print:transform-none print:z-auto
         `}
     >
       <div className="relative h-full">
-        {/* Expand/Collapse Toggle */}
-        <button 
-          onClick={() => onClose(!isOpen)}
-          className="absolute -right-4 top-8 bg-gray-900 border border-gray-800 rounded-full p-2 hover:bg-gray-800 transition-colors shadow-lg cursor-pointer"
-        >
-          <svg
-            className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-0' : '-rotate-180'}`}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+        {/* Toggle Buttons */}
+        <div className="absolute -right-4 top-8 flex flex-col gap-2">
+          {/* Open/Close Toggle */}
+          <button 
+            onClick={() => onClose(!isOpen)}
+            className="bg-gray-900 border border-gray-800 rounded-full p-2 hover:bg-gray-800 transition-colors shadow-lg cursor-pointer"
+            title="Toggle panel"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
+            <ChevronRightIcon
+              className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-0' : '-rotate-180'}`}
             />
-          </svg>
-        </button>
+          </button>
+
+          {/* Expand/Collapse Toggle - Only show when panel is open */}
+          {isOpen && (
+            <button 
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="bg-gray-900 border border-gray-800 rounded-full p-2 hover:bg-gray-800 transition-colors shadow-lg cursor-pointer"
+              title={isExpanded ? 'Collapse panel' : 'Expand panel'}
+            >
+              {isExpanded ? (
+                <ArrowsPointingInIcon className="w-4 h-4 text-gray-500" />
+              ) : (
+                <ArrowsPointingOutIcon className="w-4 h-4 text-gray-500" />
+              )}
+            </button>
+          )}
+        </div>
 
         {/* Content */}
         <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} print:block print:h-auto print:overflow-visible print:opacity-100 print:visible`}>
