@@ -42,6 +42,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   selectedCurrency
 }) => {
   const [showPDF, setShowPDF] = useState(false);
+  const [clientName, setClientName] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handlePrint = () => {
@@ -236,6 +237,15 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           <div className="p-6 invoice-content">
         <div className="mb-8">
           <h2 className="text-3xl font-light text-white mb-3 print:text-black !print:text-black">Draft SOW</h2>
+          <div className="mb-3">
+            <input
+              type="text"
+              placeholder="Enter client name"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              className="bg-gray-800 text-gray-300 px-3 py-1 rounded border border-gray-700 focus:outline-none focus:border-gray-500 w-full max-w-md"
+            />
+          </div>
           <p className="text-xl text-[#e95a0c] font-light print:text-black">{selectedTier} tier</p>
         </div>
 
@@ -258,20 +268,22 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
                 <span className="text-gray-500 font-light !print:text-black"> credits</span>
                 <span className="text-[#e95a0c] !print:text-[#e95a0c]">.</span>
               </h3>
-              <div className="space-y-4">
+              <div className="space-y-4 mb-4">
                 {categoryItems.map(item => (
                   <table key={item.id} className="w-full mb-4 border-collapse page-break-inside-avoid">
-                    <tr>
-                      <td className="text-left" style={{ width: '80%', paddingRight: '3rem' }}>
-                        <p className="text-gray-300 text-sm font-light !print:text-black whitespace-normal break-words">{item.title}</p>
-                        <p className="text-xs text-gray-500 font-light !print:text-black">
-                          {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
-                        </p>
-                      </td>
-                      <td className="text-right" style={{ width: '20%' }}>
-                        <p className="text-green-500 text-sm font-light !print:text-green-500">{item.amount}</p>
-                      </td>
-                    </tr>
+                    <tbody>
+                      <tr>
+                        <td className="text-left" style={{ width: '80%', paddingRight: '3rem' }}>
+                          <p className="text-gray-300 text-sm font-light !print:text-black whitespace-normal break-words">{item.title}</p>
+                          <p className="text-xs text-gray-500 font-light !print:text-black">
+                            {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
+                          </p>
+                        </td>
+                        <td className="text-right" style={{ width: '20%' }}>
+                          <p className="text-green-500 text-sm font-light !print:text-green-500">{item.amount}</p>
+                        </td>
+                      </tr>
+                    </tbody>
                   </table>
                 ))}
               </div>
@@ -334,6 +346,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
             totalCredits={totalCredits}
             customSowCost={customSowCost}
             creditsCost={creditsCost}
+            clientName={clientName}
           />
         </div>
       )}

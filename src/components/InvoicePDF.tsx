@@ -1,6 +1,7 @@
 import React from 'react';
-import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import { Font } from '@react-pdf/renderer';
+import logo from '../assets/images/sabmlogo.png';
 
 // Register font
 Font.register({
@@ -62,10 +63,17 @@ const styles = StyleSheet.create({
   },
   totalLabel: {
     fontWeight: 'bold',
+    flex: 1,
+  },
+  totalValue: {
+    width: 120,
+    textAlign: 'right',
   },
   totalAmount: {
     fontWeight: 'bold',
     color: '#22C55E',
+    width: 120,
+    textAlign: 'right',
   }
 });
 
@@ -83,6 +91,7 @@ interface InvoicePDFProps {
   totalCredits: number;
   customSowCost: string;
   creditsCost: string;
+  clientName: string;
 }
 
 const InvoicePDF: React.FC<InvoicePDFProps> = ({ 
@@ -91,15 +100,19 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
   selectedTier,
   totalCredits,
   customSowCost,
-  creditsCost
+  creditsCost,
+  clientName
 }) => {
   console.log('Raw items:', items);
 
-  // Group items by category
+  console.log('Received items:', items);
+
+  // Group items by category, preserving the formatted amounts
   const itemsByCategory = items.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
     }
+    // Keep the original item with its formatted amount
     acc[item.category].push(item);
     return acc;
   }, {} as Record<string, typeof items>);
@@ -133,11 +146,23 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
         <Page size="A4" style={styles.page}>
           {/* Header */}
           <View style={styles.section}>
-            <Text style={{ ...styles.categoryTitle, fontSize: 24, marginBottom: 8 }}>Draft SOW</Text>
-            <Text style={{ fontSize: 16, color: '#E95A0C', marginBottom: 20 }}>{selectedTier} tier</Text>
+            <View style={{ marginBottom: 30 }}>
+              <View style={{ alignItems: 'flex-end', marginBottom: 20 }}>
+                <Image 
+                  src={logo}
+                  style={{ width: 120, objectFit: 'contain' }}
+                />
+              </View>
+              <View>
+                <Text style={{ ...styles.categoryTitle, fontSize: 24, marginBottom: 8 }}>Draft SOW</Text>
+                <Text style={{ fontSize: 15, color: '#666666', marginBottom: 24 }}>for {clientName || '[Client Name]'}</Text>
+                <Text style={{ fontSize: 16, color: '#E95A0C' }}>{selectedTier} tier</Text>
+              </View>
+            </View>
           </View>
 
           {/* Categories and Items */}
+          
           {sortedCategories.map(category => (
             <View key={category} style={styles.section} break={false}>
               <Text style={styles.categoryTitle}>{category}</Text>
@@ -162,19 +187,19 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
           <View style={styles.section}>
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Custom SOW Cost</Text>
-              <Text style={styles.amount}>{customSowCost}</Text>
+              <Text style={styles.totalValue}>{customSowCost}</Text>
             </View>
 
             <View style={styles.divider} />
 
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Total Credits</Text>
-              <Text style={styles.amount}>{totalCredits}</Text>
+              <Text style={styles.totalValue}>{totalCredits}</Text>
             </View>
 
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Credits Cost</Text>
-              <Text style={styles.amount}>{creditsCost}</Text>
+              <Text style={styles.totalValue}>{creditsCost}</Text>
             </View>
 
             <View style={styles.divider} />
@@ -182,6 +207,25 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
             <View style={styles.row}>
               <Text style={styles.totalLabel}>Total Savings</Text>
               <Text style={styles.totalAmount}>{formatPrice(savings, currency)}</Text>
+            </View>
+            {/* Terms and Conditions */}
+            <View style={{ marginTop: 40, borderTop: 1, borderColor: '#E5E7EB', paddingTop: 20 }}>
+              <Text style={{ fontSize: 12, color: '#666666', marginBottom: 16, fontWeight: 'bold' }}>Credit Terms and Conditions</Text>
+              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Invoicing & Payment:</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>The full credit amount will be invoiced upon contract signature and payable within 15 days.</Text>
+
+              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Agility, Usage & Carryover:</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Unused credits may be carried over into the next quarter.</Text>
+
+              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Changes to Planned Deliverables:</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 4 }}>Requests to modify planned deliverables must be made at least 48 hours in advance.</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Once a deliverable has commenced, changes are not permitted, and the associated credit will be considered consumed.</Text>
+
+              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Reconciliation & Tracking:</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Credit reconciliation is available upon request or provided monthly through your client services contact.</Text>
+
+              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Allocation & Delivery Timelines:</Text>
+              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Credit allocation and estimated delivery times are subject to variation based on project complexity and specific requirements.</Text>
             </View>
           </View>
         </Page>
