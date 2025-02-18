@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import InvoicePDF from './InvoicePDF';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { formatPrice, CurrencyCode } from '../config/currency';
@@ -39,26 +40,148 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   currencySymbol,
   selectedCurrency
 }) => {
-  const handlePrint = async () => {
+  const [showPDF, setShowPDF] = useState(false);
+
+  const handlePrint = () => {
+    setShowPDF(true);
+  };
+
+  const allItems = items.map(item => ({
+    ...item,
+    amount: formatPrice(parseFloat(item.amount), selectedCurrency)
+  }));
+
+  const handlePrintOld = async () => {
     try {
       const element = document.querySelector('.invoice-content');
       if (!element) return;
 
-      const canvas = await html2canvas(element);
-      const imgData = canvas.toDataURL('image/png');
+      // Create a temporary container
+      const container = document.createElement('div');
+      container.style.position = 'fixed';
+      container.style.top = '0';
+      container.style.left = '0';
+      container.style.width = '1200px'; // Much wider container
+      container.style.backgroundColor = 'white';
+      container.style.padding = '40px 60px';
+      container.style.zIndex = '-9999';
+      container.style.opacity = '1';
+      container.style.visibility = 'visible';
+      container.style.boxSizing = 'border-box';
+      document.body.appendChild(container);
 
-      // Create PDF in A4 format
+      // Debug log container width
+      console.log('Container width:', container.offsetWidth);
+
+      // Clone the content
+      const printElement = element.cloneNode(true) as HTMLElement;
+      container.appendChild(printElement);
+
+      // Force all text to be visible and black
+      const allElements = container.querySelectorAll('*');
+      allElements.forEach((el: Element) => {
+        if (el instanceof HTMLElement) {
+          // Base styles for all elements
+          el.style.color = 'black';
+          el.style.backgroundColor = 'white';
+          el.style.opacity = '1';
+          el.style.visibility = 'visible';
+          
+          // Handle tables
+          if (el.tagName === 'TABLE') {
+            el.style.width = '100%';
+            el.style.borderCollapse = 'collapse';
+            el.style.marginBottom = '1rem';
+            el.style.tableLayout = 'fixed';
+          }
+          
+          // Handle table cells
+          if (el.tagName === 'TD') {
+            if (el.classList.contains('text-left')) {
+              el.style.width = '80%';
+              el.style.paddingRight = '3rem';
+              el.style.wordBreak = 'break-word';
+              el.style.whiteSpace = 'normal';
+              el.style.verticalAlign = 'top';
+              el.style.maxWidth = '0';
+              el.style.overflow = 'hidden';
+              el.style.textOverflow = 'ellipsis';
+            } else if (el.classList.contains('text-right')) {
+              el.style.width = '20%';
+              el.style.textAlign = 'right';
+              el.style.whiteSpace = 'nowrap';
+              el.style.verticalAlign = 'top';
+            }
+          }
+
+          // Handle paragraphs and headings
+          if (el.tagName === 'P' || el.tagName === 'H3') {
+            el.style.margin = '0';
+            el.style.padding = '0';
+            el.style.pageBreakInside = 'avoid';
+            if (el.classList.contains('text-xs')) {
+              el.style.marginTop = '0.5rem';
+            }
+          }
+          
+          // Handle containers that should avoid page breaks
+          if (el.classList.contains('page-break-inside-avoid')) {
+            el.style.pageBreakInside = 'avoid';
+          }
+        }
+      });
+
+      // Wait a bit for styles to apply
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      // Capture the content
+      const canvas = await html2canvas(container, {
+        scale: 2,
+        useCORS: true,
+        logging: true,
+        backgroundColor: 'white',
+        width: 1200, // Match container width
+        windowWidth: 1200,
+        onclone: (clonedDoc) => {
+          const clonedElement = clonedDoc.querySelector('.invoice-content');
+          if (clonedElement instanceof HTMLElement) {
+            clonedElement.style.opacity = '1';
+            clonedElement.style.visibility = 'visible';
+          }
+        }
+      });
+
+      // Remove the container
+      document.body.removeChild(container);
+
+      // Create PDF
       const pdf = new jsPDF({
         orientation: 'portrait',
-        unit: 'mm',
+        unit: 'pt',
         format: 'a4'
       });
 
-      const imgProps = pdf.getImageProperties(imgData);
+      const imgData = canvas.toDataURL('image/png');
       const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = pdfWidth;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      let heightLeft = imgHeight;
+      let position = 0;
+      let page = 1;
+
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+      heightLeft -= pdfHeight;
+
+      while (heightLeft >= 0) {
+        position = -pdfHeight * page;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+        page++;
+      }
+
       pdf.save('draft-sow.pdf');
     } catch (error) {
       console.error('Error generating PDF:', error);
@@ -71,7 +194,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           ${isOpen ? 'lg:w-[400px] w-[85vw]' : 'w-[50px]'}
           translate-x-0
           shadow-xl
-          print:relative print:w-full print:h-auto print:bg-white print:text-black print:p-8 print:m-0 print:border-none print:shadow-none print:left-0 print:top-0
+          print:static print:w-full print:h-auto print:bg-white print:text-black print:border-none print:shadow-none print:transform-none print:z-auto
         `}
     >
       <div className="relative h-full">
@@ -96,14 +219,14 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
         </button>
 
         {/* Content */}
-        <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} print:block print:h-auto print:overflow-visible print:opacity-100`}>
+        <div className={`h-full overflow-y-auto transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'} print:block print:h-auto print:overflow-visible print:opacity-100 print:visible`}>
           <div className="p-6 invoice-content">
         <div className="mb-8">
-          <h2 className="text-3xl font-light text-white mb-3 print:text-black">Draft SOW</h2>
-          <p className="text-xl text-[#e95a0c] font-light">{selectedTier} tier</p>
+          <h2 className="text-3xl font-light text-white mb-3 print:text-black !print:text-black">Draft SOW</h2>
+          <p className="text-xl text-[#e95a0c] font-light print:text-black">{selectedTier} tier</p>
         </div>
 
-        <div className="space-y-8 my-6">
+        <div className="space-y-12 my-8">
           {/* Group items by category */}
           {Object.entries(items.reduce((acc, item) => {
             if (!acc[item.category]) acc[item.category] = [];
@@ -118,21 +241,25 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           .map(([category, categoryItems]) => (
             <div key={category}>
               <h3 className="text-xl mb-6">
-                <span className="text-white font-light print:text-black">{category}</span>
-                <span className="text-gray-500 font-light"> credits</span>
-                <span className="text-orange-500">.</span>
+                <span className="text-white font-light !print:text-black">{category}</span>
+                <span className="text-gray-500 font-light !print:text-black"> credits</span>
+                <span className="text-[#e95a0c] !print:text-[#e95a0c]">.</span>
               </h3>
               <div className="space-y-4">
                 {categoryItems.map(item => (
-                  <div key={item.id} className="flex justify-between">
-                    <div>
-                      <p className="text-gray-300 text-sm font-light print:text-black">{item.title}</p>
-                      <p className="text-xs text-gray-500 font-light print:text-black">
-                        {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
-                      </p>
-                    </div>
-                    <p className="text-green-500 text-sm font-light print:text-black">{item.amount}</p>
-                  </div>
+                  <table key={item.id} className="w-full mb-4 border-collapse page-break-inside-avoid">
+                    <tr>
+                      <td className="text-left" style={{ width: '80%', paddingRight: '3rem' }}>
+                        <p className="text-gray-300 text-sm font-light !print:text-black whitespace-normal break-words">{item.title}</p>
+                        <p className="text-xs text-gray-500 font-light !print:text-black">
+                          {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
+                        </p>
+                      </td>
+                      <td className="text-right" style={{ width: '20%' }}>
+                        <p className="text-green-500 text-sm font-light !print:text-green-500">{item.amount}</p>
+                      </td>
+                    </tr>
+                  </table>
                 ))}
               </div>
             </div>
@@ -176,6 +303,20 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
           </div>
         </div>
       </div>
+
+      {showPDF && (
+        <div className="fixed inset-0 z-50 bg-white">
+          <div className="absolute top-4 right-4">
+            <button
+              onClick={() => setShowPDF(false)}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+            >
+              Close
+            </button>
+          </div>
+          <InvoicePDF items={allItems} currency={selectedCurrency} />
+        </div>
+      )}
     </div>
   );
 };
