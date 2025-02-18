@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
@@ -13,13 +14,36 @@ export default defineConfig({
       transformMixedEsModules: true
     }
   },
+  define: {
+    global: 'globalThis',
+    'process.env': {},
+    'process.browser': true,
+  },
   resolve: {
     alias: {
       stream: 'stream-browserify',
       zlib: 'browserify-zlib',
-      util: 'util'
+      util: path.resolve(__dirname, 'src/utils/node-polyfills.js'),
+      assert: 'assert',
+      buffer: 'buffer',
+      process: 'process/browser',
+      events: 'events',
+    }
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      define: {
+        global: 'globalThis'
+      }
     },
-    mainFields: ['module', 'jsnext:main', 'jsnext', 'main']
+    include: [
+      'buffer',
+      'process',
+      'events',
+      'assert',
+      'stream-browserify',
+      'browserify-zlib'
+    ]
   },
   server: {
     port: 4173,
