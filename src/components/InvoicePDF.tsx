@@ -79,10 +79,23 @@ interface InvoicePDFProps {
     order: number;
   }>;
   currency: CurrencyCode;
+  selectedTier: string;
+  totalCredits: number;
+  customSowCost: string;
+  creditsCost: string;
 }
 
-const InvoicePDF: React.FC<InvoicePDFProps> = ({ items, currency }) => {
-  // Group and sort items by category and order
+const InvoicePDF: React.FC<InvoicePDFProps> = ({ 
+  items, 
+  currency, 
+  selectedTier,
+  totalCredits,
+  customSowCost,
+  creditsCost
+}) => {
+  console.log('Raw items:', items);
+
+  // Group items by category
   const itemsByCategory = items.reduce((acc, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
@@ -91,24 +104,45 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({ items, currency }) => {
     return acc;
   }, {} as Record<string, typeof items>);
 
+  console.log('Items by category:', itemsByCategory);
+
+  // Sort categories by the first item's order in each category
+  const sortedCategories = Object.entries(itemsByCategory)
+    .sort(([categoryA], [categoryB]) => {
+      const itemA = items.find(i => i.category === categoryA);
+      const itemB = items.find(i => i.category === categoryB);
+      return (itemA?.order || 0) - (itemB?.order || 0);
+    })
+    .map(([category]) => category);
+
+  console.log('Sorted categories:', sortedCategories);
+
   // Sort items within each category by order
   Object.values(itemsByCategory).forEach(categoryItems => {
     categoryItems.sort((a, b) => a.order - b.order);
   });
 
-  // Calculate totals
-  const totalCredits = items.reduce((sum, item) => sum + item.credits, 0);
-  const totalAmount = items.reduce((sum, item) => sum + parseFloat(item.amount.replace(/[^0-9.-]+/g, '')), 0);
+  // Calculate savings
+  const sowCost = parseFloat(customSowCost.replace(/[^0-9.-]+/g, ''));
+  const credCost = parseFloat(creditsCost.replace(/[^0-9.-]+/g, ''));
+  const savings = sowCost - credCost;
 
   return (
     <PDFViewer style={{ width: '100%', height: '100vh' }}>
       <Document>
         <Page size="A4" style={styles.page}>
-          {Object.entries(itemsByCategory).map(([category, categoryItems]) => (
+          {/* Header */}
+          <View style={styles.section}>
+            <Text style={{ ...styles.categoryTitle, fontSize: 24, marginBottom: 8 }}>Draft SOW</Text>
+            <Text style={{ fontSize: 16, color: '#E95A0C', marginBottom: 20 }}>{selectedTier} tier</Text>
+          </View>
+
+          {/* Categories and Items */}
+          {sortedCategories.map(category => (
             <View key={category} style={styles.section} break={false}>
               <Text style={styles.categoryTitle}>{category}</Text>
               
-              {categoryItems.map((item, index) => (
+              {itemsByCategory[category].map((item, index) => (
                 <View key={item.id} style={styles.row} break={false}>
                   <View style={styles.itemDetails}>
                     <Text style={styles.itemTitle}>{item.title}</Text>
@@ -122,11 +156,33 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({ items, currency }) => {
               
               <View style={styles.divider} />
             </View>
-          ))}
-          
-          <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total Credits: {totalCredits}</Text>
-            <Text style={styles.totalAmount}>{formatPrice(totalAmount, currency)}</Text>
+          ))})
+
+          {/* Summary Section */}
+          <View style={styles.section}>
+            <View style={styles.row}>
+              <Text style={styles.totalLabel}>Custom SOW Cost</Text>
+              <Text style={styles.amount}>{customSowCost}</Text>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.row}>
+              <Text style={styles.totalLabel}>Total Credits</Text>
+              <Text style={styles.amount}>{totalCredits}</Text>
+            </View>
+
+            <View style={styles.row}>
+              <Text style={styles.totalLabel}>Credits Cost</Text>
+              <Text style={styles.amount}>{creditsCost}</Text>
+            </View>
+
+            <View style={styles.divider} />
+
+            <View style={styles.row}>
+              <Text style={styles.totalLabel}>Total Savings</Text>
+              <Text style={styles.totalAmount}>{formatPrice(savings, currency)}</Text>
+            </View>
           </View>
         </Page>
       </Document>

@@ -48,10 +48,12 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
     setShowPDF(true);
   };
 
+  console.log('Original items:', items);
   const allItems = items.map(item => ({
     ...item,
     amount: formatPrice(parseFloat(item.amount), selectedCurrency)
   }));
+  console.log('Formatted allItems:', allItems);
 
   const handlePrintOld = async () => {
     try {
@@ -325,7 +327,14 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
               Close
             </button>
           </div>
-          <InvoicePDF items={allItems} currency={selectedCurrency} />
+          <InvoicePDF 
+            items={allItems} 
+            currency={selectedCurrency}
+            selectedTier={selectedTier}
+            totalCredits={totalCredits}
+            customSowCost={customSowCost}
+            creditsCost={creditsCost}
+          />
         </div>
       )}
     </div>
