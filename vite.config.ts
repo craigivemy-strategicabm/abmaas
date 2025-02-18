@@ -8,21 +8,17 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
-    rollupOptions: {
-      external: ['jspdf', 'html2canvas'],
-      output: {
-        globals: {
-          'jspdf': 'jspdf',
-          'html2canvas': 'html2canvas'
-        }
-      }
-    },
     commonjsOptions: {
       include: [/node_modules/],
       transformMixedEsModules: true
     }
   },
   resolve: {
+    alias: {
+      stream: 'stream-browserify',
+      zlib: 'browserify-zlib',
+      util: 'util'
+    },
     mainFields: ['module', 'jsnext:main', 'jsnext', 'main']
   },
   server: {

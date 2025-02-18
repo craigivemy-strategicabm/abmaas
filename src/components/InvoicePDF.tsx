@@ -1,5 +1,14 @@
 import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { Font } from '@react-pdf/renderer';
+
+// Register font
+Font.register({
+  family: 'Helvetica',
+  fonts: [
+    { src: 'https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyCg4TYFv.ttf' },
+  ],
+});
 import { formatPrice } from '../config/currency';
 import type { CurrencyCode } from '../config/currency';
 
