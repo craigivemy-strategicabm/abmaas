@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import InvoicePDF from './InvoicePDF';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import { formatPrice, CurrencyCode } from '../config/currency';
+import { formatPrice, CurrencyCode, CURRENCY_CONFIG } from '../config/currency';
 import { ChevronRightIcon, ArrowsPointingInIcon, ArrowsPointingOutIcon } from '@heroicons/react/24/outline';
 
 interface InvoiceItem {
@@ -308,7 +308,9 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
               const savings = sowCost - credCost;
-              return formatPrice(savings, selectedCurrency);
+              const config = CURRENCY_CONFIG[selectedCurrency];
+              const convertedAmount = savings * config.rate;
+              return `${config.symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
             })()}</span>
           </div>
         </div>

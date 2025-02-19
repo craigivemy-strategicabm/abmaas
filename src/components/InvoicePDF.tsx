@@ -2,6 +2,8 @@ import React from 'react';
 import { Document, Page, Text, View, StyleSheet, PDFViewer, Image } from '@react-pdf/renderer';
 import { Font } from '@react-pdf/renderer';
 import logo from '../assets/images/sabmlogo.png';
+import { formatPrice, CURRENCY_CONFIG } from '../config/currency';
+import type { CurrencyCode } from '../config/currency';
 
 // Register font
 Font.register({
@@ -10,8 +12,6 @@ Font.register({
     { src: 'https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyCg4TYFv.ttf' },
   ],
 });
-import { formatPrice } from '../config/currency';
-import type { CurrencyCode } from '../config/currency';
 
 // Create styles
 const styles = StyleSheet.create({
@@ -218,7 +218,14 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
             <View style={[styles.sectionMarker, { borderLeftColor: '#22C55E' }]}>
               <View style={styles.row}>
                 <Text style={styles.totalLabel}>Total Savings</Text>
-                <Text style={styles.savingsAmount}>{formatPrice(savings, currency)}</Text>
+                <Text style={styles.totalAmount}>{(() => {
+                  const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
+                  const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
+                  const savings = sowCost - credCost;
+                  const config = CURRENCY_CONFIG[currency];
+                  const convertedAmount = savings * config.rate;
+                  return `${config.symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+                })()}</Text>
               </View>
             </View>
             {/* Terms and Conditions */}
