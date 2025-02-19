@@ -48,7 +48,17 @@ export const PrintableInvoice: React.FC<PrintableInvoiceProps> = ({
                     <p>{item.title}</p>
                     <p className="text-sm">{item.credits} {item.credits === 1 ? 'credit' : 'credits'}</p>
                   </div>
-                  <p>{item.amount}</p>
+                  <p>{(() => {
+                    const numStr = item.amount.replace(/[^0-9.]/g, '');
+                    const num = parseFloat(numStr);
+                    if (numStr.endsWith('k')) {
+                      return formatPrice(num * 1000, selectedCurrency);
+                    } else if (isNaN(num)) {
+                      return item.amount;
+                    } else {
+                      return formatPrice(num, selectedCurrency);
+                    }
+                  })()}</p>
                 </div>
               ))}
             </div>

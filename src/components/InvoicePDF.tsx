@@ -180,13 +180,15 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                       {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
                     </Text>
                   </View>
-                  <Text style={{ ...styles.amount, color: '#666666' }}>{item.amount}</Text>
+                  <Text style={{ ...styles.amount, color: '#666666' }}>
+                    {item.amount}
+                  </Text>
                 </View>
               ))}
               
               <View style={styles.divider} />
             </View>
-          ))})
+          ))}
 
           {/* Summary Section */}
           <View style={styles.section}>
