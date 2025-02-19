@@ -46,12 +46,17 @@ const styles = StyleSheet.create({
   amount: {
     width: 100,
     textAlign: 'right',
-    color: '#22C55E', // green-500
+    color: '#666666',
   },
   divider: {
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
     marginVertical: 15,
+  },
+  sectionMarker: {
+    borderLeftWidth: 2,
+    borderLeftColor: '#E5E7EB',
+    paddingLeft: 10,
   },
   totalRow: {
     flexDirection: 'row',
@@ -175,7 +180,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                       {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
                     </Text>
                   </View>
-                  <Text style={styles.amount}>{item.amount}</Text>
+                  <Text style={{ ...styles.amount, color: '#666666' }}>{item.amount}</Text>
                 </View>
               ))}
               
@@ -185,28 +190,34 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
 
           {/* Summary Section */}
           <View style={styles.section}>
-            <View style={styles.row}>
-              <Text style={styles.totalLabel}>Custom SOW Cost</Text>
-              <Text style={styles.totalValue}>{customSowCost}</Text>
+            <View style={styles.sectionMarker}>
+              <View style={styles.row}>
+                <Text style={styles.totalLabel}>Custom SOW Cost</Text>
+                <Text style={{ ...styles.totalValue, color: '#666666' }}>{customSowCost}</Text>
+              </View>
             </View>
 
             <View style={styles.divider} />
 
-            <View style={styles.row}>
-              <Text style={styles.totalLabel}>Total Credits</Text>
-              <Text style={styles.totalValue}>{totalCredits}</Text>
-            </View>
+            <View style={styles.sectionMarker}>
+              <View style={styles.row}>
+                <Text style={styles.totalLabel}>Total Credits</Text>
+                <Text style={styles.totalValue}>{totalCredits}</Text>
+              </View>
 
-            <View style={styles.row}>
-              <Text style={styles.totalLabel}>Credits Cost</Text>
-              <Text style={styles.totalValue}>{creditsCost}</Text>
+              <View style={styles.row}>
+                <Text style={styles.totalLabel}>Credits Cost</Text>
+                <Text style={{ ...styles.totalValue, color: '#666666' }}>{creditsCost}</Text>
+              </View>
             </View>
 
             <View style={styles.divider} />
 
-            <View style={styles.row}>
-              <Text style={styles.totalLabel}>Total Savings</Text>
-              <Text style={styles.totalAmount}>{formatPrice(savings, currency)}</Text>
+            <View style={[styles.sectionMarker, { borderLeftColor: '#22C55E' }]}>
+              <View style={styles.row}>
+                <Text style={styles.totalLabel}>Total Savings</Text>
+                <Text style={styles.savingsAmount}>{formatPrice(savings, currency)}</Text>
+              </View>
             </View>
             {/* Terms and Conditions */}
             <View style={{ marginTop: 40, borderTop: 1, borderColor: '#E5E7EB', paddingTop: 20 }}>
