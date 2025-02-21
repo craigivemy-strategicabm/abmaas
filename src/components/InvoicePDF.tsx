@@ -82,6 +82,44 @@ const styles = StyleSheet.create({
   }
 });
 
+// Terms and conditions styles
+const termsStyles = StyleSheet.create({
+  container: {
+    marginTop: 30,
+    fontSize: 10,
+  },
+  heading: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  subheading: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    marginTop: 15,
+    marginBottom: 5,
+  },
+  paragraph: {
+    marginBottom: 4,
+    lineHeight: 1,
+  }
+});
+
+const footerStyles = StyleSheet.create({
+  footerContainer: {
+    position: 'absolute',
+    bottom: 30,
+    left: 0,
+    right: 0,
+    textAlign: 'center',
+  },
+  footerText: {
+    color: '#666666',
+    fontSize: 10,
+    marginBottom: 4,
+  }
+});
+
 interface InvoicePDFProps {
   items: Array<{
     id: string;
@@ -98,6 +136,20 @@ interface InvoicePDFProps {
   creditsCost: string;
   clientName: string;
 }
+
+const Footer = () => (
+  <View style={footerStyles.footerContainer}>
+    <Text style={footerStyles.footerText}>
+      Strategic Internet Consulting Ltd. t/a strategicabm
+    </Text>
+    <Text style={footerStyles.footerText}>
+      Company Number: 6852900 | VAT Number: 844577004
+    </Text>
+    <Text style={footerStyles.footerText}>
+      Suite 4, Richmond House, 2 Medwin Walk, Horsham, RH12 1AQ
+    </Text>
+  </View>
+);
 
 const InvoicePDF: React.FC<InvoicePDFProps> = ({ 
   items, 
@@ -149,15 +201,15 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
     <PDFViewer style={{ width: '100%', height: '100vh' }}>
       <Document>
         <Page size="A4" style={styles.page}>
+          <View style={{ alignItems: 'flex-end', marginBottom: 20 }}>
+            <Image 
+              src={logo}
+              style={{ width: 120, objectFit: 'contain' }}
+            />
+          </View>
           {/* Header */}
           <View style={styles.section}>
             <View style={{ marginBottom: 30 }}>
-              <View style={{ alignItems: 'flex-end', marginBottom: 20 }}>
-                <Image 
-                  src={logo}
-                  style={{ width: 120, objectFit: 'contain' }}
-                />
-              </View>
               <View>
                 <Text style={{ ...styles.categoryTitle, fontSize: 24, marginBottom: 8 }}>Draft SOW</Text>
                 <Text style={{ fontSize: 15, color: '#666666', marginBottom: 24 }}>for {clientName || '[Client Name]'}</Text>
@@ -218,36 +270,108 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
             <View style={[styles.sectionMarker, { borderLeftColor: '#22C55E' }]}>
               <View style={styles.row}>
                 <Text style={styles.totalLabel}>Total Savings</Text>
-                <Text style={styles.totalAmount}>{(() => {
-                  const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
-                  const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
-                  const savings = sowCost - credCost;
-                  const config = CURRENCY_CONFIG[currency];
-                  const convertedAmount = savings * config.rate;
-                  return `${config.symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
-                })()}</Text>
+                <Text style={styles.totalAmount}>{formatPrice(savings, currency)}</Text>
               </View>
             </View>
-            {/* Terms and Conditions */}
-            <View style={{ marginTop: 40, borderTop: 1, borderColor: '#E5E7EB', paddingTop: 20 }}>
-              <Text style={{ fontSize: 12, color: '#666666', marginBottom: 16, fontWeight: 'bold' }}>Credit Terms and Conditions</Text>
-              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Invoicing & Payment:</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>The full credit amount will be invoiced upon contract signature and payable within 15 days.</Text>
-
-              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Agility, Usage & Carryover:</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Unused credits may be carried over into the next quarter.</Text>
-
-              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Changes to Planned Deliverables:</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 4 }}>Requests to modify planned deliverables must be made at least 48 hours in advance.</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Once a deliverable has commenced, changes are not permitted, and the associated credit will be considered consumed.</Text>
-
-              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Reconciliation & Tracking:</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Credit reconciliation is available upon request or provided monthly through your client services contact.</Text>
-
-              <Text style={{ fontSize: 11, color: '#666666', marginBottom: 12, fontWeight: 'bold' }}>Credit Allocation & Delivery Timelines:</Text>
-              <Text style={{ fontSize: 9, color: '#666666', marginBottom: 12 }}>Credit allocation and estimated delivery times are subject to variation based on project complexity and specific requirements.</Text>
-            </View>
           </View>
+
+          <Footer />
+        </Page>
+        <Page size="A4" style={styles.page}>
+          <View style={{ alignItems: 'flex-end', marginBottom: 20 }}>
+            <Image 
+              src={logo}
+              style={{ width: 120, objectFit: 'contain' }}
+            />
+          </View>
+          <View style={termsStyles.container}>
+            <Text style={termsStyles.heading}>ABM Credits Model terms and conditions</Text>
+            
+            <Text style={termsStyles.paragraph}>
+              Choose between a traditional custom Statement of Work for structured, scoped projects or our ABM Credits Model, a flexible,
+              on-demand system that lets you tap into playbooks, outcomes, training, and support whenever you need them.
+            </Text>
+            
+            <Text style={termsStyles.paragraph}>
+              More agility, more control, more impact – designed to scale with your business as you grow.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Invoicing & payment terms</Text>
+            <Text style={termsStyles.paragraph}>
+              Our ABM credits model is designed to offer clients significant cost benefits, agility, and flexibility compared to a traditionally delivered
+              statement of work, enabling them to navigate the unpredictable nature of enterprise sales and marketing programs.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Payment terms</Text>
+            <Text style={termsStyles.paragraph}>
+              To provide these benefits, prepayment is requested prior to the commencement of programme deliverables. Prepayment invoices for
+              either 100% or 50% of the total credit budget will be issued upon contract signature.
+            </Text>
+
+            <Text style={termsStyles.subheading}>100% prepayment</Text>
+            <Text style={termsStyles.paragraph}>
+              By choosing to prepay 100% of the credits budget:
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              {"\n"}
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Your prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>{creditsCost}</Text> (on contract signature)
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Your total saving (vs a custom SOW) would be <Text style={{ fontWeight: 'bold' }}>£{savings.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
+            </Text>
+
+            <Text style={termsStyles.subheading}>Staged prepayment</Text>
+            <Text style={termsStyles.paragraph}>
+              By prepaying your credits budget in stages of 50% on contract signature, and 50% at the mid-way point:
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              {"\n"}
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Your first prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>£{((parseFloat(creditsCost.replace(/[^0-9.-]+/g, '')) - savings/2) * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text> (on contract signature)
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Your second prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>£{((parseFloat(creditsCost.replace(/[^0-9.-]+/g, '')) - savings/2) * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Your total saving (vs a custom SOW) would be <Text style={{ fontWeight: 'bold' }}>£{(savings * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
+            </Text>
+
+            <Text style={termsStyles.subheading}>Credit budget</Text>
+            <Text style={termsStyles.paragraph}>
+              The recommended credit budget has been planned in alignment to the client's budget investment, planning cycle, required
+              deliverables and time to market goals.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Credit consumption period</Text>
+            <Text style={termsStyles.paragraph}>
+              The credit consumption period refers to the timeframe within which purchased credits must be consumed. This period is defined by the
+              contract start date, end date and pre-agreed delivery timescale.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Credit carryover</Text>
+            <Text style={termsStyles.paragraph}>
+              Credits not consumed within the credit consumption period can be carried over by a maximum of 90 days post-contract end date, after
+              which they will expire.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Agility & flexibility</Text>
+            <Text style={termsStyles.paragraph}>
+              We get it, priorities can change. We are happy to receive requests to modify planned deliverables. All we ask is you provide a minimum
+              of 3 working days notice.
+            </Text>
+            <Text style={termsStyles.paragraph}>
+              Please note credits will be considered "consumed" upon the commencement of a deliverable.
+            </Text>
+
+            <Text style={termsStyles.subheading}>Credit reconciliation</Text>
+            <Text style={termsStyles.paragraph}>
+              Credit reconciliation is available upon request or provided monthly through your client services contact.
+            </Text>
+          </View>
+          <Footer />
         </Page>
       </Document>
     </PDFViewer>
