@@ -5,13 +5,7 @@ import logo from '../assets/images/sabmlogo.png';
 import { formatPrice, CURRENCY_CONFIG } from '../config/currency';
 import type { CurrencyCode } from '../config/currency';
 
-// Register font
-Font.register({
-  family: 'Helvetica',
-  fonts: [
-    { src: 'https://fonts.gstatic.com/s/helveticaneue/v70/1Ptsg8zYS_SKggPNyCg4TYFv.ttf' },
-  ],
-});
+// Using standard PDF fonts - no registration needed
 
 // Create styles
 const styles = StyleSheet.create({
@@ -83,6 +77,28 @@ const styles = StyleSheet.create({
 });
 
 // Terms and conditions styles
+const paymentStyles = StyleSheet.create({
+  card: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 4,
+    padding: 15,
+    marginBottom: 20,
+  },
+  bullet: {
+    marginRight: 8,
+    fontSize: 14,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  amountText: {
+    fontSize: 11,
+    marginTop: 4,
+  }
+});
+
 const termsStyles = StyleSheet.create({
   container: {
     marginTop: 30,
@@ -308,36 +324,67 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
               either 100% or 50% of the total credit budget will be issued upon contract signature.
             </Text>
 
-            <Text style={termsStyles.subheading}>100% prepayment</Text>
-            <Text style={termsStyles.paragraph}>
-              By choosing to prepay 100% of the credits budget:
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              {"\n"}
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              Your prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>{creditsCost}</Text> (on contract signature)
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              Your total saving (vs a custom SOW) would be <Text style={{ fontWeight: 'bold' }}>£{savings.toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
-            </Text>
+            <View style={paymentStyles.card}>
+              <Text style={[termsStyles.subheading, { fontFamily: 'Helvetica', fontWeight: 'bold' }]}>100% prepayment</Text>
+              <Text style={termsStyles.paragraph}>
+                By choosing to prepay 100% of the credits budget:
+              </Text>
+              <Text style={termsStyles.paragraph}>
+                {"\n"}
+              </Text>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')).toString(), currency)}</Text>
+                </Text>
+              </View>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')).toString(), currency)}</Text> (on contract signature)
+                </Text>
+              </View>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{formatPrice(savings.toString(), currency)}</Text>
+                </Text>
+              </View>
+            </View>
 
-            <Text style={termsStyles.subheading}>Staged prepayment</Text>
-            <Text style={termsStyles.paragraph}>
-              By prepaying your credits budget in stages of 50% on contract signature, and 50% at the mid-way point:
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              {"\n"}
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              Your first prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>£{((parseFloat(creditsCost.replace(/[^0-9.-]+/g, '')) - savings/2) * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text> (on contract signature)
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              Your second prepayment invoice would be <Text style={{ fontWeight: 'bold' }}>£{((parseFloat(creditsCost.replace(/[^0-9.-]+/g, '')) - savings/2) * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
-            </Text>
-            <Text style={termsStyles.paragraph}>
-              Your total saving (vs a custom SOW) would be <Text style={{ fontWeight: 'bold' }}>£{(savings * 0.5).toLocaleString('en-GB', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</Text>
-            </Text>
+            <View style={paymentStyles.card}>
+              <Text style={[termsStyles.subheading, { fontFamily: 'Helvetica', fontWeight: 'bold' }]}>Staged prepayment</Text>
+              <Text style={termsStyles.paragraph}>
+                By prepaying your credits budget in stages of 50% on contract signature, and 50% at the mid-way point:
+              </Text>
+              <Text style={termsStyles.paragraph}>
+                {"\n"}
+              </Text>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5).toString(), currency)}</Text>
+                </Text>
+              </View>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Your first <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5) * 0.5).toString(), currency)}</Text> (on contract signature)
+                </Text>
+              </View>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>second prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5) * 0.5).toString(), currency)}</Text>
+                </Text>
+              </View>
+              <View style={paymentStyles.row}>
+                <Text style={paymentStyles.bullet}>•</Text>
+                <Text style={paymentStyles.amountText}>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{formatPrice((savings * 0.5).toString(), currency)}</Text>
+                </Text>
+              </View>
+            </View>
 
             <Text style={termsStyles.subheading}>Credit budget</Text>
             <Text style={termsStyles.paragraph}>
