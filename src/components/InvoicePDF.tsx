@@ -4,6 +4,7 @@ import { Font } from '@react-pdf/renderer';
 import logo from '../assets/images/sabmlogo.png';
 import { formatPrice, CURRENCY_CONFIG } from '../config/currency';
 import type { CurrencyCode } from '../config/currency';
+import { itemDescriptions } from '../abmTiersComponent';
 
 // Using standard PDF fonts - no registration needed
 
@@ -31,7 +32,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemTitle: {
+    marginBottom: 2,
+  },
+  itemDescription: {
     marginBottom: 4,
+    fontSize: 10,
+    color: '#666666',
   },
   credits: {
     fontSize: 10,
@@ -144,6 +150,7 @@ interface InvoicePDFProps {
     amount: string;
     category: string;
     order: number;
+    quantity: number;
   }>;
   currency: CurrencyCode;
   selectedTier: string;
@@ -244,8 +251,9 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                 <View key={item.id} style={styles.row} break={false}>
                   <View style={styles.itemDetails}>
                     <Text style={styles.itemTitle}>{item.title}</Text>
+                    <Text style={styles.itemDescription}>{itemDescriptions[item.title.split(' (')[0]]}</Text>
                     <Text style={styles.credits}>
-                      {item.credits} {item.credits === 1 ? 'credit' : 'credits'}
+                      Volume: {item.quantity || 1} {item.quantity > 1 ? 'units' : 'unit'} • {item.credits} {item.credits === 1 ? 'credit' : 'credits'} per unit
                     </Text>
                   </View>
                   <Text style={{ ...styles.amount, color: '#666666' }}>

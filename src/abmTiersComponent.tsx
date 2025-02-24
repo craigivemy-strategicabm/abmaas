@@ -441,7 +441,7 @@ const VideoEmbed = ({ embedCode = '' }) => {
 };
 
 // Item descriptions mapping
-const itemDescriptions = {
+export const itemDescriptions = {
   // Foundations
   "ICP Development": "Define your ideal customer profile through data-driven analysis and market research.",
   "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
