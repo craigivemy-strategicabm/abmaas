@@ -74,10 +74,13 @@ const fetchExchangeRates = async (): Promise<void> => {
 };
 
 // Format price with currency
-export const formatPrice = (amount: number, currency: CurrencyCode): string => {
+export const formatPrice = (amount: number, currency: CurrencyCode, isAlreadyConverted: boolean = false): string => {
   const config = CURRENCY_CONFIG[currency];
-  const convertedAmount = (amount * config.rate) / 1000;
-  return `${config.symbol}${Math.round(convertedAmount)}${config.suffix}`;
+  // If amount is already in target currency (e.g. USD), convert back to GBP first
+  const amountInGBP = isAlreadyConverted ? amount / config.rate : amount;
+  // Then convert to target currency
+  const convertedAmount = amountInGBP * config.rate;
+  return `${config.symbol}${Math.round(convertedAmount).toLocaleString()}`;
 };
 
 // Custom hook for currency management

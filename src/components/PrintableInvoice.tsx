@@ -83,8 +83,15 @@ export const PrintableInvoice: React.FC<PrintableInvoiceProps> = ({
             <span>{(() => {
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
-              const savings = sowCost - credCost;
-              return formatPrice(savings, selectedCurrency);
+              const config = CURRENCY_CONFIG[selectedCurrency];
+              // Convert to GBP if in USD
+              const sowCostGBP = selectedCurrency === 'USD' ? sowCost / config.rate : sowCost;
+              const credCostGBP = selectedCurrency === 'USD' ? credCost / config.rate : credCost;
+              // Calculate savings in GBP
+              const savingsGBP = sowCostGBP - credCostGBP;
+              // Convert savings to target currency
+              const savings = selectedCurrency === 'USD' ? savingsGBP * config.rate : savingsGBP;
+              return `${currencySymbol}${savings.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
             })()}</span>
           </div>
         </div>

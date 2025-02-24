@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ErrorBoundary from './ErrorBoundary';
 import InvoicePDF from './InvoicePDF';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -307,10 +308,15 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
             <span className="text-base font-light font-medium text-green-500 print:text-black">{(() => {
               const sowCost = parseFloat(customSowCost.replace(/[^0-9.]/g, ''));
               const credCost = parseFloat(creditsCost.replace(/[^0-9.]/g, ''));
-              const savings = sowCost - credCost;
               const config = CURRENCY_CONFIG[selectedCurrency];
-              const convertedAmount = savings * config.rate;
-              return `${config.symbol}${convertedAmount.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+              // Convert to GBP if in USD
+              const sowCostGBP = selectedCurrency === 'USD' ? sowCost / config.rate : sowCost;
+              const credCostGBP = selectedCurrency === 'USD' ? credCost / config.rate : credCost;
+              // Calculate savings in GBP
+              const savingsGBP = sowCostGBP - credCostGBP;
+              // Convert savings to target currency
+              const savings = selectedCurrency === 'USD' ? savingsGBP * config.rate : savingsGBP;
+              return `${currencySymbol}${savings.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
             })()}</span>
           </div>
         </div>
@@ -337,15 +343,19 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
               Close
             </button>
           </div>
-          <InvoicePDF 
-            items={items} 
-            currency={selectedCurrency}
-            selectedTier={selectedTier}
-            totalCredits={totalCredits}
-            customSowCost={customSowCost}
-            creditsCost={creditsCost}
-            clientName={clientName}
-          />
+          <ErrorBoundary
+            fallback={<div className="text-red-500 p-4">There was an error generating the PDF. Please try again.</div>}
+          >
+            <InvoicePDF 
+              items={items} 
+              currency={selectedCurrency}
+              selectedTier={selectedTier}
+              totalCredits={totalCredits}
+              customSowCost={customSowCost}
+              creditsCost={creditsCost}
+              clientName={clientName}
+            />
+          </ErrorBoundary>
         </div>
       )}
     </div>

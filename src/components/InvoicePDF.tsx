@@ -286,7 +286,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
             <View style={[styles.sectionMarker, { borderLeftColor: '#22C55E' }]}>
               <View style={styles.row}>
                 <Text style={styles.totalLabel}>Total Savings</Text>
-                <Text style={styles.totalAmount}>{formatPrice(savings, currency)}</Text>
+                <Text style={styles.totalAmount}>{formatPrice(Number(customSowCost.replace(/[^0-9.-]+/g, '')) - Number(creditsCost.replace(/[^0-9.-]+/g, '')), currency, true)}</Text>
               </View>
             </View>
           </View>
@@ -335,19 +335,19 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')).toString(), currency)}</Text>
+                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')), currency, true)}</Text>
                 </Text>
               </View>
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')).toString(), currency)}</Text> (on contract signature)
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(Number(creditsCost.replace(/[^0-9.-]+/g, '')), currency, true)}</Text> (on contract signature)
                 </Text>
               </View>
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{formatPrice(savings.toString(), currency)}</Text>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{formatPrice(Number(customSowCost.replace(/[^0-9.-]+/g, '')) - Number(creditsCost.replace(/[^0-9.-]+/g, '')), currency, true)}</Text>
                 </Text>
               </View>
             </View>
@@ -363,25 +363,47 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5).toString(), currency)}</Text>
+                  Total credit cost: <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{(() => {
+                    const credCost = Number(creditsCost.replace(/[^0-9.-]+/g, ''));
+                    const sowCost = Number(customSowCost.replace(/[^0-9.-]+/g, ''));
+                    const savings = sowCost - credCost;
+                    return formatPrice(credCost + (savings * 0.5), currency, true);
+                  })()}</Text>
                 </Text>
               </View>
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Your first <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5) * 0.5).toString(), currency)}</Text> (on contract signature)
+                  Your first <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{(() => {
+                    const credCost = Number(creditsCost.replace(/[^0-9.-]+/g, ''));
+                    const sowCost = Number(customSowCost.replace(/[^0-9.-]+/g, ''));
+                    const savings = sowCost - credCost;
+                    const totalCost = credCost + (savings * 0.5);
+                    return formatPrice(totalCost * 0.5, currency, true);
+                  })()}</Text> (on contract signature)
                 </Text>
               </View>
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>second prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{formatPrice(((Number(creditsCost.replace(/[^0-9.-]+/g, '')) + savings * 0.5) * 0.5).toString(), currency)}</Text>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>second prepayment invoice</Text> would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>{(() => {
+                    const credCost = Number(creditsCost.replace(/[^0-9.-]+/g, ''));
+                    const sowCost = Number(customSowCost.replace(/[^0-9.-]+/g, ''));
+                    const savings = sowCost - credCost;
+                    const totalCost = credCost + (savings * 0.5);
+                    return formatPrice(totalCost * 0.5, currency, true);
+                  })()}</Text>
                 </Text>
               </View>
               <View style={paymentStyles.row}>
                 <Text style={paymentStyles.bullet}>•</Text>
                 <Text style={paymentStyles.amountText}>
-                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{formatPrice((savings * 0.5).toString(), currency)}</Text>
+                  Your <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold' }}>total saving</Text> (vs a custom SOW) would be <Text style={{ fontFamily: 'Helvetica', fontWeight: 'bold', color: '#22C55E' }}>{(() => {
+                    const sowCost = Number(customSowCost.replace(/[^0-9.-]+/g, ''));
+                    const credCost = Number(creditsCost.replace(/[^0-9.-]+/g, ''));
+                    const totalSavings = sowCost - credCost;
+                    return formatPrice(totalSavings / 2, currency, true);
+                  })()}</Text>
                 </Text>
               </View>
             </View>
