@@ -697,6 +697,7 @@ export default function ABMTiers() {
   return (
     <div className={`bg-black text-white min-h-screen transition-all duration-300 ${isInvoiceOpen ? 'lg:pl-[400px]' : 'lg:pl-[50px]'}`}>
       <div className="max-w-6xl mx-auto relative">
+
         {/* Overlay when panel is open on mobile */}
         {isInvoiceOpen && (
           <div 
@@ -922,12 +923,15 @@ export default function ABMTiers() {
             ];
             const item = allItems.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
             if (!item) return null;
-            const credits = parseFloat(item.tacticalCredits || item.customPrice) * quantity;
+            const basePrice = parseFloat(item.tacticalCredits || item.customPrice);
+            const credits = basePrice * quantity;
             return {
               id,
               title: item.title,
               credits,
+              basePrice,
               category: item.category,
+              quantity,
               amount: `${symbol}${(credits * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`
             };
           }).filter(Boolean)}

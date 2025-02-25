@@ -39,9 +39,13 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666666',
   },
-  credits: {
-    fontSize: 10,
+  quantity: {
+    fontSize: 9,
     color: '#666',
+  },
+  highlight: {
+    color: '#000000',
+    fontWeight: 'bold',
   },
   amount: {
     width: 100,
@@ -252,8 +256,8 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                   <View style={styles.itemDetails}>
                     <Text style={styles.itemTitle}>{item.title}</Text>
                     <Text style={styles.itemDescription}>{itemDescriptions[item.title.split(' (')[0]]}</Text>
-                    <Text style={styles.credits}>
-                      Volume: {item.quantity || 1} {item.quantity > 1 ? 'units' : 'unit'} • {item.credits} {item.credits === 1 ? 'credit' : 'credits'} per unit
+                    <Text style={styles.quantity}>
+                      Quantity: <Text style={styles.highlight}>{item.quantity || 1}</Text> @ <Text style={styles.highlight}>{`${CURRENCY_CONFIG[currency].symbol}${(item.basePrice * CURRENCY_CONFIG[currency].rate).toFixed(1)}k`}</Text> per credit
                     </Text>
                   </View>
                   <Text style={{ ...styles.amount, color: '#666666' }}>
