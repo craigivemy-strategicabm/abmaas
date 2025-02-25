@@ -6,6 +6,14 @@ import { formatPrice, CURRENCY_CONFIG } from '../config/currency';
 import type { CurrencyCode } from '../config/currency';
 import { itemDescriptions } from '../abmTiersComponent';
 
+const categoryDescriptions = {
+  'ABM foundations': 'Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.',
+  'Insights': 'On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.',
+  'Personalized content & creative': 'Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.',
+  'Playbook credits': 'Comprehensive playbooks that provide strategic frameworks and tactical guidance for executing ABM campaigns effectively.',
+  'ABM Training': 'Structured training programs covering ABM fundamentals, strategy development, and execution best practices to build internal capabilities.'
+};
+
 // Using standard PDF fonts - no registration needed
 
 // Create styles
@@ -16,7 +24,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Helvetica',
   },
   section: {
-    marginBottom: 20,
+    marginBottom: 8,
   },
   categoryTitle: {
     fontSize: 16,
@@ -212,6 +220,9 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
     })
     .map(([category]) => category);
 
+  console.log('Available categories:', sortedCategories);
+  console.log('Category descriptions:', Object.keys(categoryDescriptions));
+
   console.log('Sorted categories:', sortedCategories);
 
   // Sort items within each category by order
@@ -236,42 +247,47 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
           </View>
           {/* Header */}
           <View style={styles.section}>
-            <View style={{ marginBottom: 30 }}>
+            <View style={{ marginBottom: 0 }}>
               <View>
                 <Text style={{ ...styles.categoryTitle, fontSize: 24, marginBottom: 8 }}>Draft SOW</Text>
-                <Text style={{ fontSize: 15, color: '#666666', marginBottom: 24 }}>for {clientName || '[Client Name]'}</Text>
-                <Text style={{ fontSize: 16, color: '#E95A0C' }}>{selectedTier} tier</Text>
+                <Text style={{ fontSize: 15, color: '#666666', marginBottom: 16 }}>for {clientName || '[Client Name]'}</Text>
               </View>
             </View>
           </View>
 
           {/* Categories and Items */}
-          
-          {sortedCategories.map(category => (
-            <View key={category} style={styles.section} break={false}>
-              <Text style={styles.categoryTitle}>{category}</Text>
+          <View style={{ marginTop: 0 }}>
+            {sortedCategories.map((category, categoryIndex) => (
+            <View key={category} style={[styles.section, { marginBottom: categoryIndex === sortedCategories.length - 1 ? 40 : 64 }]} break={false}>
+              <View style={{ marginBottom: 24 }}>
+                <Text style={{ ...styles.categoryTitle, color: '#E95A0C' }}>{category}</Text>
+                <Text style={{ fontSize: 12, color: '#666666', marginTop: 8 }}>{categoryDescriptions[category]}</Text>
+              </View>
               
-              {itemsByCategory[category].map((item, index) => (
-                <View key={item.id} style={styles.row} break={false}>
-                  <View style={styles.itemDetails}>
-                    <Text style={styles.itemTitle}>{item.title}</Text>
-                    <Text style={styles.itemDescription}>{itemDescriptions[item.title.split(' (')[0]]}</Text>
-                    <Text style={styles.quantity}>
-                      Quantity: <Text style={styles.highlight}>{item.quantity || 1}</Text> @ <Text style={styles.highlight}>{`${CURRENCY_CONFIG[currency].symbol}${(item.basePrice * CURRENCY_CONFIG[currency].rate).toFixed(1)}k`}</Text> per credit
-                    </Text>
+              <View>
+                {itemsByCategory[category].map((item, index) => (
+                  <View key={item.id} style={{ backgroundColor: '#F8F9FC', padding: 12, borderRadius: 8, marginBottom: index === itemsByCategory[category].length - 1 ? 0 : 12 }} break={false}>
+                    <View style={styles.row}>
+                      <View style={styles.itemDetails}>
+                        <Text style={{ ...styles.itemTitle, fontSize: 11 }}>{item.title}</Text>
+                        <Text style={{ ...styles.itemDescription, fontSize: 9, marginTop: 4 }}>{itemDescriptions[item.title.split(' (')[0]]}</Text>
+                        <Text style={{ ...styles.quantity, marginTop: 6, fontSize: 8 }}>
+                          Quantity: <Text style={styles.highlight}>{item.quantity || 1}</Text> @ <Text style={styles.highlight}>{`${CURRENCY_CONFIG[currency].symbol}${(item.basePrice * CURRENCY_CONFIG[currency].rate).toFixed(1)}k`}</Text> per credit
+                        </Text>
+                      </View>
+                      <Text style={{ ...styles.amount, color: '#666666', fontSize: 11 }}>
+                        {item.amount}
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={{ ...styles.amount, color: '#666666' }}>
-                    {item.amount}
-                  </Text>
-                </View>
-              ))}
-              
-              <View style={styles.divider} />
+                ))}
+              </View>
             </View>
           ))}
+          </View>
 
           {/* Summary Section */}
-          <View style={styles.section}>
+          <View style={{ ...styles.section, marginTop: 40 }}>
             <View style={styles.sectionMarker}>
               <View style={styles.row}>
                 <Text style={styles.totalLabel}>Custom SOW Cost</Text>
