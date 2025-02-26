@@ -73,16 +73,17 @@ const itemGroups = {
     { title: "Annotated Report", credits: "5.5", customPrice: "6" }
   ],
   revenue: [
-    { title: "Account Roadmap", credits: "6.5", customPrice: "7.5" },
     { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
   ],
   training: [
-    { title: "AI Enabled ABM journey bootcamp", credits: "5" },
-    { title: "Learn to how to scale personalisation with consistent outputs", credits: "3" },
-    { title: "Learn how to deliver hyper-personalised content in days, not weeks or months", credits: "3" },
-    { title: "Learn how to implement AI models in-house", credits: "4" },
-    { title: "Learn how to build the foundations for scale and speed", credits: "3" },
-    { title: "Learn how to deliver deep market, account and stakeholder insights", credits: "3" }
+    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
   ]
 };
 
@@ -443,7 +444,6 @@ const VideoEmbed = ({ embedCode = '' }) => {
 // Item descriptions mapping
 export const itemDescriptions = {
   // Foundations
-  "ICP Development": "Define your ideal customer profile through data-driven analysis and market research.",
   "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
   "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
   "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
@@ -456,19 +456,24 @@ export const itemDescriptions = {
   "Stakeholder Deepdive Insights": "Comprehensive analysis of key decision-makers and their priorities.",
   "Stakeholder Tactical Insights": "Actionable insights on stakeholder engagement preferences and triggers.",
   
-  // Content & Creative
+  // Content items
   "Cluster Manifesto": "Our cluster manifesto is designed to drive strategic awareness and engagement within a new industry or market segment by targeting high-value accounts with customised content & tailored messaging.",
   "Account Manifesto": "Our Account Manifesto is personalised to target accounts using account-level insights, establishing market differentiation by showcasing innovative solutions and thought leadership while shifting outdated perceptions.",
   "Stakeholder Manifesto": "Our Stakeholder Manifesto is personalised to specific decision-makers using stakeholder-level insights, establishing individual relevance by showcasing solutions aligned to personal priorities while addressing role-specific challenges and objectives.",
   "Annotated Report": "Our Annotated Report provides strategic analysis of a target account's public statements and priorities, highlighting specific alignment opportunities with your solutions. By extracting key themes from annual reports and official communications, we deliver actionable insights that enable precise messaging and value proposition development tailored to the account's stated business objectives and technology initiatives.",
-  "Account Roadmap": "Strategic engagement plan mapping key touchpoints and milestones.",
   "Executive Briefing": "Our Executive Briefing is a highly personalised content asset designed to engage and build credibility with C-suite and senior executives within target accounts by delivering strategic insights and tailored value propositions aligned with their business priorities.",
+  "Account Roadmap": "Strategic engagement plan mapping key touchpoints and milestones.",
   "ABM Roadmap": "This personalised content asset focuses on accelerating deal progression through targeted engagement and barrier removal.",
+  
   // Training
-  "ABM Fundamentals (ICP, Account Selection, Segmentation)": "Master the core principles of effective ABM strategy.",
-  "Strategy & Playbooks (Campaign Planning, Sales Alignment)": "Learn to develop and execute winning ABM campaigns.",
-  "Execution & Activation (Content Personalization, Multi-Channel Engagement)": "Hands-on training for personalized content creation and delivery.",
-  "Measurement & Optimization (ROI, Attribution, Tech Stack)": "Understand how to measure, report, and optimize ABM performance."
+  "An introduction to setting ABM Programme Objectives": "This interactive workshop guides participants through setting clear success metrics, defining strategic goals, and aligning business priorities to build a strong ABM foundation.",
+  "How to improve Sales & Marketing Alignment": "A hands-on workshop designed to improve internal sales and marketing alignment by refining collaboration processes, enhancing communication channels, and establishing shared account intelligence best practices.",
+  "Developing High-Value Account Selection & Prioritisation Frameworks": "A practical workshop on building a structured framework to segment and prioritise high-value accounts, ensuring ABM efforts are focused on the right opportunities.",
+  "An introduction to Account Performance Benchmarking": "Participants will evaluate key accounts using best-practice ABM benchmarking frameworks, identifying opportunities to tailor their engagement approach.",
+  "An introduction to Strategic Account Intelligence & Insights": "A hands-on workshop that equips participants with techniques to gather and apply actionable intelligence on account needs, challenges, and industry trends to improve messaging and outreach.",
+  "An Introduction to ABM Value Proposition Development": "This workshop focuses on developing compelling value propositions and strategic narratives that align with key decision-makers' needs. Learn the critical differences between brand, segment, account, stakeholder and deal-based value propositions and when to apply each approach for maximum impact.",
+  "An Introduction to Account-based Reporting & Measurement": "This workshop provides participants with best practices for tracking key ABM metrics, measuring engagement, and refining strategies using real-time data insights. Learn how to develop best practice account-based dashboards that provide actionable next step recommendations and effectively quantify campaign outcomes.",
+  "An Introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
 };
 
 const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
@@ -531,7 +536,6 @@ const ContentSection = ({ title, items }) => (
 
 // Define static data first
 const FOUNDATION_ITEMS = [
-  { title: "ICP Development", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Selection", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Segmentation/Prioritisation", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "ABM Value Proposition Development", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
@@ -563,10 +567,14 @@ const ITEM_GROUPS = {
     { title: "Revenue Playbooks", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" }
   ],
   training: [
-    { title: "ABM Fundamentals (ICP, Account Selection, Segmentation)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
-    { title: "Strategy & Playbooks (Campaign Planning, Sales Alignment)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
-    { title: "Execution & Activation (Content Personalization, Multi-Channel Engagement)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" },
-    { title: "Measurement & Optimization (ROI, Attribution, Tech Stack)", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2", customPrice: "3" }
+    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
   ]
 };
 
@@ -880,7 +888,16 @@ export default function ABMTiers() {
           </>}>
             <div className="bg-gray-900 p-4 rounded-lg">
               <TrainingPanel 
-                items={ITEM_GROUPS.training}
+                items={[
+                  { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+                  { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+                ]}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
                 selectedCurrency={selectedCurrency}
@@ -918,7 +935,16 @@ export default function ABMTiers() {
               ...ITEM_GROUPS.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
-              ...ITEM_GROUPS.training.map(i => ({ ...i, category: 'ABM Training', order: 5 }))
+              ...[
+                    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+                    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+                  ].map(i => ({ ...i, category: 'ABM Training', order: 5 }))
             ];
             const item = allItems.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
             if (!item) return null;
