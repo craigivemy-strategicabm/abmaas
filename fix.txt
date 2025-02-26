@@ -1,0 +1,41 @@
+const panelDescriptions = {
+  "Foundations": "Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.",
+  "Insights": "On-demand market, account and stakeholder intelligence forming the foundations for scale and personalised messaging.",
+  "Content": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
+  "Training": "Comprehensive ABM training modules covering the full spectrum of account-based marketing—from foundational concepts to advanced optimization techniques. Each module combines strategic frameworks with practical implementation guidance.",
+  "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
+  "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment."
+};
+
+const itemDescriptions = {
+  // Foundations
+  "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
+  "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
+  "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
+  "ABM Readiness Workshops": "Interactive sessions to assess and enhance your organization's ABM readiness.",
+  "Synthetic Audiences": "Build custom audience profiles for precise targeting and personalization.",
+  
+  // Insights
+  "Market Insights": "Deep-dive analysis of market trends, competitive landscape, and industry dynamics.",
+  "Account Insights": "Detailed account profiling including business challenges, tech stack, and buying patterns.",
+  "Stakeholder Deepdive Insights": "Comprehensive analysis of key decision-makers and their priorities.",
+  "Stakeholder Tactical Insights": "Actionable insights on stakeholder engagement preferences and triggers.",
+  
+  // Content items
+  "Cluster Manifesto": "Our cluster manifesto is designed to drive strategic awareness and engagement within a new industry or market segment by targeting high-value accounts with customised content & tailored messaging.",
+  "Account Manifesto": "Our Account Manifesto is personalised to target accounts using account-level insights, establishing market differentiation by showcasing innovative solutions and thought leadership while shifting outdated perceptions.",
+  "Stakeholder Manifesto": "Our Stakeholder Manifesto is personalised to specific decision-makers using stakeholder-level insights, establishing individual relevance by showcasing solutions aligned to personal priorities while addressing role-specific challenges and objectives.",
+  "Annotated Report": "Our Annotated Report provides strategic analysis of a target account's public statements and priorities, highlighting specific alignment opportunities with your solutions. By extracting key themes from annual reports and official communications, we deliver actionable insights that enable precise messaging and value proposition development tailored to the account's stated business objectives and technology initiatives.",
+  "Executive Briefing": "Our Executive Briefing is a highly personalised content asset designed to engage and build credibility with C-suite and senior executives within target accounts by delivering strategic insights and tailored value propositions aligned with their business priorities.",
+  "Account Roadmap": "Strategic engagement plan mapping key touchpoints and milestones.",
+  "ABM Roadmap": "This personalised content asset focuses on accelerating deal progression through targeted engagement and barrier removal.",
+  
+  // Training
+  "An introduction to setting ABM Programme Objectives": "This interactive workshop guides participants through setting clear success metrics, defining strategic goals, and aligning business priorities to build a strong ABM foundation.",
+  "How to improve Sales & Marketing Alignment": "A hands-on workshop providing actionable frameworks to improve sales and marketing alignment. In-house ABMers will learn to support multiple sales and commercial stakeholders, develop shared account intelligence, and align on commercial priorities by identifying best next-step actions for priority accounts.",
+  "Developing High-Value Account Selection & Prioritisation Frameworks": "A practical workshop on building a structured framework to segment and prioritise high-value accounts, ensuring ABM efforts are focused on the right opportunities.",
+  "An introduction to Account Performance Benchmarking": "Participants will evaluate key accounts using best-practice ABM benchmarking frameworks, identifying opportunities to tailor their engagement approach.",
+  "An Introduction to ABM Value Proposition Development": "This workshop focuses on developing compelling value propositions and strategic narratives that align with key decision-makers' needs. Learn the critical differences between brand, segment, account, stakeholder and deal-based value propositions and when to apply each approach for maximum impact.",
+  "An Introduction to Account-based Reporting & Measurement": "This workshop provides participants with best practices for tracking key ABM metrics, measuring engagement, and refining strategies using real-time data insights. Learn how to develop best practice account-based dashboards that provide actionable next step recommendations and effectively quantify campaign outcomes.",
+  "An Introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
+};

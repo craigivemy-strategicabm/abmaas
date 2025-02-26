@@ -76,14 +76,12 @@ const itemGroups = {
     { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
   ],
   training: [
-    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
     { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
-    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+    { title: "Developing Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "An introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
   ]
 };
 
@@ -466,14 +464,12 @@ export const itemDescriptions = {
   "ABM Roadmap": "This personalised content asset focuses on accelerating deal progression through targeted engagement and barrier removal.",
   
   // Training
-  "An introduction to setting ABM Programme Objectives": "This interactive workshop guides participants through setting clear success metrics, defining strategic goals, and aligning business priorities to build a strong ABM foundation.",
-  "How to improve Sales & Marketing Alignment": "A hands-on workshop designed to improve internal sales and marketing alignment by refining collaboration processes, enhancing communication channels, and establishing shared account intelligence best practices.",
-  "Developing High-Value Account Selection & Prioritisation Frameworks": "A practical workshop on building a structured framework to segment and prioritise high-value accounts, ensuring ABM efforts are focused on the right opportunities.",
-  "An introduction to Account Performance Benchmarking": "Participants will evaluate key accounts using best-practice ABM benchmarking frameworks, identifying opportunities to tailor their engagement approach.",
-  "An introduction to Strategic Account Intelligence & Insights": "A hands-on workshop that equips participants with techniques to gather and apply actionable intelligence on account needs, challenges, and industry trends to improve messaging and outreach.",
-  "An Introduction to ABM Value Proposition Development": "This workshop focuses on developing compelling value propositions and strategic narratives that align with key decision-makers' needs. Learn the critical differences between brand, segment, account, stakeholder and deal-based value propositions and when to apply each approach for maximum impact.",
-  "An Introduction to Account-based Reporting & Measurement": "This workshop provides participants with best practices for tracking key ABM metrics, measuring engagement, and refining strategies using real-time data insights. Learn how to develop best practice account-based dashboards that provide actionable next step recommendations and effectively quantify campaign outcomes.",
-  "An Introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
+  "How to set ABM Programme Objectives": "This interactive workshop guides participants through setting clear success metrics, defining strategic goals, and aligning business priorities to build a strong ABM foundation.",
+  "How to improve Sales & Marketing Alignment": "A hands-on workshop providing actionable frameworks to improve sales and marketing alignment. In-house ABMers will learn to support multiple sales and commercial stakeholders, develop shared account intelligence, and align on commercial priorities by identifying best next-step actions for priority accounts.",
+  "Developing Account Selection & Prioritisation Frameworks": "A practical workshop on building a structured framework to segment and prioritise high-value accounts, ensuring ABM efforts are focused on the right opportunities.",
+  "An introduction to ABM Value Proposition Development": "This workshop focuses on developing compelling value propositions and strategic narratives that align with key decision-makers' needs. Learn the critical differences between brand, segment, account, stakeholder and deal-based value propositions and when to apply each approach for maximum impact.",
+  "An introduction to Account-based Reporting & Measurement": "This workshop provides participants with best practices for tracking key ABM metrics, measuring engagement, and refining strategies using real-time data insights. Learn how to develop best practice account-based dashboards that provide actionable next step recommendations and effectively quantify campaign outcomes.",
+  "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
 };
 
 const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
@@ -567,14 +563,12 @@ const ITEM_GROUPS = {
     { title: "Revenue Playbooks", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" }
   ],
   training: [
-    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
     { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
-    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+    { title: "Developing Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "An introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+    { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
   ]
 };
 
@@ -889,14 +883,12 @@ export default function ABMTiers() {
             <div className="bg-gray-900 p-4 rounded-lg">
               <TrainingPanel 
                 items={[
-                  { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                   { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                  { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
-                  { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                  { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                  { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                  { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                  { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+                  { title: "Developing Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+                  { title: "An introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                  { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
                 ]}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
@@ -936,14 +928,12 @@ export default function ABMTiers() {
               ...ITEM_GROUPS.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
               ...[
-                    { title: "An introduction to setting ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                     { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                    { title: "Developing High-Value Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
-                    { title: "An introduction to Account Performance Benchmarking", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                    { title: "An introduction to Strategic Account Intelligence & Insights", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                    { title: "An Introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                    { title: "An Introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
-                    { title: "An Introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
+                    { title: "Developing Account Selection & Prioritisation Frameworks", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+                    { title: "An introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
+                    { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
                   ].map(i => ({ ...i, category: 'ABM Training', order: 5 }))
             ];
             const item = allItems.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
