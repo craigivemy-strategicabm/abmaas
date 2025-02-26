@@ -68,8 +68,8 @@ const itemGroups = {
   ],
   engagement: [
     { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
-    { title: "Account Manifesto*", credits: "2", customPrice: "2.5" },
-    { title: "Stakeholder Manifesto*", credits: "2", customPrice: "2.5" },
+    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
+    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
     { title: "Annotated Report", credits: "5.5", customPrice: "6" }
   ],
   revenue: [
@@ -457,13 +457,13 @@ export const itemDescriptions = {
   "Stakeholder Tactical Insights": "Actionable insights on stakeholder engagement preferences and triggers.",
   
   // Content & Creative
-  "Cluster Manifesto": "Strategic content framework for targeting similar account segments.",
-  "Account Manifesto": "Account-specific messaging and content strategy blueprint.",
-  "Stakeholder Manifesto": "Personalized content approaches for different stakeholder personas.",
-  "Annotated Report": "Detailed analysis with expert annotations and recommendations.",
+  "Cluster Manifesto": "Our cluster manifesto is designed to drive strategic awareness and engagement within a new industry or market segment by targeting high-value accounts with customised content & tailored messaging.",
+  "Account Manifesto": "Our Account Manifesto is personalised to target accounts using account-level insights, establishing market differentiation by showcasing innovative solutions and thought leadership while shifting outdated perceptions.",
+  "Stakeholder Manifesto": "Our Stakeholder Manifesto is personalised to specific decision-makers using stakeholder-level insights, establishing individual relevance by showcasing solutions aligned to personal priorities while addressing role-specific challenges and objectives.",
+  "Annotated Report": "Our Annotated Report provides strategic analysis of a target account's public statements and priorities, highlighting specific alignment opportunities with your solutions. By extracting key themes from annual reports and official communications, we deliver actionable insights that enable precise messaging and value proposition development tailored to the account's stated business objectives and technology initiatives.",
   "Account Roadmap": "Strategic engagement plan mapping key touchpoints and milestones.",
-  "Executive Briefing": "Customized presentation for C-level stakeholder engagement.",
-  
+  "Executive Briefing": "Our Executive Briefing is a highly personalised content asset designed to engage and build credibility with C-suite and senior executives within target accounts by delivering strategic insights and tailored value propositions aligned with their business priorities.",
+  "ABM Roadmap": "This personalised content asset focuses on accelerating deal progression through targeted engagement and barrier removal.",
   // Training
   "ABM Fundamentals (ICP, Account Selection, Segmentation)": "Master the core principles of effective ABM strategy.",
   "Strategy & Playbooks (Campaign Planning, Sales Alignment)": "Learn to develop and execute winning ABM campaigns.",
@@ -540,6 +540,7 @@ const FOUNDATION_ITEMS = [
 ];
 
 const ITEM_GROUPS = {
+  foundations: FOUNDATION_ITEMS,
   insights: [
     { title: "Market Insights", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
     { title: "Account Insights", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
@@ -551,6 +552,10 @@ const ITEM_GROUPS = {
     { title: "Account Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
     { title: "Stakeholder Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2" },
     { title: "Annotated Report", tacticalCredits: "5.5", impactCredits: "5.5", enterpriseCredits: "4.5", customPrice: "5.5" }
+  ],
+  revenueContent: [
+    { title: "Executive Briefing", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "ABM Roadmap", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" }
   ],
   revenue: [
     { title: "Custom Playbook Design", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
@@ -599,15 +604,6 @@ export default function ABMTiers() {
     setQuantities(prev => ({ ...prev, [id]: value }));
   };
 
-  const calculatePanelTotal = (items, quantities) => {
-    return Object.entries(quantities).reduce((total, [id, quantity]) => {
-      const item = items.find(item => 
-        id === (typeof item === 'string' ? item : item.title).toLowerCase().replace(/\s+/g, '-')
-      );
-      return total + (item ? parseFloat(item.credits || item.customPrice) * quantity : 0);
-    }, 0);
-  };
-
   const calculateTotals = () => {
     let credits = 0;
     let cost = 0;
@@ -621,7 +617,8 @@ export default function ABMTiers() {
       // Find matching item across all item groups
       let item = FOUNDATION_ITEMS.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = ITEM_GROUPS.insights.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
-      if (!item) item = [...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenue].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = [...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenueContent].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = ITEM_GROUPS.revenue.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       
       console.log('Found item:', item);
@@ -843,15 +840,16 @@ export default function ABMTiers() {
             </div>
           </Panel>
 
-          <Panel title={<>
-            <span style={{ color: '#e95a0c' }}>3.</span>{' '}<span className="text-white">Personalized content & creative</span>{' '}
-            <span className="text-gray-500">credits</span>
-            <span style={{ color: '#e95a0c' }}>.</span>
-          </>}>
+          <Panel 
+            title={<>
+              <span style={{ color: '#e95a0c' }}>3.</span>{' '}<span className="text-white">Personalized content & creative</span>{' '}
+              <span className="text-gray-500">credits</span><span style={{ color: '#e95a0c' }}>.</span>
+            </>}
+          >
             <div className="bg-gray-900 p-4 rounded-lg">
               <ContentPanel 
                 engagementItems={ITEM_GROUPS.engagement}
-                revenueItems={ITEM_GROUPS.revenue}
+                revenueItems={ITEM_GROUPS.revenueContent}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
                 selectedCurrency={selectedCurrency}
@@ -918,6 +916,7 @@ export default function ABMTiers() {
               ...FOUNDATION_ITEMS.map(i => ({ ...i, category: 'ABM foundations', order: 1 })),
               ...ITEM_GROUPS.insights.map(i => ({ ...i, category: 'Insights', order: 2 })),
               ...ITEM_GROUPS.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
+              ...ITEM_GROUPS.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
               ...ITEM_GROUPS.training.map(i => ({ ...i, category: 'ABM Training', order: 5 }))
             ];
