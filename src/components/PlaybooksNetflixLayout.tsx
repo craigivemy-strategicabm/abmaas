@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { InsightItem } from '../abmTiersComponent';
 
 // Define the playbook data structure
@@ -29,7 +29,7 @@ const stageColors = {
   'Advocacy': '#e95a0c'        // Orange
 };
 
-// Define all playbooks
+// Playbook data
 const ALL_PLAYBOOKS: Playbook[] = [
   // Playbooks definitions...
   // Net-new Target Accounts - Awareness
@@ -38,49 +38,49 @@ const ALL_PLAYBOOKS: Playbook[] = [
     subtitle: "new market segment",
     category: "net-new",
     stage: "Awareness",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "26",
+    customPrice: "27"
   },
   {
     title: "Engage",
     subtitle: "untouched accounts",
     category: "net-new",
     stage: "Awareness",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "26",
+    customPrice: "27"
   },
   {
     title: "Stay front of mind",
-    subtitle: "during multi-channel communications",
+    subtitle: "during multi-channel awareness",
     category: "net-new",
     stage: "Awareness",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "26",
+    customPrice: "27"
   },
   {
     title: "Exec peer-to-peer",
     subtitle: "leadership connections",
     category: "net-new",
     stage: "Awareness",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "26",
+    customPrice: "27"
   },
   {
     title: "Take your proposition upstream",
     category: "net-new",
     stage: "Awareness",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "26",
+    customPrice: "27"
   },
 
   // Net-new Target Accounts - Educate
@@ -89,60 +89,60 @@ const ALL_PLAYBOOKS: Playbook[] = [
     subtitle: "with accounts through thought leadership",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
-    title: "Changing Perceptions of",
-    subtitle: "brand",
+    title: "Changing Perceptions",
+    subtitle: "of brand",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Demonstrate capabilities",
     subtitle: "through innovation engagement",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Competitor differentiation",
     subtitle: "stand out in a crowded market",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Build an executive",
     subtitle: "into an industry thought-leader",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
-    title: "Multi-threaded",
-    subtitle: "mixture of personas to build a business case",
+    title: "Multi-threaded nurture",
+    subtitle: "of personas to build a business case",
     category: "net-new",
     stage: "Educate",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
 
   // Net-new Target Accounts - Influence
@@ -151,97 +151,99 @@ const ALL_PLAYBOOKS: Playbook[] = [
     subtitle: "a decision-making unit (DMU)",
     category: "net-new",
     stage: "Influence",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
     title: "Influence executive decision-makers",
     category: "net-new",
     stage: "Influence",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
-    title: "Unlock a stalled deal",
+    title: "Unblock a stalled deal",
     category: "net-new",
     stage: "Influence",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
     title: "Pipeline velocity",
-    subtitle: "across open deals",
+    subtitle: "accelerate open deals",
     category: "net-new",
     stage: "Influence",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
     title: "Re-engage closed-lost accounts",
     category: "net-new",
     stage: "Influence",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
 
   // Net-new Target Accounts - Commit (not Convert)
   {
     title: "Deal protection",
-    subtitle: "solution handling playbook",
+    subtitle: "objection handling playbook",
     category: "net-new",
     stage: "Commit",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
     title: "Sales enablement",
     subtitle: "towards deal closure",
     category: "net-new",
     stage: "Commit",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
     title: "Last-mile",
-    subtitle: "solution alignment",
+    subtitle: "decision-alignment",
     category: "net-new",
     stage: "Commit",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
-    title: "Executive value validation",
+    title: "Executive value",
+    subtitle: "validation",
     category: "net-new",
     stage: "Commit",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
   {
-    title: "Targeted risk mitigation",
+    title: "Targeted risk",
+    subtitle: "mitigation",
     category: "net-new",
     stage: "Commit",
-    tacticalCredits: "12",
-    impactCredits: "12",
-    enterpriseCredits: "11",
-    customPrice: "12"
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
   },
 
   // Customer Growth - Adoption
@@ -250,38 +252,28 @@ const ALL_PLAYBOOKS: Playbook[] = [
     subtitle: "from untapped teams",
     category: "customer-growth",
     stage: "Adoption",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Build internal advocacy & champions",
     category: "customer-growth",
     stage: "Adoption",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Delivering additional value for user enablement",
     category: "customer-growth",
     stage: "Adoption",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
-  },
-  {
-    title: "Build executive alignment",
-    subtitle: "to strengthen partnerships",
-    category: "customer-growth",
-    stage: "Adoption",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
 
   // Customer Growth - Expansion
@@ -306,6 +298,16 @@ const ALL_PLAYBOOKS: Playbook[] = [
   {
     title: "Introduce new solutions",
     subtitle: "into existing accounts",
+    category: "customer-growth",
+    stage: "Expansion",
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8"
+  },
+  {
+    title: "Build executive alignment",
+    subtitle: "to strengthen partnerships",
     category: "customer-growth",
     stage: "Expansion",
     tacticalCredits: "8",
@@ -377,32 +379,35 @@ const ALL_PLAYBOOKS: Playbook[] = [
     title: "Showcase key customer partnerships",
     category: "customer-growth",
     stage: "Advocacy",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Generate case studies and testimonials",
     category: "customer-growth",
     stage: "Advocacy",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   },
   {
     title: "Create referral opportunities",
     category: "customer-growth",
     stage: "Advocacy",
-    tacticalCredits: "8",
-    impactCredits: "8",
-    enterpriseCredits: "7",
-    customPrice: "8"
+    tacticalCredits: "2",
+    impactCredits: "2",
+    enterpriseCredits: "1.5",
+    customPrice: "2"
   }
 ];
 
-interface PlaybooksNetflixLayoutProps {
+// Export ALL_PLAYBOOKS directly for reference in other components
+export { ALL_PLAYBOOKS };
+
+export interface PlaybooksNetflixLayoutProps {
   items: any[];
   quantities: Record<string, number>;
   onQuantityChange: (id: string, quantity: number) => void;
@@ -420,7 +425,17 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeNetNewStage, setActiveNetNewStage] = useState<string | null>(null);
   const [activeCustomerGrowthStage, setActiveCustomerGrowthStage] = useState<string | null>(null);
+  const [netNewExpanded, setNetNewExpanded] = useState(true);
+  const [customerGrowthExpanded, setCustomerGrowthExpanded] = useState(true);
   
+  // Auto-expand panels when search query is made
+  useEffect(() => {
+    if (searchQuery.trim() !== '') {
+      setNetNewExpanded(true);
+      setCustomerGrowthExpanded(true);
+    }
+  }, [searchQuery]);
+
   // Filter playbooks based on search query
   const filteredPlaybooks = ALL_PLAYBOOKS.filter(playbook => 
     playbook.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -471,210 +486,260 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
       {/* Net-New Target Accounts Section */}
       {netNewPlaybooks.length > 0 && (
         <div className="mb-8">
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-8 cursor-pointer" onClick={() => setNetNewExpanded(!netNewExpanded)}>
             <div className="w-1.5 h-12 mr-4 bg-white"></div>
             <h2 className="text-xl font-bold text-white">Net-new target accounts</h2>
-          </div>
-          
-          <div className="flex mb-6 space-x-4 overflow-x-auto pb-2">
-            <button 
-              className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base ${activeNetNewStage === null ? 'bg-gray-600' : 'bg-gray-800/80'}`}
-              onClick={showAllPlaybooks}
-            >
-              Show All
-            </button>
-            {NET_NEW_STAGES.map(stage => (
-              <button 
-                key={stage} 
-                className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base`}
-                style={{ 
-                  backgroundColor: stageColors[stage], 
-                  opacity: activeNetNewStage === stage ? 1 : 0.75 
-                }}
-                onClick={() => setActiveNetNewStage(stage)}
+            <div className="ml-auto">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-6 w-6 text-white transition-transform ${netNewExpanded ? 'transform rotate-180' : ''}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
               >
-                {stage}
-              </button>
-            ))}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
           
-          {/* Display playbooks */}
-          <div>
-            {activeNetNewStage ? (
-              <div className="flex items-center mb-4 mt-10">
-                <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[activeNetNewStage] }}></div>
-                <h3 className="text-lg font-medium text-white">{activeNetNewStage}</h3>
+          {netNewExpanded && (
+            <>
+              <div className="flex mb-6 space-x-4 overflow-x-auto pb-2">
+                <button 
+                  className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base relative focus:outline-none ${activeNetNewStage === null ? 'bg-gray-600' : 'bg-gray-800/80'}`}
+                  onClick={showAllPlaybooks}
+                >
+                  Show All
+                  {activeNetNewStage === null && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></div>}
+                </button>
+                {NET_NEW_STAGES.map(stage => (
+                  <button 
+                    key={stage} 
+                    className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base relative focus:outline-none`}
+                    style={{ 
+                      backgroundColor: stageColors[stage], 
+                      opacity: activeNetNewStage === stage ? 1 : 0.75,
+                      border: 'none',
+                      boxShadow: 'none'
+                    }}
+                    onClick={() => setActiveNetNewStage(stage)}
+                  >
+                    {stage}
+                    {activeNetNewStage === stage && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></div>}
+                  </button>
+                ))}
               </div>
-            ) : (
-              NET_NEW_STAGES.map(stage => {
-                const stagePlaybooks = filteredNetNewPlaybooks.filter(p => p.stage === stage);
-                if (stagePlaybooks.length > 0) {
-                  return (
-                    <div key={stage} className="mb-12">
-                      <div className="flex items-center mb-4 mt-10">
-                        <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[stage] }}></div>
-                        <h3 className="text-lg font-medium text-white">{stage}</h3>
-                      </div>
-                      
-                      {stagePlaybooks.map(playbook => {
-                        const id = playbook.title.toLowerCase().replace(/\s+/g, '-');
-                        return (
-                          <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
-                            <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
-                            <div className="flex-grow">
-                              <InsightItem
-                                id={id}
-                                title={getTitleWithSubtitle(playbook)}
-                                customPrice={playbook.customPrice}
-                                tacticalCredits={playbook.tacticalCredits}
-                                impactCredits={playbook.impactCredits}
-                                enterpriseCredits={playbook.enterpriseCredits}
-                                quantity={quantities[id] || 0}
-                                onQuantityChange={onQuantityChange}
-                                selectedCurrency={selectedCurrency}
-                                currencyRate={currencyRate}
-                                showDelivery={false}
-                              />
-                            </div>
+              
+              {/* Display playbooks */}
+              <div>
+                {activeNetNewStage ? (
+                  <div className="flex items-center mb-4 mt-10">
+                    <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[activeNetNewStage] }}></div>
+                    <h3 className="text-lg font-medium text-white">{activeNetNewStage}</h3>
+                  </div>
+                ) : (
+                  NET_NEW_STAGES.map(stage => {
+                    const stagePlaybooks = filteredNetNewPlaybooks.filter(p => p.stage === stage);
+                    if (stagePlaybooks.length > 0) {
+                      return (
+                        <div key={stage} className="mb-12">
+                          <div className="flex items-center mb-4 mt-10">
+                            <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[stage] }}></div>
+                            <h3 className="text-lg font-medium text-white">{stage}</h3>
                           </div>
-                        );
-                      })}
+                          
+                          {stagePlaybooks.map(playbook => {
+                            // Create a unique ID by combining title and subtitle if available
+                            const id = playbook.subtitle 
+                              ? `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-')
+                              : playbook.title.toLowerCase().replace(/\s+/g, '-');
+                            return (
+                              <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
+                                <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
+                                <div className="flex-grow">
+                                  <InsightItem
+                                    id={id}
+                                    title={getTitleWithSubtitle(playbook)}
+                                    customPrice={playbook.customPrice}
+                                    tacticalCredits={playbook.tacticalCredits}
+                                    impactCredits={playbook.impactCredits}
+                                    enterpriseCredits={playbook.enterpriseCredits}
+                                    quantity={quantities[id] || 0}
+                                    onQuantityChange={onQuantityChange}
+                                    selectedCurrency={selectedCurrency}
+                                    currencyRate={currencyRate}
+                                    showDelivery={false}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+
+                {activeNetNewStage && filteredNetNewPlaybooks.map(playbook => {
+                  // Create a unique ID by combining title and subtitle if available
+                  const id = playbook.subtitle 
+                    ? `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-')
+                    : playbook.title.toLowerCase().replace(/\s+/g, '-');
+                  return (
+                    <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
+                      <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
+                      <div className="flex-grow">
+                        <InsightItem
+                          id={id}
+                          title={getTitleWithSubtitle(playbook)}
+                          customPrice={playbook.customPrice}
+                          tacticalCredits={playbook.tacticalCredits}
+                          impactCredits={playbook.impactCredits}
+                          enterpriseCredits={playbook.enterpriseCredits}
+                          quantity={quantities[id] || 0}
+                          onQuantityChange={onQuantityChange}
+                          selectedCurrency={selectedCurrency}
+                          currencyRate={currencyRate}
+                          showDelivery={false}
+                        />
+                      </div>
                     </div>
                   );
-                }
-                return null;
-              })
-            )}
-
-            {activeNetNewStage && filteredNetNewPlaybooks.map(playbook => {
-              const id = playbook.title.toLowerCase().replace(/\s+/g, '-');
-              return (
-                <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
-                  <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
-                  <div className="flex-grow">
-                    <InsightItem
-                      id={id}
-                      title={getTitleWithSubtitle(playbook)}
-                      customPrice={playbook.customPrice}
-                      tacticalCredits={playbook.tacticalCredits}
-                      impactCredits={playbook.impactCredits}
-                      enterpriseCredits={playbook.enterpriseCredits}
-                      quantity={quantities[id] || 0}
-                      onQuantityChange={onQuantityChange}
-                      selectedCurrency={selectedCurrency}
-                      currencyRate={currencyRate}
-                      showDelivery={false}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                })}
+              </div>
+            </>
+          )}
         </div>
       )}
 
       {/* Customer Growth Accounts Section */}
       {customerGrowthPlaybooks.length > 0 && (
         <div className="mb-8">
-          <div className="flex items-center mb-8">
+          <div className="flex items-center mb-8 cursor-pointer" onClick={() => setCustomerGrowthExpanded(!customerGrowthExpanded)}>
             <div className="w-1.5 h-12 mr-4 bg-white"></div>
             <h2 className="text-xl font-bold text-white">Customer growth accounts</h2>
-          </div>
-          
-          <div className="flex mb-6 space-x-4 overflow-x-auto pb-2">
-            <button 
-              className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base ${activeCustomerGrowthStage === null ? 'bg-gray-600' : 'bg-gray-800/80'}`}
-              onClick={showAllPlaybooks}
-            >
-              Show All
-            </button>
-            {CUSTOMER_GROWTH_STAGES.map(stage => (
-              <button 
-                key={stage} 
-                className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base`}
-                style={{ 
-                  backgroundColor: stageColors[stage], 
-                  opacity: activeCustomerGrowthStage === stage ? 1 : 0.75 
-                }}
-                onClick={() => setActiveCustomerGrowthStage(stage)}
+            <div className="ml-auto">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-6 w-6 text-white transition-transform ${customerGrowthExpanded ? 'transform rotate-180' : ''}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
               >
-                {stage}
-              </button>
-            ))}
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
           </div>
           
-          {/* Display playbooks */}
-          <div>
-            {activeCustomerGrowthStage ? (
-              <div className="flex items-center mb-4 mt-10">
-                <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[activeCustomerGrowthStage] }}></div>
-                <h3 className="text-lg font-medium text-white">{activeCustomerGrowthStage}</h3>
+          {customerGrowthExpanded && (
+            <>
+              <div className="flex mb-6 space-x-4 overflow-x-auto pb-2">
+                <button 
+                  className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base relative focus:outline-none ${activeCustomerGrowthStage === null ? 'bg-gray-600' : 'bg-gray-800/80'}`}
+                  onClick={showAllPlaybooks}
+                >
+                  Show All
+                  {activeCustomerGrowthStage === null && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></div>}
+                </button>
+                {CUSTOMER_GROWTH_STAGES.map(stage => (
+                  <button 
+                    key={stage} 
+                    className={`px-4 py-2 rounded-lg text-white font-medium transition-colors duration-300 text-base relative focus:outline-none`}
+                    style={{ 
+                      backgroundColor: stageColors[stage], 
+                      opacity: activeCustomerGrowthStage === stage ? 1 : 0.75,
+                      border: 'none',
+                      boxShadow: 'none'
+                    }}
+                    onClick={() => setActiveCustomerGrowthStage(stage)}
+                  >
+                    {stage}
+                    {activeCustomerGrowthStage === stage && <div className="absolute bottom-0 left-0 w-full h-0.5 bg-white"></div>}
+                  </button>
+                ))}
               </div>
-            ) : (
-              CUSTOMER_GROWTH_STAGES.map(stage => {
-                const stagePlaybooks = filteredCustomerGrowthPlaybooks.filter(p => p.stage === stage);
-                if (stagePlaybooks.length > 0) {
-                  return (
-                    <div key={stage} className="mb-12">
-                      <div className="flex items-center mb-4 mt-10">
-                        <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[stage] }}></div>
-                        <h3 className="text-lg font-medium text-white">{stage}</h3>
-                      </div>
-                      
-                      {stagePlaybooks.map(playbook => {
-                        const id = playbook.title.toLowerCase().replace(/\s+/g, '-');
-                        return (
-                          <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
-                            <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
-                            <div className="flex-grow">
-                              <InsightItem
-                                id={id}
-                                title={getTitleWithSubtitle(playbook)}
-                                customPrice={playbook.customPrice}
-                                tacticalCredits={playbook.tacticalCredits}
-                                impactCredits={playbook.impactCredits}
-                                enterpriseCredits={playbook.enterpriseCredits}
-                                quantity={quantities[id] || 0}
-                                onQuantityChange={onQuantityChange}
-                                selectedCurrency={selectedCurrency}
-                                currencyRate={currencyRate}
-                                showDelivery={false}
-                              />
-                            </div>
+              
+              {/* Display playbooks */}
+              <div>
+                {activeCustomerGrowthStage ? (
+                  <div className="flex items-center mb-4 mt-10">
+                    <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[activeCustomerGrowthStage] }}></div>
+                    <h3 className="text-lg font-medium text-white">{activeCustomerGrowthStage}</h3>
+                  </div>
+                ) : (
+                  CUSTOMER_GROWTH_STAGES.map(stage => {
+                    const stagePlaybooks = filteredCustomerGrowthPlaybooks.filter(p => p.stage === stage);
+                    if (stagePlaybooks.length > 0) {
+                      return (
+                        <div key={stage} className="mb-12">
+                          <div className="flex items-center mb-4 mt-10">
+                            <div className="w-1 h-8 mr-3" style={{ backgroundColor: stageColors[stage] }}></div>
+                            <h3 className="text-lg font-medium text-white">{stage}</h3>
                           </div>
-                        );
-                      })}
+                          
+                          {stagePlaybooks.map(playbook => {
+                            // Create a unique ID by combining title and subtitle if available
+                            const id = playbook.subtitle 
+                              ? `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-')
+                              : playbook.title.toLowerCase().replace(/\s+/g, '-');
+                            return (
+                              <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
+                                <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
+                                <div className="flex-grow">
+                                  <InsightItem
+                                    id={id}
+                                    title={getTitleWithSubtitle(playbook)}
+                                    customPrice={playbook.customPrice}
+                                    tacticalCredits={playbook.tacticalCredits}
+                                    impactCredits={playbook.impactCredits}
+                                    enterpriseCredits={playbook.enterpriseCredits}
+                                    quantity={quantities[id] || 0}
+                                    onQuantityChange={onQuantityChange}
+                                    selectedCurrency={selectedCurrency}
+                                    currencyRate={currencyRate}
+                                    showDelivery={false}
+                                  />
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })
+                )}
+
+                {activeCustomerGrowthStage && filteredCustomerGrowthPlaybooks.map(playbook => {
+                  // Create a unique ID by combining title and subtitle if available
+                  const id = playbook.subtitle 
+                    ? `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-')
+                    : playbook.title.toLowerCase().replace(/\s+/g, '-');
+                  return (
+                    <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
+                      <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
+                      <div className="flex-grow">
+                        <InsightItem
+                          id={id}
+                          title={getTitleWithSubtitle(playbook)}
+                          customPrice={playbook.customPrice}
+                          tacticalCredits={playbook.tacticalCredits}
+                          impactCredits={playbook.impactCredits}
+                          enterpriseCredits={playbook.enterpriseCredits}
+                          quantity={quantities[id] || 0}
+                          onQuantityChange={onQuantityChange}
+                          selectedCurrency={selectedCurrency}
+                          currencyRate={currencyRate}
+                          showDelivery={false}
+                        />
+                      </div>
                     </div>
                   );
-                }
-                return null;
-              })
-            )}
-
-            {activeCustomerGrowthStage && filteredCustomerGrowthPlaybooks.map(playbook => {
-              const id = playbook.title.toLowerCase().replace(/\s+/g, '-');
-              return (
-                <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
-                  <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
-                  <div className="flex-grow">
-                    <InsightItem
-                      id={id}
-                      title={getTitleWithSubtitle(playbook)}
-                      customPrice={playbook.customPrice}
-                      tacticalCredits={playbook.tacticalCredits}
-                      impactCredits={playbook.impactCredits}
-                      enterpriseCredits={playbook.enterpriseCredits}
-                      quantity={quantities[id] || 0}
-                      onQuantityChange={onQuantityChange}
-                      selectedCurrency={selectedCurrency}
-                      currencyRate={currencyRate}
-                      showDelivery={false}
-                    />
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                })}
+              </div>
+            </>
+          )}
         </div>
       )}
 

@@ -3,7 +3,7 @@ import { ChevronDown, Check, Info } from 'lucide-react';
 import { useCurrency, CURRENCY_CONFIG } from './config/currency';
 import { CurrencySelector } from './components/CurrencySelector';
 import { InvoiceSummary } from './components/InvoiceSummary';
-import PlaybooksNetflixLayout from './components/PlaybooksNetflixLayout';
+import PlaybooksNetflixLayout, { ALL_PLAYBOOKS } from './components/PlaybooksNetflixLayout';
 import './styles/invoice-print.css';
 
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -615,6 +615,26 @@ export default function ABMTiers() {
       if (!item) item = ITEM_GROUPS.revenue.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       
+      // Look for the item in the ALL_PLAYBOOKS array
+      if (!item) {
+        // First try direct title match
+        item = ALL_PLAYBOOKS.find(playbook => 
+          id === playbook.title.toLowerCase().replace(/\s+/g, '-')
+        );
+        
+        // If not found and array has items with subtitles, try more complex matching
+        if (!item) {
+          item = ALL_PLAYBOOKS.find(playbook => {
+            if (playbook.subtitle) {
+              // Try matching with combined title and subtitle
+              const combinedId = `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-');
+              return id === combinedId;
+            }
+            return false;
+          });
+        }
+      }
+      
       console.log('Found item:', item);
       
       if (item) {
@@ -675,7 +695,7 @@ export default function ABMTiers() {
 
   const mapItemToProps = item => ({
     id: item.id || item.title.toLowerCase().replace(/\s+/g, '-'),
-    title: item.title,
+    title: item.subtitle ? `${item.title} - ${item.subtitle}` : item.title,
     customPrice: item.customPrice || "-",
     tacticalCredits: item.tacticalCredits,
     impactCredits: item.impactCredits,
@@ -919,6 +939,8 @@ export default function ABMTiers() {
               ...ITEM_GROUPS.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
+              // Add PlaybooksNetflixLayout items
+              ...ALL_PLAYBOOKS.map(i => ({ ...i, category: `${i.stage} Playbooks`, order: 4 })),
               ...[
                     { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                     { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
@@ -928,13 +950,28 @@ export default function ABMTiers() {
                     { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
                   ].map(i => ({ ...i, category: 'ABM Training', order: 5 }))
             ];
-            const item = allItems.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+            const item = allItems.find(item => {
+              // Standard item matching by ID
+              if (id === item.title.toLowerCase().replace(/\s+/g, '-')) {
+                return true;
+              }
+              
+              // Try to match with subtitle if available
+              if (item.subtitle) {
+                const combinedId = `${item.title}-${item.subtitle}`.toLowerCase().replace(/\s+/g, '-');
+                if (id === combinedId) {
+                  return true;
+                }
+              }
+              
+              return false;
+            });
             if (!item) return null;
             const basePrice = parseFloat(item.tacticalCredits || item.customPrice);
             const credits = basePrice * quantity;
             return {
               id,
-              title: item.title,
+              title: item.subtitle ? `${item.title} - ${item.subtitle}` : item.title,
               credits,
               basePrice,
               category: item.category,
