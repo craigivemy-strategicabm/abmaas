@@ -464,7 +464,20 @@ export const itemDescriptions = {
   "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
 };
 
-export const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
+export const InsightItem = ({ 
+  id, 
+  title, 
+  customPrice, 
+  tacticalCredits, 
+  impactCredits, 
+  enterpriseCredits, 
+  showDelivery = true, 
+  quantity = 0, 
+  onQuantityChange, 
+  selectedCurrency, 
+  currencyRate,
+  description
+}) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
       <div className="text-gray-300 text-sm">
@@ -474,9 +487,16 @@ export const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCre
             {title.split('(')[1].replace(')', '')}
           </div>
         )}
-        <div className="text-gray-400 text-xs mt-2">
-          {itemDescriptions[title.split(' (')[0]]}
-        </div>
+        {description && (
+          <div className="text-gray-400 text-xs mt-2">
+            {description}
+          </div>
+        )}
+        {!description && itemDescriptions[title.split(' (')[0]] && (
+          <div className="text-gray-400 text-xs mt-2">
+            {itemDescriptions[title.split(' (')[0]]}
+          </div>
+        )}
       </div>
     </div>
     <div className="p-3">

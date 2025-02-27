@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { InsightItem } from '../abmTiersComponent';
+import { X } from 'lucide-react';
 
 // Define the playbook data structure
 interface Playbook {
@@ -11,6 +12,9 @@ interface Playbook {
   impactCredits: string;
   enterpriseCredits: string;
   customPrice: string;
+  description?: string;
+  includes?: string[];
+  kpis?: string[];
 }
 
 // Define the journey stages with their colors
@@ -41,7 +45,17 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "27",
     impactCredits: "27",
     enterpriseCredits: "26",
-    customPrice: "27"
+    customPrice: "27",
+    description: "This ABM playbook is designed to drive strategic awareness and engagement within a new industry or market segment by targeting high-value accounts with customised content, tailored messaging and personalised outreach",
+    includes: [
+      "Personalised Cluster Manifesto",
+      "Market insights report"
+    ],
+    kpis: [
+      "Growth in new account engagements (email responses, social interactions, event attendance)",
+      "Increased account recognition and recall",
+      "Early-stage pipeline growth from new accounts"
+    ]
   },
   {
     title: "Engage",
@@ -51,7 +65,17 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "27",
     impactCredits: "27",
     enterpriseCredits: "26",
-    customPrice: "27"
+    customPrice: "27",
+    description: "This playbook focuses on initiating engagement with high-value accounts that have not previously interacted with the client or have been hard to reach and engage with",
+    includes: [
+      "Personalised account-based content",
+      "Targeted outreach cadence"
+    ],
+    kpis: [
+      "First-time engagement metrics",
+      "Account response rates",
+      "Meeting conversion rates"
+    ]
   },
   {
     title: "Stay front of mind",
@@ -61,7 +85,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "27",
     impactCredits: "27",
     enterpriseCredits: "26",
-    customPrice: "27"
+    customPrice: "27",
+    description: "This playbook ensures ongoing brand presence and visibility across multiple channels to reinforce market relevance through multi-threaded engagement with key stakeholders within target accounts.",
+    includes: [
+      "Multi-channel content distribution",
+      "Consistent brand messaging",
+      "Stakeholder mapping"
+    ],
+    kpis: [
+      "Engagement frequency across channels",
+      "Content consumption metrics",
+      "Brand recall improvements"
+    ]
   },
   {
     title: "Exec peer-to-peer",
@@ -71,7 +106,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "27",
     impactCredits: "27",
     enterpriseCredits: "26",
-    customPrice: "27"
+    customPrice: "27",
+    description: "This playbook facilitates executive-level engagement by connecting senior leaders with counterparts in target accounts.",
+    includes: [
+      "Executive profiling and matching",
+      "Thought leadership content",
+      "Executive engagement events"
+    ],
+    kpis: [
+      "Executive meetings secured",
+      "C-level engagement metrics",
+      "Senior stakeholder feedback quality"
+    ]
   },
   {
     title: "Take your proposition upstream",
@@ -80,7 +126,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "27",
     impactCredits: "27",
     enterpriseCredits: "26",
-    customPrice: "27"
+    customPrice: "27",
+    description: "This playbook focuses on repositioning the brand from a mid-market vendor to a trusted enterprise partner by building credibility and demonstrating strategic value to high-level decision-makers.",
+    includes: [
+      "C-suite value proposition development",
+      "Enterprise-focused case studies",
+      "Strategic validation research"
+    ],
+    kpis: [
+      "Meetings with senior decision-makers",
+      "Perception shift in brand positioning",
+      "Enterprise opportunity pipeline growth"
+    ]
   },
 
   // Net-new Target Accounts - Educate
@@ -92,7 +149,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This ABM playbook leverages high-value thought leadership content to establish a strong point of view in the market, positioning the company as a leading authority and trusted advisor within its industry.",
+    includes: [
+      "Original research and insights",
+      "Executive viewpoints",
+      "Industry trend analysis"
+    ],
+    kpis: [
+      "Content engagement metrics",
+      "Brand authority measures",
+      "Sales conversation quality"
+    ]
   },
   {
     title: "Changing Perceptions",
@@ -102,7 +170,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook is designed to shift outdated or negative perceptions of the brand by showcasing innovation, expertise, and value.",
+    includes: [
+      "Perception audit and analysis",
+      "Targeted myth-busting content",
+      "Success stories and case studies"
+    ],
+    kpis: [
+      "Brand perception improvement metrics",
+      "Message reception among target accounts",
+      "Competitive win rate improvements"
+    ]
   },
   {
     title: "Demonstrate capabilities",
@@ -112,7 +191,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook showcases the company's innovative solutions and thought leadership to drive account engagement and differentiation.",
+    includes: [
+      "Personalized demo experiences",
+      "Innovation showcases",
+      "Solution walkthroughs"
+    ],
+    kpis: [
+      "Demo to meeting conversion rates",
+      "Solution understanding metrics",
+      "Competitive differentiation scores"
+    ]
   },
   {
     title: "Competitor differentiation",
@@ -122,7 +212,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook helps establish clear market differentiation by articulating unique value propositions against competitors.",
+    includes: [
+      "Competitive landscape analysis",
+      "Differentiation messaging framework",
+      "Battle cards and competitive FAQs"
+    ],
+    kpis: [
+      "Competitive win rates",
+      "Differentiation understanding in target accounts",
+      "Reduction in feature comparison objections"
+    ]
   },
   {
     title: "Build an executive",
@@ -132,7 +233,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on positioning a senior executive as a respected industry thought leader through strategic content, speaking engagements, and peer engagement.",
+    includes: [
+      "Executive thought leadership platform",
+      "Speaking opportunity development",
+      "Industry network building"
+    ],
+    kpis: [
+      "Executive visibility metrics",
+      "Thought leadership content engagement",
+      "Executive relationship growth"
+    ]
   },
   {
     title: "Multi-threaded nurture",
@@ -142,7 +254,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on nurturing key personas within target accounts by providing tailored insights and value-driven content that supports their internal business case for investment.",
+    includes: [
+      "Persona-based content journeys",
+      "ROI calculators and tools",
+      "Business case templates"
+    ],
+    kpis: [
+      "Multi-persona engagement metrics",
+      "Content consumption across stakeholders",
+      "Business case advancement indicators"
+    ]
   },
 
   // Net-new Target Accounts - Influence
@@ -154,7 +277,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This ABM playbook focuses on deepening engagement within key target accounts by influencing multiple stakeholders across the decision-making unit (DMU).",
+    includes: [
+      "Stakeholder mapping and influence strategy",
+      "Role-based messaging and content",
+      "Multi-channel engagement approach"
+    ],
+    kpis: [
+      "Number of active stakeholders engaged",
+      "Depth of engagement per stakeholder",
+      "DMU coverage percentage"
+    ]
   },
   {
     title: "Influence executive decision-makers",
@@ -163,7 +297,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook is designed to engage and build credibility with C-suite and senior executives within target accounts.",
+    includes: [
+      "Executive-level content and insights",
+      "Personalized outreach strategies",
+      "Executive roundtables and events"
+    ],
+    kpis: [
+      "Executive meetings secured",
+      "C-level engagement metrics",
+      "Senior stakeholder feedback quality"
+    ]
   },
   {
     title: "Unblock a stalled deal",
@@ -172,7 +317,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on reactivating and accelerating stalled opportunities through targeted engagement and value reinforcement.",
+    includes: [
+      "Deal blockage analysis",
+      "Stakeholder re-engagement strategy",
+      "Value reinforcement content"
+    ],
+    kpis: [
+      "Stalled deal reactivation rate",
+      "Deal progression velocity",
+      "Conversion of stalled to active opportunities"
+    ]
   },
   {
     title: "Pipeline velocity",
@@ -182,7 +338,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on accelerating deal progression through targeted engagement and barrier removal.",
+    includes: [
+      "Deal progression analysis",
+      "Stakeholder alignment strategies",
+      "Decision enablement content"
+    ],
+    kpis: [
+      "Deal cycle time reduction",
+      "Stage progression velocity",
+      "Decision-maker engagement metrics"
+    ]
   },
   {
     title: "Re-engage closed-lost accounts",
@@ -191,7 +358,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on re-engaging and winning back previously lost opportunities through new value propositions and targeted outreach.",
+    includes: [
+      "Loss reason analysis",
+      "Refreshed value proposition",
+      "Multi-touch re-engagement campaign"
+    ],
+    kpis: [
+      "Closed-lost reactivation rate",
+      "Converted previously-lost opportunities",
+      "New engagement quality metrics"
+    ]
   },
 
   // Net-new Target Accounts - Commit (not Convert)
@@ -203,7 +381,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on protecting strategic opportunities from competitive threats and ensuring successful closure.",
+    includes: [
+      "Competitive defense strategies",
+      "Objection handling toolkit",
+      "Value reinforcement communications"
+    ],
+    kpis: [
+      "Competitive win rate improvement",
+      "Late-stage deal retention rate",
+      "Objection resolution effectiveness"
+    ]
   },
   {
     title: "Sales enablement",
@@ -213,7 +402,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook proactively addresses risks that could prevent deal closure, ensuring a smoother final-stage process.",
+    includes: [
+      "Deal risk assessment",
+      "Sales team support materials",
+      "Customer validation content"
+    ],
+    kpis: [
+      "Deal closure rate improvement",
+      "Sales cycle time reduction",
+      "Sales team confidence metrics"
+    ]
   },
   {
     title: "Last-mile",
@@ -223,7 +423,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on aligning key stakeholders and addressing final concerns to ensure smooth deal closure.",
+    includes: [
+      "Final stakeholder alignment tactics",
+      "Concern resolution framework",
+      "Decision facilitation content"
+    ],
+    kpis: [
+      "Final decision timeline acceleration",
+      "Stakeholder alignment metrics",
+      "Concern resolution effectiveness"
+    ]
   },
   {
     title: "Executive value",
@@ -233,7 +444,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on securing executive buy-in and validation of the proposed solution value.",
+    includes: [
+      "Executive value proposition",
+      "ROI validation framework",
+      "Executive engagement strategy"
+    ],
+    kpis: [
+      "Executive approval rate",
+      "Value perception metrics",
+      "Deal approval velocity"
+    ]
   },
   {
     title: "Targeted risk",
@@ -243,7 +465,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on identifying and addressing specific risks that could derail deal closure.",
+    includes: [
+      "Risk assessment framework",
+      "Mitigation strategies development",
+      "Proactive risk communications"
+    ],
+    kpis: [
+      "Risk identification effectiveness",
+      "Mitigation success rate",
+      "Deal closure confidence metrics"
+    ]
   },
 
   // Customer Growth - Adoption
@@ -255,7 +488,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This ABM playbook focuses on driving increased usage of existing solutions within customer accounts to maximise deal value and strengthen long-term retention.",
+    includes: [
+      "User adoption analysis",
+      "Solution value reinforcement",
+      "Team-specific onboarding materials"
+    ],
+    kpis: [
+      "Adoption rate metrics",
+      "User engagement increase",
+      "Solution usage expansion"
+    ]
   },
   {
     title: "Build internal advocacy & champions",
@@ -264,7 +508,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on turning key users and stakeholders into internal advocates who promote solution adoption and retention.",
+    includes: [
+      "Champion identification framework",
+      "Advocacy toolkit development",
+      "Internal community building"
+    ],
+    kpis: [
+      "Number of active champions",
+      "Advocate-driven adoption increase",
+      "Internal referral metrics"
+    ]
   },
   {
     title: "Delivering additional value for user enablement",
@@ -273,7 +528,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on enhancing user experience and competency through additional value-add services and enablement resources.",
+    includes: [
+      "User experience enhancement",
+      "Training and enablement resources",
+      "Value-add services development"
+    ],
+    kpis: [
+      "User proficiency improvement",
+      "Solution utilization metrics",
+      "Customer satisfaction scores"
+    ]
   },
 
   // Customer Growth - Expansion
@@ -284,7 +550,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on expanding relationships by introducing new product lines and solutions to different business units within existing accounts.",
+    includes: [
+      "Business unit mapping",
+      "Cross-departmental need analysis",
+      "New business unit engagement strategy"
+    ],
+    kpis: [
+      "New business unit penetration rate",
+      "Cross-sell conversion metrics",
+      "Account revenue expansion"
+    ]
   },
   {
     title: "Upsell complementary adjacent solutions",
@@ -293,7 +570,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on identifying and capitalizing on opportunities to expand solution footprint through complementary offerings.",
+    includes: [
+      "Solution usage analysis",
+      "Complementary solution mapping",
+      "Value amplification messaging"
+    ],
+    kpis: [
+      "Adjacent solution adoption rate",
+      "Solution portfolio expansion metrics",
+      "Upsell conversion effectiveness"
+    ]
   },
   {
     title: "Introduce new solutions",
@@ -303,7 +591,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on leveraging trusted customer relationships to introduce entirely new solutions and product lines.",
+    includes: [
+      "New solution fit analysis",
+      "Trusted relationship leverage strategy",
+      "Solution introduction toolkit"
+    ],
+    kpis: [
+      "New solution adoption metrics",
+      "Solution portfolio diversity",
+      "New offering revenue contribution"
+    ]
   },
   {
     title: "Build executive alignment",
@@ -313,7 +612,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on strengthening executive relationships to ensure long-term partnership success.",
+    includes: [
+      "Executive engagement strategy",
+      "Strategic alignment workshops",
+      "Joint vision development"
+    ],
+    kpis: [
+      "Executive relationship strength metrics",
+      "Strategic alignment scores",
+      "Executive-sponsored initiatives"
+    ]
   },
   {
     title: "Develop expansion partnerships",
@@ -323,7 +633,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on developing strategic partnerships to drive mutual growth and expansion opportunities.",
+    includes: [
+      "Partnership opportunity mapping",
+      "Joint business planning",
+      "Collaborative go-to-market strategy"
+    ],
+    kpis: [
+      "Partnership contribution to revenue",
+      "Joint opportunity creation",
+      "Strategic partnership strength metrics"
+    ]
   },
 
   // Customer Growth - Retention
@@ -334,7 +655,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This ABM playbook focuses on proactively securing renewals by nurturing existing accounts and ensuring long-term value alignment.",
+    includes: [
+      "Renewal opportunity analysis",
+      "Value realization assessment",
+      "Renewal strategy planning"
+    ],
+    kpis: [
+      "Renewal pipeline growth metrics",
+      "Early renewal identification rate",
+      "Renewal forecast accuracy"
+    ]
   },
   {
     title: "Renewal risk mitigation",
@@ -343,7 +675,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook helps identify and address risks that may prevent an account from renewing, ensuring a proactive approach to retention.",
+    includes: [
+      "Risk assessment framework",
+      "Early warning system development",
+      "Mitigation action planning"
+    ],
+    kpis: [
+      "Risk identification accuracy",
+      "Mitigation success rate",
+      "At-risk account recovery metrics"
+    ]
   },
   {
     title: "Defend against competitor activity",
@@ -352,7 +695,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on protecting key accounts from competitive threats by reinforcing differentiation and strategic value.",
+    includes: [
+      "Competitive threat analysis",
+      "Value reinforcement strategy",
+      "Differentiation messaging toolkit"
+    ],
+    kpis: [
+      "Competitive displacement prevention rate",
+      "Customer loyalty metrics",
+      "Competitive win-back success"
+    ]
   },
   {
     title: "Wake the dead",
@@ -362,7 +716,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on re-engaging past customers who have disengaged or lapsed in engagement, reviving opportunities for future business.",
+    includes: [
+      "Disengagement pattern analysis",
+      "Re-engagement campaign development",
+      "Value reintroduction strategy"
+    ],
+    kpis: [
+      "Dormant account reactivation rate",
+      "Re-engagement response metrics",
+      "Revived revenue opportunities"
+    ]
   },
   {
     title: "Recover a strategically important relationship",
@@ -371,7 +736,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "8",
     impactCredits: "8",
     enterpriseCredits: "7",
-    customPrice: "8"
+    customPrice: "8",
+    description: "This playbook focuses on repairing and revitalising relationships with previously lost or strained accounts.",
+    includes: [
+      "Relationship breakdown analysis",
+      "Trust rebuilding framework",
+      "Strategic re-engagement plan"
+    ],
+    kpis: [
+      "Relationship recovery rate",
+      "Trust restoration metrics",
+      "Strategic account reactivation"
+    ]
   },
 
   // Customer Growth - Advocacy
@@ -382,7 +758,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This ABM playbook focuses on leveraging successful customer relationships to demonstrate value and credibility.",
+    includes: [
+      "Customer success story development",
+      "Joint marketing opportunities",
+      "Partnership showcase strategy"
+    ],
+    kpis: [
+      "Partnership visibility metrics",
+      "Credibility enhancement scores",
+      "Referral generation from showcases"
+    ]
   },
   {
     title: "Generate case studies and testimonials",
@@ -391,7 +778,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on collecting and publishing customer success stories to support sales and marketing efforts.",
+    includes: [
+      "Success story identification process",
+      "Customer testimonial collection",
+      "Case study production framework"
+    ],
+    kpis: [
+      "Case study production rate",
+      "Testimonial quality and impact",
+      "Content utilization in sales cycles"
+    ]
   },
   {
     title: "Create referral opportunities",
@@ -400,7 +798,18 @@ const ALL_PLAYBOOKS: Playbook[] = [
     tacticalCredits: "2",
     impactCredits: "2",
     enterpriseCredits: "1.5",
-    customPrice: "2"
+    customPrice: "2",
+    description: "This playbook focuses on encouraging existing customers to refer new business, leveraging advocacy to drive growth.",
+    includes: [
+      "Referral program development",
+      "Advocate identification and activation",
+      "Referral facilitation process"
+    ],
+    kpis: [
+      "Referral generation rate",
+      "Conversion of referrals to opportunities",
+      "Advocate participation metrics"
+    ]
   }
 ];
 
@@ -415,6 +824,11 @@ export interface PlaybooksNetflixLayoutProps {
   currencyRate: number;
 }
 
+// Update the function that constructs the title with description
+const getTitleWithSubtitle = (playbook: Playbook) => {
+  return playbook.subtitle ? `${playbook.title} - ${playbook.subtitle}` : playbook.title;
+};
+
 const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
   items,
   quantities,
@@ -425,8 +839,8 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeNetNewStage, setActiveNetNewStage] = useState<string | null>(null);
   const [activeCustomerGrowthStage, setActiveCustomerGrowthStage] = useState<string | null>(null);
-  const [netNewExpanded, setNetNewExpanded] = useState(true);
-  const [customerGrowthExpanded, setCustomerGrowthExpanded] = useState(true);
+  const [netNewExpanded, setNetNewExpanded] = useState(false);
+  const [customerGrowthExpanded, setCustomerGrowthExpanded] = useState(false);
   
   // Auto-expand panels when search query is made
   useEffect(() => {
@@ -456,14 +870,6 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
     ? customerGrowthPlaybooks.filter(p => p.stage === activeCustomerGrowthStage)
     : customerGrowthPlaybooks;
 
-  // Create a modified title that includes the subtitle if present
-  const getTitleWithSubtitle = (playbook: Playbook) => {
-    if (playbook.subtitle) {
-      return `${playbook.title} ${playbook.subtitle}`;
-    }
-    return playbook.title;
-  };
-
   // Reset filters to show all playbooks
   const showAllPlaybooks = () => {
     setActiveNetNewStage(null);
@@ -483,12 +889,12 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
         />
       </div>
 
-      {/* Net-New Target Accounts Section */}
+      {/* Net-new playbooks Section */}
       {netNewPlaybooks.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center mb-8 cursor-pointer" onClick={() => setNetNewExpanded(!netNewExpanded)}>
             <div className="w-1.5 h-12 mr-4 bg-white"></div>
-            <h2 className="text-xl font-bold text-white">Net-new target accounts</h2>
+            <h2 className="text-xl font-bold text-white">Net-new playbooks</h2>
             <div className="ml-auto">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -557,19 +963,22 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
                               <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
                                 <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
                                 <div className="flex-grow">
-                                  <InsightItem
-                                    id={id}
-                                    title={getTitleWithSubtitle(playbook)}
-                                    customPrice={playbook.customPrice}
-                                    tacticalCredits={playbook.tacticalCredits}
-                                    impactCredits={playbook.impactCredits}
-                                    enterpriseCredits={playbook.enterpriseCredits}
-                                    quantity={quantities[id] || 0}
-                                    onQuantityChange={onQuantityChange}
-                                    selectedCurrency={selectedCurrency}
-                                    currencyRate={currencyRate}
-                                    showDelivery={false}
-                                  />
+                                  <div className="flex flex-col">
+                                    <InsightItem
+                                      id={id}
+                                      title={getTitleWithSubtitle(playbook)}
+                                      customPrice={playbook.customPrice}
+                                      tacticalCredits={playbook.tacticalCredits}
+                                      impactCredits={playbook.impactCredits}
+                                      enterpriseCredits={playbook.enterpriseCredits}
+                                      quantity={quantities[id] || 0}
+                                      onQuantityChange={onQuantityChange}
+                                      selectedCurrency={selectedCurrency}
+                                      currencyRate={currencyRate}
+                                      showDelivery={false}
+                                      description={playbook.description}
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -590,19 +999,22 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
                     <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
                       <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
                       <div className="flex-grow">
-                        <InsightItem
-                          id={id}
-                          title={getTitleWithSubtitle(playbook)}
-                          customPrice={playbook.customPrice}
-                          tacticalCredits={playbook.tacticalCredits}
-                          impactCredits={playbook.impactCredits}
-                          enterpriseCredits={playbook.enterpriseCredits}
-                          quantity={quantities[id] || 0}
-                          onQuantityChange={onQuantityChange}
-                          selectedCurrency={selectedCurrency}
-                          currencyRate={currencyRate}
-                          showDelivery={false}
-                        />
+                        <div className="flex flex-col">
+                          <InsightItem
+                            id={id}
+                            title={getTitleWithSubtitle(playbook)}
+                            customPrice={playbook.customPrice}
+                            tacticalCredits={playbook.tacticalCredits}
+                            impactCredits={playbook.impactCredits}
+                            enterpriseCredits={playbook.enterpriseCredits}
+                            quantity={quantities[id] || 0}
+                            onQuantityChange={onQuantityChange}
+                            selectedCurrency={selectedCurrency}
+                            currencyRate={currencyRate}
+                            showDelivery={false}
+                            description={playbook.description}
+                          />
+                        </div>
                       </div>
                     </div>
                   );
@@ -613,12 +1025,12 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
         </div>
       )}
 
-      {/* Customer Growth Accounts Section */}
+      {/* Customer Growth playbooks Section */}
       {customerGrowthPlaybooks.length > 0 && (
         <div className="mb-8">
           <div className="flex items-center mb-8 cursor-pointer" onClick={() => setCustomerGrowthExpanded(!customerGrowthExpanded)}>
             <div className="w-1.5 h-12 mr-4 bg-white"></div>
-            <h2 className="text-xl font-bold text-white">Customer growth accounts</h2>
+            <h2 className="text-xl font-bold text-white">Customer Growth playbooks</h2>
             <div className="ml-auto">
               <svg 
                 xmlns="http://www.w3.org/2000/svg" 
@@ -687,19 +1099,22 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
                               <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
                                 <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
                                 <div className="flex-grow">
-                                  <InsightItem
-                                    id={id}
-                                    title={getTitleWithSubtitle(playbook)}
-                                    customPrice={playbook.customPrice}
-                                    tacticalCredits={playbook.tacticalCredits}
-                                    impactCredits={playbook.impactCredits}
-                                    enterpriseCredits={playbook.enterpriseCredits}
-                                    quantity={quantities[id] || 0}
-                                    onQuantityChange={onQuantityChange}
-                                    selectedCurrency={selectedCurrency}
-                                    currencyRate={currencyRate}
-                                    showDelivery={false}
-                                  />
+                                  <div className="flex flex-col">
+                                    <InsightItem
+                                      id={id}
+                                      title={getTitleWithSubtitle(playbook)}
+                                      customPrice={playbook.customPrice}
+                                      tacticalCredits={playbook.tacticalCredits}
+                                      impactCredits={playbook.impactCredits}
+                                      enterpriseCredits={playbook.enterpriseCredits}
+                                      quantity={quantities[id] || 0}
+                                      onQuantityChange={onQuantityChange}
+                                      selectedCurrency={selectedCurrency}
+                                      currencyRate={currencyRate}
+                                      showDelivery={false}
+                                      description={playbook.description}
+                                    />
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -720,19 +1135,22 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
                     <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
                       <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
                       <div className="flex-grow">
-                        <InsightItem
-                          id={id}
-                          title={getTitleWithSubtitle(playbook)}
-                          customPrice={playbook.customPrice}
-                          tacticalCredits={playbook.tacticalCredits}
-                          impactCredits={playbook.impactCredits}
-                          enterpriseCredits={playbook.enterpriseCredits}
-                          quantity={quantities[id] || 0}
-                          onQuantityChange={onQuantityChange}
-                          selectedCurrency={selectedCurrency}
-                          currencyRate={currencyRate}
-                          showDelivery={false}
-                        />
+                        <div className="flex flex-col">
+                          <InsightItem
+                            id={id}
+                            title={getTitleWithSubtitle(playbook)}
+                            customPrice={playbook.customPrice}
+                            tacticalCredits={playbook.tacticalCredits}
+                            impactCredits={playbook.impactCredits}
+                            enterpriseCredits={playbook.enterpriseCredits}
+                            quantity={quantities[id] || 0}
+                            onQuantityChange={onQuantityChange}
+                            selectedCurrency={selectedCurrency}
+                            currencyRate={currencyRate}
+                            showDelivery={false}
+                            description={playbook.description}
+                          />
+                        </div>
                       </div>
                     </div>
                   );

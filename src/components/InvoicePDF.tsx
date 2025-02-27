@@ -5,6 +5,7 @@ import logo from '../assets/images/sabmlogo.png';
 import { formatPrice, CURRENCY_CONFIG } from '../config/currency';
 import type { CurrencyCode } from '../config/currency';
 import { itemDescriptions } from '../abmTiersComponent';
+import { ALL_PLAYBOOKS } from './PlaybooksNetflixLayout';
 
 const categoryDescriptions = {
   'ABM foundations': 'Custom ABM programmes & individual strategic deliverables tailored to your specific needs, setting the foundations for scale and time to market goals.',
@@ -172,6 +173,41 @@ interface InvoicePDFProps {
   clientName: string;
 }
 
+// Function to get playbook by title
+const getPlaybook = (title: string) => {
+  // Clean the title by removing any text in parentheses and trimming
+  const cleanTitle = title.split(' (')[0].trim();
+  
+  // First try exact title match
+  let playbook = ALL_PLAYBOOKS.find(p => p.title === cleanTitle);
+  
+  // If not found, try with title + subtitle
+  if (!playbook) {
+    playbook = ALL_PLAYBOOKS.find(p => {
+      const fullTitle = p.subtitle ? `${p.title} - ${p.subtitle}` : p.title;
+      return fullTitle === cleanTitle;
+    });
+  }
+  
+  // If still not found, try a more relaxed match (title contains or is contained by the clean title)
+  if (!playbook) {
+    playbook = ALL_PLAYBOOKS.find(p => {
+      const normalizedPlaybookTitle = p.title.toLowerCase();
+      const normalizedCleanTitle = cleanTitle.toLowerCase();
+      return normalizedPlaybookTitle.includes(normalizedCleanTitle) || 
+             normalizedCleanTitle.includes(normalizedPlaybookTitle);
+    });
+  }
+  
+  return playbook;
+};
+
+// Function to get playbook description by title
+const getPlaybookDescription = (title: string) => {
+  const playbook = getPlaybook(title);
+  return playbook?.description;
+};
+
 const Footer = () => (
   <View style={footerStyles.footerContainer}>
     <Text style={footerStyles.footerText}>
@@ -270,7 +306,16 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                     <View style={styles.row}>
                       <View style={styles.itemDetails}>
                         <Text style={{ ...styles.itemTitle, fontSize: 11 }}>{item.title}</Text>
-                        <Text style={{ ...styles.itemDescription, fontSize: 9, marginTop: 4 }}>{itemDescriptions[item.title.split(' (')[0]]}</Text>
+                        {(() => {
+                          const playbook = getPlaybook(item.title);
+                          return (
+                            <View>
+                              <Text style={{ ...styles.itemDescription, fontSize: 9, marginTop: 4 }}>
+                                {playbook?.description || itemDescriptions[item.title.split(' (')[0]]}
+                              </Text>
+                            </View>
+                          );
+                        })()}
                         <Text style={{ ...styles.quantity, marginTop: 6, fontSize: 8 }}>
                           Quantity: <Text style={styles.highlight}>{item.quantity || 1}</Text> @ <Text style={styles.highlight}>{`${CURRENCY_CONFIG[currency].symbol}${(item.basePrice * CURRENCY_CONFIG[currency].rate).toFixed(1)}k`}</Text> per credit
                         </Text>
