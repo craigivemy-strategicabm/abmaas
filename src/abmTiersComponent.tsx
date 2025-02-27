@@ -3,6 +3,7 @@ import { ChevronDown, Check, Info } from 'lucide-react';
 import { useCurrency, CURRENCY_CONFIG } from './config/currency';
 import { CurrencySelector } from './components/CurrencySelector';
 import { InvoiceSummary } from './components/InvoiceSummary';
+import PlaybooksNetflixLayout from './components/PlaybooksNetflixLayout';
 import './styles/invoice-print.css';
 
 //import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -180,6 +181,19 @@ const ComparisonRow = ({feature, subtitle, values }) => (
   </div>
 );
 
+const TotalCredits = ({ total, description, selectedCurrency, currencyRate }) => (
+  <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] mb-6">
+    <div className="col-span-4">
+      <p className="text-gray-400 text-sm pr-4">{description}</p>
+    </div>
+    <div className="p-3 bg-gray-800/50 rounded-lg">
+      <div className="text-gray-300 text-sm text-center">
+        Total Credits: <span className="text-green-500 font-bold">{total}</span>
+      </div>
+    </div>
+  </div>
+);
+
 const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
@@ -302,19 +316,6 @@ const TrainingPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
   );
 };
 
-const TotalCredits = ({ total, description }) => (
-  <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] mb-6">
-    <div className="col-span-4">
-      <p className="text-gray-400 text-sm pr-4">{description}</p>
-    </div>
-    <div className="p-3 bg-gray-800/50 rounded-lg">
-      <div className="text-gray-300 text-sm text-center">
-        Total Credits: <span className="text-green-500 font-bold">{total}</span>
-      </div>
-    </div>
-  </div>
-);
-
 const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
   const items = ITEM_GROUPS.revenue;
 
@@ -333,22 +334,13 @@ const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, curren
         selectedCurrency={selectedCurrency}
         currencyRate={currencyRate}
       />
-      {items.map((item, i) => (
-        <InsightItem
-          key={i}
-          id={item.title.toLowerCase().replace(/\s+/g, '-')}
-          title={item.title}
-          customPrice={item.customPrice}
-          tacticalCredits={item.tacticalCredits}
-          impactCredits={item.impactCredits}
-          enterpriseCredits={item.enterpriseCredits}
-          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
-          onQuantityChange={onQuantityChange}
-          showDelivery={false}
-          selectedCurrency={selectedCurrency}
-          currencyRate={currencyRate}
-        />
-      ))}
+      <PlaybooksNetflixLayout
+        items={items}
+        quantities={quantities}
+        onQuantityChange={onQuantityChange}
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
     </div>
   );
 };
@@ -472,7 +464,7 @@ export const itemDescriptions = {
   "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
 };
 
-const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
+export const InsightItem = ({ id, title, customPrice, tacticalCredits, impactCredits, enterpriseCredits, showDelivery = true, quantity = 0, onQuantityChange, selectedCurrency, currencyRate }) => (
   <div className="bg-gray-800/30 rounded mb-4 last:mb-0">
     <div className="p-3 border-b border-gray-700/50 bg-gray-900">
       <div className="text-gray-300 text-sm">
