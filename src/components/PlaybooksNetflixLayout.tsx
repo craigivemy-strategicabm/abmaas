@@ -3,10 +3,10 @@ import { InsightItem } from '../abmTiersComponent';
 import { X } from 'lucide-react';
 
 // Define the playbook data structure
-interface Playbook {
+export interface Playbook {
   title: string;
   subtitle?: string;
-  category: 'net-new' | 'customer-growth';
+  category: 'net-new' | 'customer-growth' | 'custom';
   stage: string;
   tacticalCredits: string;
   impactCredits: string;
@@ -30,7 +30,8 @@ const stageColors = {
   'Adoption': '#444444',       // Dark Gray
   'Expansion': '#444444',      // Dark Gray
   'Retention': '#777777',      // Light Gray
-  'Advocacy': '#e95a0c'        // Orange
+  'Advocacy': '#e95a0c',        // Orange
+  'Custom': '#8f0a1a'          // Custom stage color
 };
 
 // Playbook data
@@ -810,7 +811,39 @@ const ALL_PLAYBOOKS: Playbook[] = [
       "Conversion of referrals to opportunities",
       "Advocate participation metrics"
     ]
-  }
+  },
+
+  // Custom Playbooks
+  {
+    title: "Custom playbook design",
+    category: "custom",
+    stage: "Custom",
+    tacticalCredits: "12",
+    impactCredits: "12",
+    enterpriseCredits: "11",
+    customPrice: "12",
+    description: "A tailored playbook design service that creates custom strategic frameworks aligned with your specific business objectives and target accounts.",
+  },
+  {
+    title: "Engagement playbook",
+    category: "custom",
+    stage: "Custom",
+    tacticalCredits: "27",
+    impactCredits: "27",
+    enterpriseCredits: "25",
+    customPrice: "27",
+    description: "A comprehensive engagement framework designed to drive meaningful interactions with key accounts across multiple touchpoints.",
+  },
+  {
+    title: "Revenue playbook",
+    category: "custom",
+    stage: "Custom",
+    tacticalCredits: "8",
+    impactCredits: "8",
+    enterpriseCredits: "7",
+    customPrice: "8",
+    description: "A strategically designed playbook focused on optimizing revenue generation from target accounts through structured engagement tactics.",
+  },
 ];
 
 // Export ALL_PLAYBOOKS directly for reference in other components
@@ -841,12 +874,14 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
   const [activeCustomerGrowthStage, setActiveCustomerGrowthStage] = useState<string | null>(null);
   const [netNewExpanded, setNetNewExpanded] = useState(false);
   const [customerGrowthExpanded, setCustomerGrowthExpanded] = useState(false);
+  const [customExpanded, setCustomExpanded] = useState(false);
   
   // Auto-expand panels when search query is made
   useEffect(() => {
     if (searchQuery.trim() !== '') {
       setNetNewExpanded(true);
       setCustomerGrowthExpanded(true);
+      setCustomExpanded(true);
     }
   }, [searchQuery]);
 
@@ -860,6 +895,7 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
   // Group playbooks by category and stage
   const netNewPlaybooks = filteredPlaybooks.filter(p => p.category === 'net-new');
   const customerGrowthPlaybooks = filteredPlaybooks.filter(p => p.category === 'customer-growth');
+  const customPlaybooks = filteredPlaybooks.filter(p => p.category === 'custom');
 
   // Filter playbooks by active stage (or show all if no stage is selected)
   const filteredNetNewPlaybooks = activeNetNewStage 
@@ -1157,6 +1193,61 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
                 })}
               </div>
             </>
+          )}
+        </div>
+      )}
+
+      {/* Custom Playbooks Section */}
+      {customPlaybooks.length > 0 && (
+        <div className="mb-8">
+          <div className="flex items-center mb-8 cursor-pointer" onClick={() => setCustomExpanded(!customExpanded)}>
+            <div className="w-1.5 h-12 mr-4 bg-white"></div>
+            <h2 className="text-xl font-bold text-white">Custom Playbooks</h2>
+            <div className="ml-auto">
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className={`h-6 w-6 text-white transition-transform ${customExpanded ? 'transform rotate-180' : ''}`} 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+          
+          {customExpanded && (
+            <div>
+              {customPlaybooks.map(playbook => {
+                // Create a unique ID by combining title and subtitle if available
+                const id = playbook.subtitle 
+                  ? `${playbook.title}-${playbook.subtitle}`.toLowerCase().replace(/\s+/g, '-')
+                  : playbook.title.toLowerCase().replace(/\s+/g, '-');
+                return (
+                  <div key={`${playbook.title}-${playbook.subtitle || ''}`} className="flex mb-2">
+                    <div className="w-1 mr-2" style={{ backgroundColor: stageColors[playbook.stage] }}></div>
+                    <div className="flex-grow">
+                      <div className="flex flex-col">
+                        <InsightItem
+                          id={id}
+                          title={getTitleWithSubtitle(playbook)}
+                          customPrice={playbook.customPrice}
+                          tacticalCredits={playbook.tacticalCredits}
+                          impactCredits={playbook.impactCredits}
+                          enterpriseCredits={playbook.enterpriseCredits}
+                          quantity={quantities[id] || 0}
+                          onQuantityChange={onQuantityChange}
+                          selectedCurrency={selectedCurrency}
+                          currencyRate={currencyRate}
+                          showDelivery={false}
+                          description={playbook.description}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
         </div>
       )}
