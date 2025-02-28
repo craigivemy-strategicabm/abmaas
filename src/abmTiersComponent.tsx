@@ -434,6 +434,7 @@ const VideoEmbed = ({ embedCode = '' }) => {
 // Item descriptions mapping
 export const itemDescriptions = {
   // Foundations
+  "ICP development": "Development of a detailed Ideal Customer Profile to identify and target organizations that are the best fit for your solution based on firmographic, technographic, and behavioral criteria.",
   "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
   "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
   "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
@@ -544,6 +545,7 @@ const ContentSection = ({ title, items }) => (
 
 // Define static data first
 const FOUNDATION_ITEMS = [
+  { title: "ICP development", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Selection", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Segmentation/Prioritisation", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "ABM Value Proposition Development", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
