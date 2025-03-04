@@ -231,6 +231,73 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrenc
   );
 };
 
+// Custom Content Budget component
+const CustomContentBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
+  // Define the credit values for each tier based on the same value for tactical and impact, and 90% for enterprise
+  const tacticalCredits = value;
+  const impactCredits = value;
+  const enterpriseCredits = Math.round(value * 0.9 * 10) / 10; // 90% with one decimal place
+  
+  // Format the price similar to other items
+  const priceDisplay = (() => {
+    const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+    return `${symbol}${(value * currencyRate).toFixed(1)}k`;
+  })();
+
+  // Handle custom input
+  const handleInputChange = (e) => {
+    const newValue = parseInt(e.target.value) || 0;
+    onChange(id, newValue);
+  };
+  
+  return (
+    <div className="bg-gray-800/30 rounded mb-6">
+      <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+        <div className="text-gray-300 text-sm">
+          Custom Content Budget
+          <div className="text-gray-400 text-xs mt-2">
+            Flexible content budget allocation for personalized assets beyond standard offerings. 
+            Scale up or down based on your specific needs and target accounts.
+          </div>
+        </div>
+      </div>
+      <div className="p-3">
+        <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+          <div className="flex justify-start pl-4 items-center">
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              step="5" 
+              value={Math.min(value, 100)} 
+              onChange={(e) => onChange(id, parseInt(e.target.value))} 
+              className="w-24 mr-2"
+            />
+            <input 
+              type="number" 
+              value={value} 
+              onChange={handleInputChange}
+              className="bg-gray-800 text-white w-20 h-8 text-center border border-gray-700 rounded focus:outline-none focus:border-gray-500"
+            />
+          </div>
+          <div className="text-gray-400 text-xs text-center">
+            {priceDisplay}
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{tacticalCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{impactCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{enterpriseCredits} credits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const calculateTotal = (items) => {
@@ -242,7 +309,10 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
     }, 0);
   };
 
-  const totalCredits = calculateTotal([...engagementItems, ...revenueItems]);
+  // Include custom content budget in total calculation
+  const customBudgetId = 'custom-content-budget';
+  const customBudgetValue = quantities[customBudgetId] || 0;
+  const totalCredits = calculateTotal([...engagementItems, ...revenueItems]) + customBudgetValue;
 
   const renderItems = (items, title) => (
     <div className="mb-8">
@@ -270,6 +340,13 @@ const ContentPanel = ({ engagementItems, revenueItems, quantities, onQuantityCha
       <TotalCredits 
         total={totalCredits} 
         description={panelDescriptions["Content"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
+      <CustomContentBudget
+        id={customBudgetId}
+        value={customBudgetValue}
+        onChange={onQuantityChange}
         selectedCurrency={selectedCurrency}
         currencyRate={currencyRate}
       />
@@ -434,6 +511,7 @@ const VideoEmbed = ({ embedCode = '' }) => {
 // Item descriptions mapping
 export const itemDescriptions = {
   // Foundations
+  "Discovery workshops": "Hands-on discovery workshops to gather insights from client teams for the ABM program, covering key solution overviews and ICP & persona validation. These sessions provide deep dives into product positioning, features, and value propositions while aligning on ideal customer criteria and decision-making units. Led by subject matter experts and strategists, the workshops ensure a clear understanding of the solution landscape and target accounts, with documented learnings feeding into strategy development.",
   "ICP development": "Development of a detailed Ideal Customer Profile to identify and target organizations that are the best fit for your solution based on firmographic, technographic, and behavioral criteria.",
   "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
   "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
@@ -448,6 +526,9 @@ export const itemDescriptions = {
   "Stakeholder Tactical Insights": "Actionable insights on stakeholder engagement preferences and triggers.",
   
   // Content items
+  "Custom Content Budget": "Flexible content budget allocation for personalized assets beyond standard offerings. Scale up or down based on your specific needs and target accounts. This allows for custom asset development that addresses unique requirements while maintaining consistent quality and delivery standards.",
+  "Custom Playbook Budget": "Flexible playbook budget allocation for custom strategic frameworks aligned with your specific business objectives and target accounts. This budget allows for tailored playbook development to address your unique market challenges and opportunities.",
+  "Content Audit & Gap Analysis": "A comprehensive audit of existing content to assess relevance, coverage, and gaps in alignment with target audiences and priorities. This includes reviewing up to 20 content pieces, mapping them to key personas and business objectives, and identifying opportunities for new content creation or repurposing to enhance engagement and effectiveness.",
   "Cluster Manifesto": "Our cluster manifesto is designed to drive strategic awareness and engagement within a new industry or market segment by targeting high-value accounts with customised content & tailored messaging.",
   "Account Manifesto": "Our Account Manifesto is personalised to target accounts using account-level insights, establishing market differentiation by showcasing innovative solutions and thought leadership while shifting outdated perceptions.",
   "Stakeholder Manifesto": "Our Stakeholder Manifesto is personalised to specific decision-makers using stakeholder-level insights, establishing individual relevance by showcasing solutions aligned to personal priorities while addressing role-specific challenges and objectives.",
@@ -545,6 +626,8 @@ const ContentSection = ({ title, items }) => (
 
 // Define static data first
 const FOUNDATION_ITEMS = [
+  { title: "Discovery workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
+  { title: "Content Audit & Gap Analysis", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "ICP development", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Selection", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Segmentation/Prioritisation", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
@@ -629,6 +712,44 @@ export default function ABMTiers() {
     // Add up quantities * credits for each panel
     Object.entries(quantities).forEach(([id, quantity]) => {
       console.log('\nCalculating for item:', id, 'quantity:', quantity);
+      
+      // Special handling for custom content budget
+      if (id === 'custom-content-budget') {
+        // Skip if quantity is zero or negative
+        if (quantity <= 0) {
+          return;
+        }
+        // Apply the credit values based on selected tier
+        let itemCredits;
+        if (selectedTier === 'Enterprise ABM') {
+          itemCredits = Math.round(quantity * 0.9 * 10) / 10; // 90% with one decimal place
+        } else {
+          itemCredits = quantity; // Same for Tactical and Impact
+        }
+        credits += itemCredits;
+        cost += quantity;
+        console.log(`Adding custom budget credits: ${itemCredits}, cost: ${quantity} for Custom Content Budget`);
+        return; // Skip the rest of the processing for this item
+      }
+      
+      // Special handling for custom playbook budget
+      if (id === 'custom-playbook-budget') {
+        // Skip if quantity is zero or negative
+        if (quantity <= 0) {
+          return;
+        }
+        // Apply the credit values based on selected tier
+        let itemCredits;
+        if (selectedTier === 'Enterprise ABM') {
+          itemCredits = Math.round(quantity * 0.9 * 10) / 10; // 90% with one decimal place
+        } else {
+          itemCredits = quantity; // Same for Tactical and Impact
+        }
+        credits += itemCredits;
+        cost += quantity;
+        console.log(`Adding custom budget credits: ${itemCredits}, cost: ${quantity} for Custom Playbook Budget`);
+        return; // Skip the rest of the processing for this item
+      }
       
       // Find matching item across all item groups
       let item = FOUNDATION_ITEMS.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
@@ -972,6 +1093,34 @@ export default function ABMTiers() {
                     { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
                   ].map(i => ({ ...i, category: 'ABM Training', order: 5 }))
             ];
+            // Special handling for custom content budget
+            if (id === 'custom-content-budget' && quantities[id] > 0) {
+              return {
+                id,
+                title: 'Custom Content Budget',
+                credits: quantities[id],
+                basePrice: quantities[id],
+                category: 'Personalized content & creative',
+                quantity: 1,
+                description: itemDescriptions['Custom Content Budget'],
+                amount: `${symbol}${(quantities[id] * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`
+              };
+            }
+            
+            // Special handling for custom playbook budget
+            if (id === 'custom-playbook-budget' && quantities[id] > 0) {
+              return {
+                id,
+                title: 'Custom Playbook Budget',
+                credits: quantities[id],
+                basePrice: quantities[id],
+                category: 'Playbook credits',
+                quantity: 1,
+                description: itemDescriptions['Custom Playbook Budget'],
+                amount: `${symbol}${(quantities[id] * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`
+              };
+            }
+            
             const item = allItems.find(item => {
               // Standard item matching by ID
               if (id === item.title.toLowerCase().replace(/\s+/g, '-')) {

@@ -13,6 +13,9 @@ interface InvoiceItem {
   amount: string;
   category: string;
   order: number;
+  description?: string;
+  quantity?: number;
+  basePrice?: number;
 }
 
 interface InvoiceSummaryProps {

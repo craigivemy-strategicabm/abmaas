@@ -2,6 +2,72 @@ import React, { useState, useEffect } from 'react';
 import { InsightItem } from '../abmTiersComponent';
 import { X } from 'lucide-react';
 
+// Custom Playbook Budget component
+const CustomPlaybookBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
+  // Define the credit values for each tier based on the same value for tactical and impact, and 90% for enterprise
+  const tacticalCredits = value;
+  const impactCredits = value;
+  const enterpriseCredits = Math.round(value * 0.9 * 10) / 10; // 90% with one decimal place
+  
+  // Format the price similar to other items
+  const priceDisplay = (() => {
+    const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+    return `${symbol}${(value * currencyRate).toFixed(1)}k`;
+  })();
+
+  // Handle custom input
+  const handleInputChange = (e) => {
+    const newValue = parseInt(e.target.value) || 0;
+    onChange(id, newValue);
+  };
+  
+  return (
+    <div className="bg-gray-800/30 rounded mb-6">
+      <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+        <div className="text-gray-300 text-sm">
+          Custom Playbook Budget
+          <div className="text-gray-400 text-xs mt-2">
+            Flexible playbook budget allocation for custom strategic frameworks aligned with your specific business objectives and target accounts.
+          </div>
+        </div>
+      </div>
+      <div className="p-3">
+        <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+          <div className="flex justify-start pl-4 items-center">
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              step="5" 
+              value={Math.min(value, 100)} 
+              onChange={(e) => onChange(id, parseInt(e.target.value))} 
+              className="w-24 mr-2"
+            />
+            <input 
+              type="number" 
+              value={value} 
+              onChange={handleInputChange}
+              className="bg-gray-800 text-white w-20 h-8 text-center border border-gray-700 rounded focus:outline-none focus:border-gray-500"
+            />
+          </div>
+          <div className="text-gray-400 text-xs text-center">
+            {priceDisplay}
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{tacticalCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{impactCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{enterpriseCredits} credits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Define the playbook data structure
 export interface Playbook {
   title: string;
@@ -1218,6 +1284,14 @@ const PlaybooksNetflixLayout: React.FC<PlaybooksNetflixLayoutProps> = ({
           
           {customExpanded && (
             <div>
+              {/* Custom Playbook Budget */}
+              <CustomPlaybookBudget
+                id="custom-playbook-budget"
+                value={quantities['custom-playbook-budget'] || 0}
+                onChange={onQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={currencyRate}
+              />
               {customPlaybooks.map(playbook => {
                 // Create a unique ID by combining title and subtitle if available
                 const id = playbook.subtitle 

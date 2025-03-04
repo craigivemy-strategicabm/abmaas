@@ -164,6 +164,8 @@ interface InvoicePDFProps {
     category: string;
     order: number;
     quantity: number;
+    description?: string;
+    basePrice?: number;
   }>;
   currency: CurrencyCode;
   selectedTier: string;
@@ -311,7 +313,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
                           return (
                             <View>
                               <Text style={{ ...styles.itemDescription, fontSize: 9, marginTop: 4 }}>
-                                {playbook?.description || itemDescriptions[item.title.split(' (')[0]]}
+                                {item.description || playbook?.description || itemDescriptions[item.title.split(' (')[0]]}
                               </Text>
                             </View>
                           );
