@@ -48,7 +48,8 @@ const panelDescriptions = {
   "Content": "Hyper-personalised content designed to solve the relationship needs of your most important accounts, delivered for approval within 72hrs to 96hrs.",
   "Training": "Comprehensive ABM training modules covering the full spectrum of account-based marketing—from foundational concepts to advanced optimization techniques. Each module combines strategic frameworks with practical implementation guidance.",
   "Pricing Features": "Compare and contrast our custom vs credits-based pricing models, both designed to offer clients the speed, scale, and agility needed to support the ever-evolving demands of account-based sales and marketing teams.",
-  "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment."
+  "Playbooks": "Sprint-based playbooks that map to buyer journeys, delivering quantifiable micro-outcomes through personalized content and activation plans. Built for agility and rapid deployment.",
+  "Activation, Technology & Reporting": "Drive engagement and results with targeted activation tactics, technology integration, and reporting frameworks designed to maximize the impact of your ABM initiatives and accelerate pipeline conversion."
 };
 
 const panelCaveats = {
@@ -57,6 +58,7 @@ const panelCaveats = {
   "Insights Credits": "",
   "Personalized Content Credits": "*requires existing cluster manifesto",
   "Playbook Credits": "Excludes activation",
+  "Activation, Technology & Reporting Credits": "Amplify content & playbook impact with strategic consulting",
   "In-house ABM Training Credits": ""
 }
 
@@ -75,6 +77,12 @@ const itemGroups = {
   ],
   revenue: [
     { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
+  ],
+  activation: [
+    { title: "ABM Activation Strategy Consultation", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7.5" },
+    { title: "ABM Tech Stack & Reporting Consultation", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8.5" },
+    { title: "Sales & Marketing Alignment Workshops", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3.5" },
+    { title: "Account-Based Podcasts", tacticalCredits: "9", impactCredits: "9", enterpriseCredits: "8", customPrice: "10.5" }
   ],
   training: [
     { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
@@ -422,6 +430,41 @@ const PlaybooksPanel = ({ quantities, onQuantityChange, selectedCurrency, curren
   );
 };
 
+// Activation Panel
+const ActivationPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
+  const totalCredits = items.reduce((total, item) => {
+    const quantity = quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0;
+    return total + (parseFloat(item.tacticalCredits) * quantity || 0);
+  }, 0);
+
+  return (
+    <div>
+      <TotalCredits 
+        total={totalCredits} 
+        description={panelDescriptions["Activation"]} 
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
+      {items.map((item, i) => (
+        <InsightItem
+          key={i}
+          id={item.title.toLowerCase().replace(/\s+/g, '-')}
+          title={item.title}
+          customPrice={item.customPrice}
+          tacticalCredits={item.tacticalCredits}
+          impactCredits={item.impactCredits}
+          enterpriseCredits={item.enterpriseCredits}
+          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+          onQuantityChange={onQuantityChange}
+          selectedCurrency={selectedCurrency}
+          currencyRate={currencyRate}
+          description={itemDescriptions[item.title]}
+        />
+      ))}
+    </div>
+  );
+};
+
 const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
@@ -543,7 +586,13 @@ export const itemDescriptions = {
   "Developing Account Selection & Prioritisation Frameworks": "A practical workshop on building a structured framework to segment and prioritise high-value accounts, ensuring ABM efforts are focused on the right opportunities.",
   "An introduction to ABM Value Proposition Development": "This workshop focuses on developing compelling value propositions and strategic narratives that align with key decision-makers' needs. Learn the critical differences between brand, segment, account, stakeholder and deal-based value propositions and when to apply each approach for maximum impact.",
   "An introduction to Account-based Reporting & Measurement": "This workshop provides participants with best practices for tracking key ABM metrics, measuring engagement, and refining strategies using real-time data insights. Learn how to develop best practice account-based dashboards that provide actionable next step recommendations and effectively quantify campaign outcomes.",
-  "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically."
+  "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically.",
+  
+  // Activation items
+  "ABM Activation Strategy Consultation": "Recommending the right ABM playbooks from our set of 38 to achieve net new or growth goals. Advising on digital ABM activation using tech platforms versus hands-on collaboration with sales and marketing teams. Supporting in-house teams with digital activation strategies to drive account engagement across key clusters. Providing deal-based insights to help sales teams identify and act on the next best steps for opportunities closer to revenue.",
+  "ABM Tech Stack & Reporting Consultation": "Integrating ABM tech platforms (e.g., 6sense, Demandbase, Salesforce). Defining ABM reporting frameworks and dashboards to measure success and ROI of your ABM initiatives.",
+  "Sales & Marketing Alignment Workshops": "Facilitating sessions to align sales teams with marketing activation plans. Coaching SDRs on leveraging ABM insights for outreach to improve targeting and conversion rates.",
+  "Account-Based Podcasts": "Strategic consultation and planning for branded podcast episodes targeting key accounts. Development of account-specific episode themes, messaging, and guest recommendations. Advisory on podcast distribution strategy to ensure engagement with target stakeholders. Optional oversight of third-party production and distribution partners."
 };
 
 export const InsightItem = ({ 
@@ -753,10 +802,11 @@ export default function ABMTiers() {
       
       // Find matching item across all item groups
       let item = FOUNDATION_ITEMS.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
-      if (!item) item = ITEM_GROUPS.insights.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
-      if (!item) item = [...ITEM_GROUPS.engagement, ...ITEM_GROUPS.revenueContent].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
-      if (!item) item = ITEM_GROUPS.revenue.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
-      if (!item) item = ITEM_GROUPS.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = itemGroups.insights.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = [...itemGroups.engagement, ...ITEM_GROUPS.revenueContent].find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = itemGroups.revenue.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = itemGroups.activation.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
+      if (!item) item = itemGroups.training.find(item => id === item.title.toLowerCase().replace(/\s+/g, '-'));
       
       // Look for the item in the ALL_PLAYBOOKS array
       if (!item) {
@@ -1005,7 +1055,7 @@ export default function ABMTiers() {
           >
             <div className="bg-gray-900 p-4 rounded-lg">
               <ContentPanel 
-                engagementItems={ITEM_GROUPS.engagement}
+                engagementItems={itemGroups.engagement}
                 revenueItems={ITEM_GROUPS.revenueContent}
                 quantities={quantities}
                 onQuantityChange={handleQuantityChange}
@@ -1016,7 +1066,7 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span style={{ color: '#e95a0c' }}>4.</span>{' '}<span className="text-white">Playbook</span>{' '}
+            <span style={{ color: '#e95a0c' }}>4.</span>{' '}<span className="text-white">Playbook & Outcome</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
@@ -1031,7 +1081,23 @@ export default function ABMTiers() {
           </Panel>
 
           <Panel title={<>
-            <span style={{ color: '#e95a0c' }}>5.</span>{' '}<span className="text-white">ABM Training</span>{' '}
+            <span style={{ color: '#e95a0c' }}>5.</span>{' '}<span className="text-white">Activation, Technology & Reporting</span>{' '}
+            <span className="text-gray-500">credits</span>
+            <span style={{ color: '#e95a0c' }}>.</span>
+          </>}>
+            <div className="bg-gray-900 p-4 rounded-lg">
+              <ActivationPanel 
+                items={itemGroups.activation}
+                quantities={quantities}
+                onQuantityChange={handleQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={CURRENCY_CONFIG[selectedCurrency].rate}
+              />
+            </div>
+          </Panel>
+
+          <Panel title={<>
+            <span style={{ color: '#e95a0c' }}>6.</span>{' '}<span className="text-white">ABM Training</span>{' '}
             <span className="text-gray-500">credits</span>
             <span style={{ color: '#e95a0c' }}>.</span>
           </>}>
@@ -1073,17 +1139,19 @@ export default function ABMTiers() {
               'Insights',             // 2.
               'Personalized content & creative', // 3.
               'Playbook credits',     // 4.
-              'ABM Training'          // 5.
+              'Activation, Technology & Reporting credits',    // 5.
+              'ABM Training'          // 6.
             ];
             const allItems = [
               // Order matches the numbered panels on the page
               ...FOUNDATION_ITEMS.map(i => ({ ...i, category: 'ABM foundations', order: 1 })),
-              ...ITEM_GROUPS.insights.map(i => ({ ...i, category: 'Insights', order: 2 })),
-              ...ITEM_GROUPS.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
-              ...ITEM_GROUPS.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
-              ...ITEM_GROUPS.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
+              ...itemGroups.insights.map(i => ({ ...i, category: 'Insights', order: 2 })),
+              ...itemGroups.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
+              ...itemGroups.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
               // Add PlaybooksNetflixLayout items
               ...ALL_PLAYBOOKS.map(i => ({ ...i, category: `${i.stage} Playbooks`, order: 4 })),
+              // Add Activation items
+              ...itemGroups.activation.map(i => ({ ...i, category: 'Activation, Technology & Reporting credits', order: 5 })),
               ...[
                     { title: "How to set ABM Programme Objectives", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                     { title: "How to improve Sales & Marketing Alignment", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
@@ -1091,7 +1159,7 @@ export default function ABMTiers() {
                     { title: "An introduction to ABM Value Proposition Development", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                     { title: "An introduction to Account-based Reporting & Measurement", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" },
                     { title: "An introduction to Social Selling", tacticalCredits: "3", impactCredits: "3", enterpriseCredits: "2.5", customPrice: "3" }
-                  ].map(i => ({ ...i, category: 'ABM Training', order: 5 }))
+                  ].map(i => ({ ...i, category: 'ABM Training', order: 6 }))
             ];
             // Special handling for custom content budget
             if (id === 'custom-content-budget' && quantities[id] > 0) {

@@ -48,6 +48,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
   const [showPDF, setShowPDF] = useState(false);
   const [clientName, setClientName] = useState('');
   const [isExpanded, setIsExpanded] = useState(false);
+  const [sowNotes, setSowNotes] = useState('');
 
   const handlePrint = () => {
     setShowPDF(true);
@@ -292,6 +293,17 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
         </div>
 
         <div className="border-t border-gray-800 mt-10 pt-8 space-y-5">
+          <div className="mb-5">
+            <label htmlFor="sow-notes" className="block text-sm text-gray-400 font-light mb-2">SOW Notes</label>
+            <textarea
+              id="sow-notes"
+              value={sowNotes}
+              onChange={(e) => setSowNotes(e.target.value)}
+              placeholder="Add any notes or special instructions for this SOW..."
+              className="w-full bg-gray-800 border border-gray-700 rounded p-3 text-white text-sm"
+              rows={3}
+            />
+          </div>
           <div className="flex justify-between items-baseline">
             <span className="text-sm text-gray-400 font-light print:text-black">Custom SOW Cost</span>
             <span className="text-base font-light text-gray-500 print:text-black">{customSowCost}</span>
@@ -357,6 +369,7 @@ export const InvoiceSummary: React.FC<InvoiceSummaryProps> = ({
               customSowCost={customSowCost}
               creditsCost={creditsCost}
               clientName={clientName}
+              sowNotes={sowNotes}
             />
           </ErrorBoundary>
         </div>

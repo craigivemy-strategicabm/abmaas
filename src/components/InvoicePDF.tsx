@@ -173,6 +173,7 @@ interface InvoicePDFProps {
   customSowCost: string;
   creditsCost: string;
   clientName: string;
+  sowNotes?: string;
 }
 
 // Function to get playbook by title
@@ -231,7 +232,8 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
   totalCredits,
   customSowCost,
   creditsCost,
-  clientName
+  clientName,
+  sowNotes
 }) => {
   console.log('Raw items:', items);
 
@@ -304,7 +306,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
               
               <View>
                 {itemsByCategory[category].map((item, index) => (
-                  <View key={item.id} style={{ backgroundColor: '#F8F9FC', padding: 12, borderRadius: 8, marginBottom: index === itemsByCategory[category].length - 1 ? 0 : 12 }} break={false}>
+                  <View key={item.id} style={{ backgroundColor: '#F8F9FC', padding: 12, borderRadius: 8, marginBottom: index === itemsByCategory[category].length - 1 ? 0 : 12, breakInside: 'avoid' }} break={false}>
                     <View style={styles.row}>
                       <View style={styles.itemDetails}>
                         <Text style={{ ...styles.itemTitle, fontSize: 11 }}>{item.title}</Text>
@@ -335,6 +337,15 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
 
           {/* Summary Section */}
           <View style={{ ...styles.section, marginTop: 40 }}>
+            {sowNotes && sowNotes.trim() !== '' && (
+              <View style={{ marginBottom: 20 }}>
+                <Text style={{ fontSize: 11, fontWeight: 'bold', color: '#333333', marginBottom: 5 }}>SOW Notes:</Text>
+                <View style={{ backgroundColor: '#F8F9FC', padding: 10, borderRadius: 5 }}>
+                  <Text style={{ fontSize: 10, color: '#666666' }}>{sowNotes}</Text>
+                </View>
+              </View>
+            )}
+            
             <View style={styles.sectionMarker}>
               <View style={styles.row}>
                 <Text style={styles.totalLabel}>Custom SOW Cost</Text>
