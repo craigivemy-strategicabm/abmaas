@@ -24,6 +24,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: 'Helvetica',
   },
+  noBreak: {
+    breakInside: 'avoid',
+  },
   section: {
     marginBottom: 8,
   },
@@ -306,16 +309,17 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
               
               <View>
                 {itemsByCategory[category].map((item, index) => (
-                  <View key={item.id} style={{ backgroundColor: '#F8F9FC', padding: 12, borderRadius: 8, marginBottom: index === itemsByCategory[category].length - 1 ? 0 : 12, breakInside: 'avoid' }} break={false}>
-                    <View style={styles.row}>
+                  <View key={item.id} style={[styles.noBreak, { backgroundColor: '#F8F9FC', padding: 12, borderRadius: 8, marginBottom: index === itemsByCategory[category].length - 1 ? 0 : 12 }]}>
+                    <View style={[styles.row, { minPresenceAhead: 100 }]}>
                       <View style={styles.itemDetails}>
                         <Text style={{ ...styles.itemTitle, fontSize: 11 }}>{item.title}</Text>
                         {(() => {
                           const playbook = getPlaybook(item.title);
+                          const description = item.description || playbook?.description || itemDescriptions[item.title] || itemDescriptions[item.title.split(' (')[0]];
                           return (
                             <View>
                               <Text style={{ ...styles.itemDescription, fontSize: 9, marginTop: 4 }}>
-                                {item.description || playbook?.description || itemDescriptions[item.title.split(' (')[0]]}
+                                {description}
                               </Text>
                             </View>
                           );

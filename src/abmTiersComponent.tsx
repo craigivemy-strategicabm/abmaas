@@ -205,6 +205,9 @@ const TotalCredits = ({ total, description, selectedCurrency, currencyRate }) =>
 const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    if (id === 'discovery-custom-budget') {
+      return total + quantity;
+    }
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
@@ -219,22 +222,45 @@ const FoundationsPanel = ({ items, quantities, onQuantityChange, selectedCurrenc
         selectedCurrency={selectedCurrency}
         currencyRate={currencyRate}
       />
-      {items.map((item, i) => (
-        <InsightItem
-          key={i}
-          id={item.title.toLowerCase().replace(/\s+/g, '-')}
-          title={item.title}
-          customPrice={item.customPrice}
-          tacticalCredits={item.tacticalCredits}
-          impactCredits={item.impactCredits}
-          enterpriseCredits={item.enterpriseCredits}
-          quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
-          onQuantityChange={onQuantityChange}
-          showDelivery={false}
-          selectedCurrency={selectedCurrency}
-          currencyRate={currencyRate}
-        />
-      ))}
+      {items.map((item, i) => {
+        // Render the current item
+        const currentItemElement = (
+          <InsightItem
+            key={i}
+            id={item.title.toLowerCase().replace(/\s+/g, '-')}
+            title={item.title}
+            customPrice={item.customPrice}
+            tacticalCredits={item.tacticalCredits}
+            impactCredits={item.impactCredits}
+            enterpriseCredits={item.enterpriseCredits}
+            quantity={quantities[item.title.toLowerCase().replace(/\s+/g, '-')] || 0}
+            onQuantityChange={onQuantityChange}
+            showDelivery={false}
+            selectedCurrency={selectedCurrency}
+            currencyRate={currencyRate}
+          />
+        );
+
+        // If this is the "Discovery - Value Proposition & Insights (per segment/market)" item, 
+        // add the custom discovery budget slider right after it
+        if (item.title === "Discovery - Value Proposition & Insights (per segment/market)") {
+          return (
+            <React.Fragment key={`${i}-group`}>
+              {currentItemElement}
+              <CustomDiscoveryBudget
+                id="discovery-custom-budget"
+                value={quantities['discovery-custom-budget'] || 0}
+                onChange={onQuantityChange}
+                selectedCurrency={selectedCurrency}
+                currencyRate={currencyRate}
+              />
+            </React.Fragment>
+          );
+        }
+        
+        // Otherwise just return the current item
+        return currentItemElement;
+      })}
     </div>
   );
 };
@@ -276,7 +302,7 @@ const CustomContentBudget = ({ id, value, onChange, selectedCurrency, currencyRa
               type="range" 
               min="0" 
               max="100" 
-              step="5" 
+              step="2" 
               value={Math.min(value, 100)} 
               onChange={(e) => onChange(id, parseInt(e.target.value))} 
               className="w-24 mr-2"
@@ -554,9 +580,11 @@ const VideoEmbed = ({ embedCode = '' }) => {
 // Item descriptions mapping
 export const itemDescriptions = {
   // Foundations
-  "Discovery workshops": "Hands-on discovery workshops to gather insights from client teams for the ABM program, covering key solution overviews and ICP & persona validation. These sessions provide deep dives into product positioning, features, and value propositions while aligning on ideal customer criteria and decision-making units. Led by subject matter experts and strategists, the workshops ensure a clear understanding of the solution landscape and target accounts, with documented learnings feeding into strategy development.",
+  "Onboarding & Discovery Workshops": "Hands-on discovery workshops to gather insights from client teams for the ABM program, covering key solution overviews and ICP & persona validation. These sessions provide deep dives into product positioning, features, and value propositions while aligning on ideal customer criteria and decision-making units. Led by subject matter experts and strategists, the workshops ensure a clear understanding of the solution landscape and target accounts, with documented learnings feeding into strategy development.",
+  "Discovery - ICP & Persona (per segment/market)": "Collaborative workshop to understand what makes an ideal customer for your solution, identify key customer profiles, and build a robust data-driven account segmentation framework. We'll explore the decision-making unit, map the buyer journey, and uncover key motivations and drivers behind purchasing decisions.",
+  "Discovery - Value Proposition & Insights (per segment/market)": "Workshop focused on exploring your target accounts to understand their context and identify industry-specific insights. We'll analyze account priorities and challenges to help you develop compelling value propositions that resonate with decision-makers and address their specific business needs.",
   "ICP development": "Development of a detailed Ideal Customer Profile to identify and target organizations that are the best fit for your solution based on firmographic, technographic, and behavioral criteria.",
-  "Account Selection": "Identify and prioritize target accounts based on fit, intent, and opportunity size.",
+  "Account Selection (per segment/market)": "Develop a comprehensive account selection model with strategic criteria for scoring and prioritizing target accounts, evaluating both external factors (account attractiveness) and internal factors (relative business strength). Incorporates metrics like market position, revenue potential, strategic fit, and solution alignment, then validates selections using a tiered approach combining first-party and third-party intent data to ensure optimal targeting and resource allocation.",
   "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
   "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
   "ABM Readiness Workshops": "Interactive sessions to assess and enhance your organization's ABM readiness.",
@@ -614,7 +642,7 @@ export const InsightItem = ({
       <div className="text-gray-300 text-sm">
         {title.split(' (')[0]}
         {title.includes('(') && (
-          <div className="text-gray-400 text-xs mt-1">
+          <div className="text-xs mt-1" style={{ color: '#e95a0c' }}>
             {title.split('(')[1].replace(')', '')}
           </div>
         )}
@@ -623,9 +651,9 @@ export const InsightItem = ({
             {description}
           </div>
         )}
-        {!description && itemDescriptions[title.split(' (')[0]] && (
+        {!description && (itemDescriptions[title] || itemDescriptions[title.split(' (')[0]]) && (
           <div className="text-gray-400 text-xs mt-2">
-            {itemDescriptions[title.split(' (')[0]]}
+            {itemDescriptions[title] || itemDescriptions[title.split(' (')[0]]}
           </div>
         )}
       </div>
@@ -673,14 +701,83 @@ const ContentSection = ({ title, items }) => (
   </div>
 );
 
+// Custom Discovery Budget component
+const CustomDiscoveryBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
+  // Define the credit values for each tier based on the same value for tactical and impact, and 90% for enterprise
+  const tacticalCredits = value;
+  const impactCredits = value;
+  const enterpriseCredits = Math.round(value * 0.9 * 10) / 10; // 90% with one decimal place
+  
+  // Format the price similar to other items
+  const priceDisplay = (() => {
+    const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+    return `${symbol}${(value * currencyRate).toFixed(1)}k`;
+  })();
+
+  // Handle custom input
+  const handleInputChange = (e) => {
+    const newValue = parseInt(e.target.value) || 0;
+    onChange(id, newValue);
+  };
+  
+  return (
+    <div className="bg-gray-800/30 rounded mb-6">
+      <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+        <div className="text-gray-300 text-sm">
+          Discovery - Custom budget
+          <div className="text-gray-400 text-xs mt-2">
+            Flexible discovery budget allocation for tailored workshops and research beyond standard offerings. 
+            Scale up or down based on your specific needs and target accounts.
+          </div>
+        </div>
+      </div>
+      <div className="p-3">
+        <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+          <div className="flex justify-start pl-4 items-center">
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              step="2" 
+              value={Math.min(value, 100)} 
+              onChange={(e) => onChange(id, parseInt(e.target.value))} 
+              className="w-24 mr-2"
+            />
+            <input 
+              type="number" 
+              value={value} 
+              onChange={handleInputChange}
+              className="bg-gray-800 text-white w-20 h-8 text-center border border-gray-700 rounded focus:outline-none focus:border-gray-500"
+            />
+          </div>
+          <div className="text-gray-400 text-xs text-center">
+            {priceDisplay}
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{tacticalCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{impactCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{enterpriseCredits} credits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Define static data first
 const FOUNDATION_ITEMS = [
-  { title: "Discovery workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
+  { title: "Onboarding & Discovery Workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
+  { title: "Discovery - ICP & Persona (per segment/market)", tacticalCredits: "2.5", impactCredits: "2.5", enterpriseCredits: "2", customPrice: "2.5" },
+  { title: "Discovery - Value Proposition & Insights (per segment/market)", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1.5", customPrice: "2.5" },
   { title: "Content Audit & Gap Analysis", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
-  { title: "ICP development", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
-  { title: "Account Selection", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
-  { title: "Account Segmentation/Prioritisation", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
-  { title: "ABM Value Proposition Development", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
+  { title: "ICP development (per segment/market)", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
+  { title: "Account Selection (per segment/market)", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+  { title: "Account Segmentation/Prioritisation (per segment/market)", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
+  { title: "ABM Value Proposition Development (per segment/market)", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
   { title: "ABM Readiness Workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
   { title: "Synthetic Audiences", tacticalCredits: "21", impactCredits: "21", enterpriseCredits: "20", customPrice: "21" }
 ];
@@ -761,6 +858,25 @@ export default function ABMTiers() {
     // Add up quantities * credits for each panel
     Object.entries(quantities).forEach(([id, quantity]) => {
       console.log('\nCalculating for item:', id, 'quantity:', quantity);
+      
+      // Special handling for discovery custom budget
+      if (id === 'discovery-custom-budget') {
+        // Skip if quantity is zero or negative
+        if (quantity <= 0) {
+          return;
+        }
+        // Apply the credit values based on selected tier
+        let itemCredits;
+        if (selectedTier === 'Enterprise ABM') {
+          itemCredits = Math.round(quantity * 0.9 * 10) / 10; // 90% with one decimal place
+        } else {
+          itemCredits = quantity; // Same for Tactical and Impact
+        }
+        credits += itemCredits;
+        cost += quantity;
+        console.log(`Adding custom budget credits: ${itemCredits}, cost: ${quantity} for Discovery Custom Budget`);
+        return; // Skip the rest of the processing for this item
+      }
       
       // Special handling for custom content budget
       if (id === 'custom-content-budget') {
@@ -1126,6 +1242,8 @@ export default function ABMTiers() {
       </div>
 
       {/* Invoice Summary Modal */}
+      {console.log('Current quantities:', quantities)}
+      {console.log('Grand total:', grandTotal, 'Currency total:', currencyTotal)}
       <InvoiceSummary
         isOpen={isInvoiceOpen}
         onClose={(newState) => setIsInvoiceOpen(newState)}
@@ -1175,6 +1293,20 @@ export default function ABMTiers() {
               };
             }
             
+            // Special handling for discovery custom budget
+            if (id === 'discovery-custom-budget' && quantities[id] > 0) {
+              return {
+                id,
+                title: 'Discovery - Custom budget',
+                credits: quantities[id],
+                basePrice: quantities[id],
+                category: 'ABM foundations',
+                quantity: 1,
+                description: 'Flexible discovery budget allocation for tailored workshops and research beyond standard offerings.',
+                amount: `${symbol}${(quantities[id] * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}`
+              };
+            }
+            
             // Special handling for custom playbook budget
             if (id === 'custom-playbook-budget' && quantities[id] > 0) {
               return {
@@ -1206,7 +1338,10 @@ export default function ABMTiers() {
               return false;
             });
             if (!item) return null;
-            const basePrice = parseFloat(item.tacticalCredits || item.customPrice);
+            // For Account Selection, prioritize customPrice; otherwise use tacticalCredits or customPrice
+            const basePrice = item.title === "Account Selection" ? 
+              parseFloat(item.customPrice) : 
+              parseFloat(item.tacticalCredits || item.customPrice);
             const credits = basePrice * quantity;
             return {
               id,
