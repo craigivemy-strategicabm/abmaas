@@ -493,12 +493,19 @@ const ActivationPanel = ({ items, quantities, onQuantityChange, selectedCurrency
 
 const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, currencyRate }) => {
 
+  // Include first-party data enrichment budget in total calculation
+  const dataEnrichmentBudgetId = 'first-party-data-enrichment';
+  const dataEnrichmentBudgetValue = quantities[dataEnrichmentBudgetId] || 0;
+
   const totalCredits = Object.entries(quantities).reduce((total, [id, quantity]) => {
+    // Skip the data enrichment budget as we'll add it separately
+    if (id === dataEnrichmentBudgetId) return total;
+    
     const item = items.find(item => 
       id === item.title.toLowerCase().replace(/\s+/g, '-')
     );
     return total + (item ? parseFloat(item.tacticalCredits) * quantity : 0);
-  }, 0);
+  }, 0) + dataEnrichmentBudgetValue; // Add the data enrichment budget value
 
   return (
     <div>
@@ -523,6 +530,13 @@ const InsightsPanel = ({ items, quantities, onQuantityChange, selectedCurrency, 
           currencyRate={currencyRate}
         />
       ))}
+      <FirstPartyDataEnrichmentBudget
+        id={dataEnrichmentBudgetId}
+        value={dataEnrichmentBudgetValue}
+        onChange={onQuantityChange}
+        selectedCurrency={selectedCurrency}
+        currencyRate={currencyRate}
+      />
     </div>
   );
 };
@@ -579,6 +593,8 @@ const VideoEmbed = ({ embedCode = '' }) => {
 
 // Item descriptions mapping
 export const itemDescriptions = {
+  // Data enrichment budget
+  "First-party Data Enrichment": "Enhancement and optimization of your existing customer and prospect data through cleansing, normalization, and integration of third-party intelligence. Includes custom attribute mapping, data gap analysis, and implementation of data governance practices to ensure high-quality information for targeting and personalization strategies.",
   // Foundations
   "Onboarding & Discovery Workshops": "Hands-on discovery workshops to gather insights from client teams for the ABM program, covering key solution overviews and ICP & persona validation. These sessions provide deep dives into product positioning, features, and value propositions while aligning on ideal customer criteria and decision-making units. Led by subject matter experts and strategists, the workshops ensure a clear understanding of the solution landscape and target accounts, with documented learnings feeding into strategy development.",
   "Discovery - ICP & Persona (per segment/market)": "Collaborative workshop to understand what makes an ideal customer for your solution, identify key customer profiles, and build a robust data-driven account segmentation framework. We'll explore the decision-making unit, map the buyer journey, and uncover key motivations and drivers behind purchasing decisions.",
@@ -700,6 +716,72 @@ const ContentSection = ({ title, items }) => (
     {items.map((item, i) => <InsightItem key={i} {...item} />)}
   </div>
 );
+
+// First-party Data Enrichment Budget component
+const FirstPartyDataEnrichmentBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
+  // Define the credit values for each tier based on the same value for tactical and impact, and 90% for enterprise
+  const tacticalCredits = value;
+  const impactCredits = value;
+  const enterpriseCredits = Math.round(value * 0.9 * 10) / 10; // 90% with one decimal place
+  
+  // Format the price similar to other items
+  const priceDisplay = (() => {
+    const symbol = selectedCurrency === 'GBP' ? '£' : selectedCurrency === 'EUR' ? '€' : '$';
+    return `${symbol}${(value * currencyRate).toFixed(1)}k`;
+  })();
+
+  // Handle custom input
+  const handleInputChange = (e) => {
+    const newValue = parseInt(e.target.value) || 0;
+    onChange(id, newValue);
+  };
+  
+  return (
+    <div className="bg-gray-800/30 rounded mb-6">
+      <div className="p-3 border-b border-gray-700/50 bg-gray-900">
+        <div className="text-gray-300 text-sm">
+          First-party Data Enrichment
+          <div className="text-gray-400 text-xs mt-2">
+            Enhancement and optimization of your existing customer and prospect data through cleansing, normalization, and integration of third-party intelligence. Includes custom attribute mapping, data gap analysis, and implementation of data governance practices to ensure high-quality information for targeting and personalization strategies.
+          </div>
+        </div>
+      </div>
+      <div className="p-3">
+        <div className="grid grid-cols-[minmax(200px,1fr)_1fr_1fr_1fr_1fr] items-center">
+          <div className="flex justify-start pl-4 items-center">
+            <input 
+              type="range" 
+              min="0" 
+              max="100" 
+              step="2" 
+              value={Math.min(value, 100)} 
+              onChange={(e) => onChange(id, parseInt(e.target.value))} 
+              className="w-24 mr-2"
+            />
+            <input 
+              type="number" 
+              value={value} 
+              onChange={handleInputChange}
+              className="bg-gray-800 text-white w-20 h-8 text-center border border-gray-700 rounded focus:outline-none focus:border-gray-500"
+            />
+          </div>
+          <div className="text-gray-400 text-xs text-center">
+            {priceDisplay}
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{tacticalCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{impactCredits} credits</div>
+          </div>
+          <div className="text-center">
+            <div className="text-green-500 text-sm text-center">{enterpriseCredits} credits</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Custom Discovery Budget component
 const CustomDiscoveryBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
@@ -875,6 +957,25 @@ export default function ABMTiers() {
         credits += itemCredits;
         cost += quantity;
         console.log(`Adding custom budget credits: ${itemCredits}, cost: ${quantity} for Discovery Custom Budget`);
+        return; // Skip the rest of the processing for this item
+      }
+      
+      // Special handling for first-party data enrichment budget
+      if (id === 'first-party-data-enrichment') {
+        // Skip if quantity is zero or negative
+        if (quantity <= 0) {
+          return;
+        }
+        // Apply the credit values based on selected tier
+        let itemCredits;
+        if (selectedTier === 'Enterprise ABM') {
+          itemCredits = Math.round(quantity * 0.9 * 10) / 10; // 90% with one decimal place
+        } else {
+          itemCredits = quantity; // Same for Tactical and Impact
+        }
+        credits += itemCredits;
+        cost += quantity;
+        console.log(`Adding custom budget credits: ${itemCredits}, cost: ${quantity} for First-party Data Enrichment`);
         return; // Skip the rest of the processing for this item
       }
       
