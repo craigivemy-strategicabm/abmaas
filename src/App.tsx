@@ -1,34 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState, useEffect } from 'react'
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
+// Import pages
+import GenerateSowPage from './pages/GenerateSowPage'
+import InvoicePreviewPage from './pages/InvoicePreviewPage'
+
+// We'll use a placeholder for now since PlaybooksNetflixLayout requires props
+// This would be replaced with the actual component with proper props in the real app
+
 function App() {
-  const [count, setCount] = useState(0)
+  // State to store the last API response with recommendations
+  const [lastRecommendations, setLastRecommendations] = useState<any>(null);
+
+  // Listen for API responses with recommendations
+  useEffect(() => {
+    // Function to handle messages from the API
+    const handleApiResponse = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'API_RESPONSE' && event.data.recommendedPlaybooks) {
+        setLastRecommendations(event.data.recommendedPlaybooks);
+      }
+    };
+
+    // Add event listener
+    window.addEventListener('message', handleApiResponse);
+
+    // Clean up
+    return () => {
+      window.removeEventListener('message', handleApiResponse);
+    };
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    <Router>
+      <Routes>
+        {/* Main app routes */}
+        <Route path="/" element={<Navigate to="/playbooks" />} />
+        <Route path="/playbooks" element={<div className="p-8 text-white">Playbooks Layout (Placeholder)</div>} />
+        
+        {/* SOW generation route */}
+        <Route 
+          path="/generate-sow" 
+          element={
+            <GenerateSowPage />
+          } 
+        />
+        
+        {/* Invoice preview route */}
+        <Route path="/invoice-preview" element={<InvoicePreviewPage />} />
+        
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </Router>
   )
 }
 

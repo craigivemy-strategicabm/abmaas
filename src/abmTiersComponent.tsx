@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { ChevronDown, Check, Info } from 'lucide-react';
+import RecommenderDemo from './components/RecommenderDemo';
 import { useCurrency, CURRENCY_CONFIG } from './config/currency';
 import { CurrencySelector } from './components/CurrencySelector';
 import { InvoiceSummary } from './components/InvoiceSummary';
@@ -62,7 +63,7 @@ const panelCaveats = {
   "In-house ABM Training Credits": ""
 }
 
-const itemGroups = {
+export const itemGroups = {
   insights: [
     { title: "Market Insights", credits: "8", customPrice: "9.5" },
     { title: "Account Insights", credits: "2", customPrice: "2.5" },
@@ -633,6 +634,7 @@ export const itemDescriptions = {
   "An introduction to Social Selling": "Understand the fundamentals of social selling, its role in modern B2B sales, and how it differs from traditional selling models. Learn how to build a compelling personal brand and grow your network authentically.",
   
   // Activation items
+  "Unblock a stalled deal": "This specialized activation service focuses on reactivating and accelerating stalled opportunities through targeted engagement and value reinforcement. Our experts conduct a detailed deal blockage analysis, develop stakeholder re-engagement strategies, and create value reinforcement content specifically designed to overcome obstacles in the sales process. The service aims to improve stalled deal reactivation rates, accelerate deal progression velocity, and convert stalled opportunities into active deals.",
   "ABM Activation Strategy Consultation": "Recommending the right ABM playbooks from our set of 38 to achieve net new or growth goals. Advising on digital ABM activation using tech platforms versus hands-on collaboration with sales and marketing teams. Supporting in-house teams with digital activation strategies to drive account engagement across key clusters. Providing deal-based insights to help sales teams identify and act on the next best steps for opportunities closer to revenue.",
   "ABM Tech Stack & Reporting Consultation": "Integrating ABM tech platforms (e.g., 6sense, Demandbase, Salesforce). Defining ABM reporting frameworks and dashboards to measure success and ROI of your ABM initiatives.",
   "Sales & Marketing Alignment Workshops": "Facilitating sessions to align sales teams with marketing activation plans. Coaching SDRs on leveraging ABM insights for outreach to improve targeting and conversion rates.",
@@ -864,7 +866,7 @@ const FOUNDATION_ITEMS = [
   { title: "Synthetic Audiences", tacticalCredits: "21", impactCredits: "21", enterpriseCredits: "20", customPrice: "21" }
 ];
 
-const ITEM_GROUPS = {
+export const ITEM_GROUPS = {
   foundations: FOUNDATION_ITEMS,
   insights: [
     { title: "Market Insights", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
@@ -1117,6 +1119,7 @@ export default function ABMTiers() {
 
   return (
     <div className={`bg-black text-white min-h-screen transition-all duration-300 ${isInvoiceOpen ? 'lg:pl-[400px]' : 'lg:pl-[50px]'}`}>
+      <RecommenderDemo />
       <div className="max-w-6xl mx-auto relative">
 
         {/* Overlay when panel is open on mobile */}

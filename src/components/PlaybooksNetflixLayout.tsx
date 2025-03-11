@@ -2,6 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { InsightItem } from '../abmTiersComponent';
 import { X } from 'lucide-react';
 
+// Playbook interface
+export interface Playbook {
+  title: string;
+  subtitle?: string;
+  category: string;
+  stage: string;
+  tacticalCredits: string;
+  impactCredits: string;
+  enterpriseCredits: string;
+  customPrice: string;
+  description: string;
+  includes: string[];
+  kpis: string[];
+}
+
 // Custom Playbook Budget component
 const CustomPlaybookBudget = ({ id, value, onChange, selectedCurrency, currencyRate }) => {
   // Define the credit values for each tier based on the same value for tactical and impact, and 90% for enterprise
@@ -101,7 +116,7 @@ const stageColors = {
 };
 
 // Playbook data
-const ALL_PLAYBOOKS: Playbook[] = [
+export const ALL_PLAYBOOKS: Playbook[] = [
   // Playbooks definitions...
   // Net-new Target Accounts - Awareness
   {
@@ -912,8 +927,7 @@ const ALL_PLAYBOOKS: Playbook[] = [
   },
 ];
 
-// Export ALL_PLAYBOOKS directly for reference in other components
-export { ALL_PLAYBOOKS };
+// ALL_PLAYBOOKS is already exported above
 
 export interface PlaybooksNetflixLayoutProps {
   items: any[];
