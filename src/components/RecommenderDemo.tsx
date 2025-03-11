@@ -45,7 +45,8 @@ const RecommenderDemo: React.FC = () => {
       position: 'fixed', 
       bottom: '20px', 
       right: '20px', 
-      zIndex: 1000 
+      zIndex: 1000,
+      display: 'none' 
     }}>
       {isOpen ? (
         <div style={{
