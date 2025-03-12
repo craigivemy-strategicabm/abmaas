@@ -301,7 +301,7 @@ const InvoicePDF: React.FC<InvoicePDFProps> = ({
           {/* Categories and Items */}
           <View style={{ marginTop: 0 }}>
             {sortedCategories.map((category, categoryIndex) => (
-            <View key={category} style={[styles.section, { marginBottom: categoryIndex === sortedCategories.length - 1 ? 40 : 64 }]} break={false}>
+            <View key={category} style={[styles.section, { marginBottom: categoryIndex === sortedCategories.length - 1 ? 20 : 30 }]} break={false}>
               <View style={{ marginBottom: 24 }}>
                 <Text style={{ ...styles.categoryTitle, color: '#E95A0C' }}>{category}</Text>
                 <Text style={{ fontSize: 11, color: '#666666', marginTop: 2 }}>{categoryDescriptions[category]}</Text>

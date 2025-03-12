@@ -603,7 +603,7 @@ export const itemDescriptions = {
   "ICP development": "Development of a detailed Ideal Customer Profile to identify and target organizations that are the best fit for your solution based on firmographic, technographic, and behavioral criteria.",
   "Account Selection (per segment/market)": "Develop a comprehensive account selection model with strategic criteria for scoring and prioritizing target accounts, evaluating both external factors (account attractiveness) and internal factors (relative business strength). Incorporates metrics like market position, revenue potential, strategic fit, and solution alignment, then validates selections using a tiered approach combining first-party and third-party intent data to ensure optimal targeting and resource allocation.",
   "Account Segmentation/Prioritisation": "Segment accounts into tiers based on strategic value and engagement potential.",
-  "ABM Value Proposition Development": "Create compelling, account-specific value propositions that resonate with decision-makers.",
+  "ABM Value Proposition Development": "A foundational framework that refines your brand's value proposition for specific market segments or account clusters. This deliverable establishes the core messaging architecture that drives all ABM playbooks, enabling scalable personalization. It also serves as the strategic foundation for revenue-focused messaging and live deal personalization, accelerating sales cycles.",
   "ABM Readiness Workshops": "Interactive sessions to assess and enhance your organization's ABM readiness.",
   "Synthetic Audiences": "Build custom audience profiles for precise targeting and personalization.",
   
@@ -861,7 +861,7 @@ const FOUNDATION_ITEMS = [
   { title: "ICP development (per segment/market)", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
   { title: "Account Selection (per segment/market)", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
   { title: "Account Segmentation/Prioritisation (per segment/market)", tacticalCredits: "3.5", impactCredits: "3.5", enterpriseCredits: "2.5", customPrice: "3.5" },
-  { title: "ABM Value Proposition Development (per segment/market)", tacticalCredits: "12", impactCredits: "12", enterpriseCredits: "11", customPrice: "12" },
+  { title: "ABM Value Proposition Development (per segment/market)", tacticalCredits: "10.5", impactCredits: "10.5", enterpriseCredits: "9.5", customPrice: "10.5" },
   { title: "ABM Readiness Workshops", tacticalCredits: "8", impactCredits: "8", enterpriseCredits: "7", customPrice: "8" },
   { title: "Synthetic Audiences", tacticalCredits: "21", impactCredits: "21", enterpriseCredits: "20", customPrice: "21" }
 ];
