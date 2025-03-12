@@ -71,10 +71,14 @@ export const itemGroups = {
     { title: "Stakeholder Tactical Insights", credits: "2", customPrice: "2.5" }
   ],
   engagement: [
-    { title: "Cluster Manifesto", credits: "7", customPrice: "7.5" },
-    { title: "Account Manifesto", credits: "2", customPrice: "2.5" },
-    { title: "Stakeholder Manifesto", credits: "2", customPrice: "2.5" },
-    { title: "Annotated Report", credits: "5.5", customPrice: "6" }
+    { title: "Cluster Manifesto", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7.5" },
+    { title: "Account Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2.5" },
+    { title: "Stakeholder Manifesto", tacticalCredits: "2", impactCredits: "2", enterpriseCredits: "1", customPrice: "2.5" },
+    { title: "Annotated Report", tacticalCredits: "5.5", impactCredits: "5.5", enterpriseCredits: "4.5", customPrice: "6" }
+  ],
+  revenueContent: [
+    { title: "Executive Briefing", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" },
+    { title: "ABM Roadmap", tacticalCredits: "7", impactCredits: "7", enterpriseCredits: "6", customPrice: "7" }
   ],
   revenue: [
     { title: "Executive Briefing", credits: "6.5", customPrice: "7.5" }
@@ -1369,6 +1373,7 @@ export default function ABMTiers() {
               ...FOUNDATION_ITEMS.map(i => ({ ...i, category: 'ABM foundations', order: 1 })),
               ...itemGroups.insights.map(i => ({ ...i, category: 'Insights', order: 2 })),
               ...itemGroups.engagement.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
+              ...itemGroups.revenueContent.map(i => ({ ...i, category: 'Personalized content & creative', order: 3 })),
               ...itemGroups.revenue.map(i => ({ ...i, category: 'Playbook credits', order: 4 })),
               // Add PlaybooksNetflixLayout items
               ...ALL_PLAYBOOKS.map(i => ({ ...i, category: `${i.stage} Playbooks`, order: 4 })),
