@@ -1402,6 +1402,20 @@ export default function ABMTiers() {
               };
             }
             
+            // Special handling for first-party data enrichment
+            if (id === 'first-party-data-enrichment' && quantities[id] > 0) {
+              return {
+                id,
+                title: 'First-party Data Enrichment',
+                credits: quantities[id],
+                basePrice: quantities[id],
+                category: 'Insights',
+                quantity: 1,
+                description: 'Enrichment of first-party data to enhance account targeting and personalization.',
+                amount: `${symbol}${(quantities[id] * CURRENCY_CONFIG[selectedCurrency].rate).toLocaleString(undefined, { minimumFractionDigits: 3, maximumFractionDigits: 3 }).replace('.', ',')}` 
+              };
+            }
+            
             // Special handling for discovery custom budget
             if (id === 'discovery-custom-budget' && quantities[id] > 0) {
               return {
